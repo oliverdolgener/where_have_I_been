@@ -26,3 +26,24 @@ export function getRoundedLongitude(longitude, latitude) {
     6,
   );
 }
+
+export function getSquareCoordinates(latitude, longitude) {
+  return [
+    {
+      latitude: latitude - Earth.GRID_DISTANCE / 2.01,
+      longitude: longitude + gridDistanceAtLatitude(latitude) / 2.01,
+    },
+    {
+      latitude: latitude - Earth.GRID_DISTANCE / 2.01,
+      longitude: longitude - gridDistanceAtLatitude(latitude) / 2.01,
+    },
+    {
+      latitude: latitude + Earth.GRID_DISTANCE / 2.01,
+      longitude: longitude - gridDistanceAtLatitude(latitude) / 2.01,
+    },
+    {
+      latitude: latitude + Earth.GRID_DISTANCE / 2.01,
+      longitude: longitude + gridDistanceAtLatitude(latitude) / 2.01,
+    },
+  ];
+}
