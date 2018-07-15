@@ -1,0 +1,58 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "settings": {
+    "import/resolver": [
+      "reactnative",
+      {
+        "node": {
+          "extensions": [".js", ".jsx"]
+        }
+      }
+    ]
+  },
+  "plugins": ["react", "react-native"],
+  "extends": [
+    "airbnb",
+    "plugin:react/recommended",
+    "plugin:react-native/all",
+    "plugin:import/react"
+  ],
+  "rules": {
+    "no-mixed-operators": "off",
+    "no-const-assign": "warn",
+    "no-this-before-super": "warn",
+    "no-undef": "warn",
+    "no-unreachable": "warn",
+    "no-unused-vars": "warn",
+    "no-unused-expressions": [
+      "error",
+      { "allowShortCircuit": true, "allowTernary": true }
+    ],
+    "constructor-super": "warn",
+    "valid-typeof": "warn",
+    "react-native/split-platform-components": 2,
+    "react-native/no-unused-styles": 2,
+    "react-native/no-inline-styles": 2,
+    "react-native/no-color-literals": 2,
+    "import/no-extraneous-dependencies": ["error", { "packageDir": "./" }],
+    "react/jsx-filename-extension": [
+      "error",
+      { "extensions": [".js", ".jsx"] }
+    ],
+    "react/forbid-prop-types": "off",
+    "react/prop-types": "off"
+  }
+}

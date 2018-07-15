@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import { Constants, Location, Permissions, MapView } from 'expo';
-import * as MathUtils from '../utils/MathUtils';
+import { Location, Permissions, MapView } from 'expo';
 import * as EarthUtils from '../utils/EarthUtils';
 import * as Earth from '../constants/Earth';
-import { RangeObservable } from '../node_modules/rxjs/observable/RangeObservable';
 
 const styles = {
   container: {
@@ -17,7 +15,6 @@ class Map extends Component {
     super();
     this.state = {
       location: null,
-      roundedLocation: null,
       visitedLocations: [],
     };
   }
@@ -25,7 +22,7 @@ class Map extends Component {
   componentDidMount() {
     fetch('https://api.0llum.de/coordinates')
       .then(response => response.json())
-      .then(responseJson => {
+      .then((responseJson) => {
         this.watchPositionAsync();
         this.setState({
           visitedLocations: responseJson,
@@ -34,10 +31,10 @@ class Map extends Component {
   }
 
   watchPositionAsync = async () => {
-    const { status } = await Permissions.askAsync(Permissions.LOCATION);
-    const location = await Location.watchPositionAsync(
+    await Permissions.askAsync(Permissions.LOCATION);
+    await Location.watchPositionAsync(
       { enableHighAccuracy: true, timeInterval: 100, distanceInterval: 1 },
-      result => {
+      (result) => {
         if (result.coords.accuracy < 25) {
           const location = {
             latitude: result.coords.latitude,
@@ -49,11 +46,9 @@ class Map extends Component {
             latitude: roundedLatitude,
             longitude: EarthUtils.getRoundedLongitude(location.longitude, roundedLatitude),
           };
-          const visitedLocations = this.state.visitedLocations;
-          const isInArray = visitedLocations.some(
-            x =>
-              x.latitude === roundedLocation.latitude && x.longitude === roundedLocation.longitude,
-          );
+          const { visitedLocations } = this.state;
+          const isInArray = visitedLocations.some(x =>
+            x.latitude === roundedLocation.latitude && x.longitude === roundedLocation.longitude);
           if (!isInArray) {
             visitedLocations.push(roundedLocation);
             fetch('https://api.0llum.de/coordinates', {
@@ -70,7 +65,6 @@ class Map extends Component {
           }
           this.setState({
             location,
-            roundedLocation,
             visitedLocations,
           });
         }
@@ -79,30 +73,26 @@ class Map extends Component {
   };
 
   render() {
-    const { location, roundedLocation, visitedLocations } = this.state;
+    const { location, visitedLocations } = this.state;
     const holes = [];
 
-    for (let i = 0; i < visitedLocations.length; i++) {
-      holes.push(
-        EarthUtils.getSquareCoordinates(
-          visitedLocations[i].latitude,
-          visitedLocations[i].longitude,
-        ),
-      );
-    }
+    visitedLocations.forEach((x) => {
+      holes.push(EarthUtils.getSquareCoordinates(x.latitude, x.longitude));
+    });
 
     return (
       <View style={styles.container}>
         <MapView
-          ref={ref => {
+          ref={(ref) => {
             this.map = ref;
           }}
           style={styles.container}
-          mapType="satellite"
+          provider="google"
+          mapType="hybrid"
           rotateEnabled={false}
           pitchEnabled={false}
-          showsUserLocation={true}
-          followsUserLocation={true}
+          showsUserLocation
+          followsUserLocation
           maxZoomLevel={18}
         >
           <MapView.Polygon fillColor="rgba(0, 0, 0, 1)" coordinates={Earth.FOG} holes={holes} />
