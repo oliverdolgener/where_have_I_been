@@ -6,6 +6,14 @@ export function toDegrees(radians) {
   return (radians * 180) / Math.PI;
 }
 
+export function toKmh(ms) {
+  return ms * 3.6;
+}
+
+export function toMs(kmh) {
+  return kmh / 3.6;
+}
+
 export function roundToMultiples(value, multiples) {
   return Math.round(value / multiples) * multiples;
 }
