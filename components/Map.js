@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { Location, Permissions, MapView } from 'expo';
+import InfoText from '../components/InfoText';
 import * as SortUtils from '../utils/SortUtils';
 import * as MathUtils from '../utils/MathUtils';
 import * as EarthUtils from '../utils/EarthUtils';
@@ -10,27 +11,15 @@ const styles = {
   container: {
     flex: 1,
   },
-  locationCounter: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    padding: 5,
-    borderRadius: 5,
-    backgroundColor: 'white',
-  },
-  speedCounter: {
-    width: 50,
-    height: 50,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+  tileInfo: {
     position: 'absolute',
     top: 40,
     right: 20,
-    borderRadius: 100,
-    borderColor: 'red',
-    borderWidth: 5,
-    backgroundColor: 'white',
+  },
+  speedInfo: {
+    position: 'absolute',
+    top: 80,
+    right: 20,
   },
 };
 
@@ -41,6 +30,8 @@ class Map extends Component {
     this.state = {
       visitedLocations: [],
       speed: 0,
+      followLocation: true,
+      rotateDirection: true,
     };
   }
 
@@ -58,6 +49,7 @@ class Map extends Component {
   }
 
   watchPositionAsync = async () => {
+    const { followLocation, rotateDirection } = this.state;
     await Permissions.askAsync(Permissions.LOCATION);
     await Location.watchPositionAsync(
       { enableHighAccuracy: true, timeInterval: 100, distanceInterval: 1 },
@@ -66,7 +58,8 @@ class Map extends Component {
           latitude: result.coords.latitude,
           longitude: result.coords.longitude,
         };
-        this.map.animateToCoordinate(currentLocation, 1000);
+        followLocation && this.map.animateToCoordinate(currentLocation, 500);
+        rotateDirection && this.map.animateToBearing(result.coords.heading, 500);
         this.setState({
           speed: Math.round(MathUtils.toKmh(result.coords.speed)),
         });
@@ -121,24 +114,25 @@ class Map extends Component {
           mapPadding={{ top: 20 }}
           provider="google"
           mapType="satellite"
-          rotateEnabled={false}
+          rotateEnabled
           pitchEnabled={false}
+          showsIndoors={false}
+          zoomControlEnabled={false}
+          loadingBackgroundColor="#000000"
           showsUserLocation
           followsUserLocation
           maxZoomLevel={18}
           initialRegion={{
-            latitude: 0,
-            longitude: 0,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
+            latitude: 52.5575,
+            longitude: 13.206354,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
           }}
         >
           <MapView.Polygon fillColor="rgba(0, 0, 0, 1)" coordinates={Earth.FOG} holes={holes} />
         </MapView>
-        <View style={styles.speedCounter}>
-          <Text>{speed}</Text>
-        </View>
-        <Text style={styles.locationCounter}>{visitedLocations.length}</Text>
+        <InfoText style={styles.speedInfo} label={speed} />
+        <InfoText style={styles.tileInfo} label={visitedLocations.length} />
       </View>
     );
   }
