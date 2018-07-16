@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { Location, Permissions, MapView } from 'expo';
+import * as SortUtils from '../utils/SortUtils';
 import * as MathUtils from '../utils/MathUtils';
 import * as EarthUtils from '../utils/EarthUtils';
 import * as Earth from '../constants/Earth';
@@ -47,8 +48,10 @@ class Map extends Component {
       .then(response => response.json())
       .then((responseJson) => {
         this.watchPositionAsync();
+        const visitedLocations = responseJson;
+        visitedLocations.sort(SortUtils.byLatitudeDesc);
         this.setState({
-          visitedLocations: responseJson,
+          visitedLocations,
         });
       });
   }
@@ -83,6 +86,7 @@ class Map extends Component {
     const isInArray = visitedLocations.some(x => x.latitude === location.latitude && x.longitude === location.longitude);
     if (!isInArray) {
       visitedLocations.push(location);
+      visitedLocations.sort(SortUtils.byLatitudeDesc);
       fetch('https://api.0llum.de/coordinates', {
         method: 'POST',
         headers: {
@@ -104,9 +108,38 @@ class Map extends Component {
     const { visitedLocations, speed } = this.state;
     const holes = [];
 
-    visitedLocations.forEach((x) => {
-      holes.push(EarthUtils.getSquareCoordinates(x.latitude, x.longitude));
-    });
+    // visitedLocations.forEach((x) => {
+    //   holes.push(EarthUtils.getSquareCoordinates(x));
+    // });
+
+    let first = visitedLocations[0];
+    let last = visitedLocations[0];
+
+    for (let i = 0; i < visitedLocations.length; i++) {
+      const current = visitedLocations[i];
+      const next = visitedLocations[i + 1];
+
+      if (!current || !next) {
+        break;
+      }
+
+      if (current.latitude === next.latitude) {
+        if ((next.longitude - current.longitude) < EarthUtils.gridDistanceAtLatitude(current.latitude) + 0.0001) {
+          last = next;
+        } else {
+          holes.push(EarthUtils.getRectangleCoordinates(first, last));
+          first = next;
+          last = next;
+        }
+      } else {
+        holes.push(EarthUtils.getRectangleCoordinates(first, last));
+        first = next;
+        last = next;
+      }
+    }
+
+    console.log(holes.length);
+
 
     return (
       <View style={styles.container}>
@@ -117,12 +150,18 @@ class Map extends Component {
           style={styles.container}
           mapPadding={{ top: 20 }}
           provider="google"
-          mapType="hybrid"
+          mapType="satellite"
           rotateEnabled={false}
           pitchEnabled={false}
           showsUserLocation
           followsUserLocation
           maxZoomLevel={18}
+          initialRegion={{
+            latitude: 0,
+            longitude: 0,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+          }}
         >
           <MapView.Polygon fillColor="rgba(0, 0, 0, 1)" coordinates={Earth.FOG} holes={holes} />
         </MapView>

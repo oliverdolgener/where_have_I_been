@@ -27,7 +27,8 @@ export function getRoundedLongitude(longitude, latitude) {
   );
 }
 
-export function getSquareCoordinates(latitude, longitude) {
+export function getSquareCoordinates(location) {
+  const { latitude, longitude } = location;
   return [
     {
       latitude: latitude - Earth.GRID_DISTANCE / 2.01,
@@ -44,6 +45,27 @@ export function getSquareCoordinates(latitude, longitude) {
     {
       latitude: latitude + Earth.GRID_DISTANCE / 2.01,
       longitude: longitude + gridDistanceAtLatitude(latitude) / 2.01,
+    },
+  ];
+}
+
+export function getRectangleCoordinates(topLeft, botRight) {
+  return [
+    {
+      latitude: botRight.latitude - Earth.GRID_DISTANCE / 2.01,
+      longitude: botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / 2.01,
+    },
+    {
+      latitude: botRight.latitude - Earth.GRID_DISTANCE / 2.01,
+      longitude: topLeft.longitude - gridDistanceAtLatitude(topLeft.latitude) / 2.01,
+    },
+    {
+      latitude: topLeft.latitude + Earth.GRID_DISTANCE / 2.01,
+      longitude: topLeft.longitude - gridDistanceAtLatitude(topLeft.latitude) / 2.01,
+    },
+    {
+      latitude: topLeft.latitude + Earth.GRID_DISTANCE / 2.01,
+      longitude: botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / 2.01,
     },
   ];
 }
