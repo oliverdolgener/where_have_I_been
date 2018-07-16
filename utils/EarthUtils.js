@@ -69,3 +69,34 @@ export function getRectangleCoordinates(topLeft, botRight) {
     },
   ];
 }
+
+export function convertSquaresToSlices(squares) {
+  const slices = [];
+  let first = squares[0];
+  let last = squares[0];
+
+  for (let i = 0; i < squares.length; i++) {
+    const current = squares[i];
+    const next = squares[i + 1];
+
+    if (!current || !next) {
+      break;
+    }
+
+    if (current.latitude === next.latitude) {
+      if (next.longitude - current.longitude < gridDistanceAtLatitude(current.latitude) + 0.0001) {
+        last = next;
+      } else {
+        slices.push(getRectangleCoordinates(first, last));
+        first = next;
+        last = next;
+      }
+    } else {
+      slices.push(getRectangleCoordinates(first, last));
+      first = next;
+      last = next;
+    }
+  }
+
+  return slices;
+}

@@ -37,6 +37,7 @@ const styles = {
 class Map extends Component {
   constructor() {
     super();
+    this.locationsToSave = [];
     this.state = {
       visitedLocations: [],
       speed: 0,
@@ -85,6 +86,7 @@ class Map extends Component {
     const { visitedLocations } = this.state;
     const isInArray = visitedLocations.some(x => x.latitude === location.latitude && x.longitude === location.longitude);
     if (!isInArray) {
+      this.locationsToSave.push(location);
       visitedLocations.push(location);
       visitedLocations.sort(SortUtils.byLatitudeDesc);
       fetch('https://api.0llum.de/coordinates', {
@@ -93,10 +95,11 @@ class Map extends Component {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          latitude: location.latitude,
-          longitude: location.longitude,
-        }),
+        body: JSON.stringify(this.locationsToSave),
+      }).then((response) => {
+        if (response.status === 201) {
+          this.locationsToSave = [];
+        }
       });
     }
     this.setState({
@@ -106,37 +109,7 @@ class Map extends Component {
 
   render() {
     const { visitedLocations, speed } = this.state;
-    const holes = [];
-
-    // visitedLocations.forEach((x) => {
-    //   holes.push(EarthUtils.getSquareCoordinates(x));
-    // });
-
-    let first = visitedLocations[0];
-    let last = visitedLocations[0];
-
-    for (let i = 0; i < visitedLocations.length; i++) {
-      const current = visitedLocations[i];
-      const next = visitedLocations[i + 1];
-
-      if (!current || !next) {
-        break;
-      }
-
-      if (current.latitude === next.latitude) {
-        if ((next.longitude - current.longitude) < EarthUtils.gridDistanceAtLatitude(current.latitude) + 0.0001) {
-          last = next;
-        } else {
-          holes.push(EarthUtils.getRectangleCoordinates(first, last));
-          first = next;
-          last = next;
-        }
-      } else {
-        holes.push(EarthUtils.getRectangleCoordinates(first, last));
-        first = next;
-        last = next;
-      }
-    }
+    const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
 
     return (
       <View style={styles.container}>
