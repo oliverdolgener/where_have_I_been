@@ -138,9 +138,6 @@ class Map extends Component {
       }
     }
 
-    console.log(holes.length);
-
-
     return (
       <View style={styles.container}>
         <MapView
