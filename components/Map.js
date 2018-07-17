@@ -99,7 +99,22 @@ class Map extends Component {
 
   render() {
     const { visitedLocations, speed } = this.state;
-    const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
+    // const slices = EarthUtils.convertSquaresToSlices(visitedLocations);
+    const squares = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
+
+    // const vertices = [];
+    // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
+
+    // const edges = [];
+    // visitedLocations.forEach(x => edges.push(...EarthUtils.getSquareEdges(x)));
+
+    // const intersects = [];
+
+    // edges.forEach((edge) => {
+    //   intersects.push(vertices.filter(vertex => EarthUtils.isPointOnEdge(vertex, edge)));
+    // });
+
+    // console.log(intersects);
 
     return (
       <View style={styles.container}>
@@ -120,13 +135,18 @@ class Map extends Component {
           followsUserLocation
           maxZoomLevel={18}
           initialRegion={{
-            latitude: 52.5575,
-            longitude: 13.206354,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
+            latitude: 52.60325,
+            longitude: 13.199898,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
           }}
         >
-          <MapView.Polygon fillColor="rgba(0, 0, 0, 1)" coordinates={Earth.FOG} holes={holes} />
+          <MapView.Polygon
+            fillColor="rgba(0, 0, 0, 1)"
+            strokeColor="rgba(0, 0, 0, 0)"
+            coordinates={Earth.FOG}
+            holes={squares}
+          />
         </MapView>
         <InfoText style={styles.speedInfo} label={speed} />
         <InfoText style={styles.tileInfo} label={visitedLocations.length} />

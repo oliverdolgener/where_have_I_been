@@ -31,41 +31,51 @@ export function getSquareCoordinates(location) {
   const { latitude, longitude } = location;
   return [
     {
-      latitude: latitude - Earth.GRID_DISTANCE / 2.01,
-      longitude: longitude + gridDistanceAtLatitude(latitude) / 2.01,
+      latitude: MathUtils.roundToDecimals(latitude + Earth.GRID_DISTANCE / 2.01, 6),
+      longitude: MathUtils.roundToDecimals(longitude - gridDistanceAtLatitude(latitude) / 2.01, 6),
     },
     {
-      latitude: latitude - Earth.GRID_DISTANCE / 2.01,
-      longitude: longitude - gridDistanceAtLatitude(latitude) / 2.01,
+      latitude: MathUtils.roundToDecimals(latitude + Earth.GRID_DISTANCE / 2.01, 6),
+      longitude: MathUtils.roundToDecimals(longitude + gridDistanceAtLatitude(latitude) / 2.01, 6),
     },
     {
-      latitude: latitude + Earth.GRID_DISTANCE / 2.01,
-      longitude: longitude - gridDistanceAtLatitude(latitude) / 2.01,
+      latitude: MathUtils.roundToDecimals(latitude - Earth.GRID_DISTANCE / 2.01, 6),
+      longitude: MathUtils.roundToDecimals(longitude + gridDistanceAtLatitude(latitude) / 2.01, 6),
     },
     {
-      latitude: latitude + Earth.GRID_DISTANCE / 2.01,
-      longitude: longitude + gridDistanceAtLatitude(latitude) / 2.01,
+      latitude: MathUtils.roundToDecimals(latitude - Earth.GRID_DISTANCE / 2.01, 6),
+      longitude: MathUtils.roundToDecimals(longitude - gridDistanceAtLatitude(latitude) / 2.01, 6),
     },
+  ];
+}
+
+export function getSquareEdges(location) {
+  const coordinates = getSquareCoordinates(location);
+  return [
+    [coordinates[0], coordinates[1]],
+    [coordinates[1], coordinates[2]],
+    [coordinates[3], coordinates[2]],
+    [coordinates[0], coordinates[3]],
   ];
 }
 
 export function getRectangleCoordinates(topLeft, botRight) {
   return [
     {
-      latitude: botRight.latitude - Earth.GRID_DISTANCE / 2.01,
-      longitude: botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / 2.01,
+      latitude: MathUtils.roundToDecimals(topLeft.latitude + Earth.GRID_DISTANCE / 2.01, 6),
+      longitude: MathUtils.roundToDecimals(topLeft.longitude - gridDistanceAtLatitude(topLeft.latitude) / 2.01, 6),
     },
     {
-      latitude: botRight.latitude - Earth.GRID_DISTANCE / 2.01,
-      longitude: topLeft.longitude - gridDistanceAtLatitude(topLeft.latitude) / 2.01,
+      latitude: MathUtils.roundToDecimals(topLeft.latitude + Earth.GRID_DISTANCE / 2.01, 6),
+      longitude: MathUtils.roundToDecimals(botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / 2.01, 6),
     },
     {
-      latitude: topLeft.latitude + Earth.GRID_DISTANCE / 2.01,
-      longitude: topLeft.longitude - gridDistanceAtLatitude(topLeft.latitude) / 2.01,
+      latitude: MathUtils.roundToDecimals(botRight.latitude - Earth.GRID_DISTANCE / 2.01, 6),
+      longitude: MathUtils.roundToDecimals(botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / 2.01, 6),
     },
     {
-      latitude: topLeft.latitude + Earth.GRID_DISTANCE / 2.01,
-      longitude: botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / 2.01,
+      latitude: MathUtils.roundToDecimals(botRight.latitude - Earth.GRID_DISTANCE / 2.01, 6),
+      longitude: MathUtils.roundToDecimals(topLeft.longitude - gridDistanceAtLatitude(topLeft.latitude) / 2.01, 6),
     },
   ];
 }
@@ -99,4 +109,44 @@ export function convertSquaresToSlices(squares) {
   }
 
   return slices;
+}
+
+export function convertSlicesToPolygons(slices) {
+  const polygons = slices;
+  return polygons;
+}
+
+export const EdgeType = {
+  HORIZONTAL: 0,
+  VERTICAL: 1,
+  DIAGONAL: 2,
+};
+
+export function getEdgeDirection(edge) {
+  const start = edge[0];
+  const end = edge[1];
+
+  if (start.latitude === end.latitude) {
+    return EdgeType.HORIZONTAL;
+  }
+
+  if (start.longitude === end.longitude) {
+    return EdgeType.VERTICAL;
+  }
+
+  return EdgeType.DIAGONAL;
+}
+
+export function isPointOnEdge(point, edge) {
+  const start = edge[0];
+  const end = edge[1];
+
+  switch (getEdgeDirection(edge)) {
+    case EdgeType.HORIZONTAL:
+      return (point.latitude === start.latitude) && (point.longitude >= start.longitude) && (point.longitude <= end.longitude);
+    case EdgeType.VERTICAL:
+      return (point.longitude === start.longitude) && (point.latitude <= start.latitude && point.latitude >= end.latitude);
+    default:
+      return false;
+  }
 }
