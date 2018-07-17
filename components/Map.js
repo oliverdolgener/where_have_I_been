@@ -46,7 +46,7 @@ class Map extends Component {
         longitude: 13.206354,
       },
       visitedLocations: [],
-      squares: [],
+      holes: [],
       followLocation: true,
       speed: 0,
     };
@@ -67,10 +67,11 @@ class Map extends Component {
       .then((responseJson) => {
         const visitedLocations = responseJson;
         visitedLocations.sort(SortUtils.byLatitudeDesc);
-        const squares = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
+        const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
+        // const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
         this.setState({
           visitedLocations,
-          squares,
+          holes,
         });
       });
   }
@@ -106,10 +107,11 @@ class Map extends Component {
     const { visitedLocations } = this.state;
     const isInArray = visitedLocations.some(x => x.latitude === location.latitude && x.longitude === location.longitude);
     if (!isInArray) {
-      const squares = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
+      const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
+      // const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
       this.setState({
         visitedLocations,
-        squares,
+        holes,
       });
 
       this.locationsToSave.push(location);
@@ -141,11 +143,10 @@ class Map extends Component {
       dimensions,
       currentLocation,
       visitedLocations,
-      squares,
+      holes,
       followLocation,
       speed,
     } = this.state;
-    // const slices = EarthUtils.convertSquaresToSlices(visitedLocations);
 
     // const vertices = [];
     // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
@@ -194,7 +195,7 @@ class Map extends Component {
             fillColor="rgba(0, 0, 0, 1)"
             strokeColor="rgba(0, 0, 0, 0)"
             coordinates={Earth.FOG}
-            holes={squares}
+            holes={holes}
           />
         </MapView>
         <InfoText style={styles.speedInfo} label={speed} icon={iconSpeed} />
