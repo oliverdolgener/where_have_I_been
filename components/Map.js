@@ -30,8 +30,6 @@ class Map extends Component {
     this.state = {
       visitedLocations: [],
       speed: 0,
-      followLocation: true,
-      rotateDirection: true,
     };
   }
 
@@ -49,7 +47,6 @@ class Map extends Component {
   }
 
   watchPositionAsync = async () => {
-    const { followLocation, rotateDirection } = this.state;
     await Permissions.askAsync(Permissions.LOCATION);
     await Location.watchPositionAsync(
       { enableHighAccuracy: true, timeInterval: 100, distanceInterval: 1 },
@@ -58,8 +55,8 @@ class Map extends Component {
           latitude: result.coords.latitude,
           longitude: result.coords.longitude,
         };
-        followLocation && this.map.animateToCoordinate(currentLocation, 500);
-        rotateDirection && this.map.animateToBearing(result.coords.heading, 500);
+        this.map.animateToCoordinate(currentLocation, 500);
+        // this.map.animateToNavigation(currentLocation, result.coords.heading, 0, 500);
         this.setState({
           speed: Math.round(MathUtils.toKmh(result.coords.speed)),
         });
