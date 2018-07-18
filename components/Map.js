@@ -92,7 +92,6 @@ class Map extends Component {
           latitude: result.coords.latitude,
           longitude: result.coords.longitude,
         };
-        console.log(result.coords.altitude);
         this.setState({
           currentLocation,
           speed: Math.round(MathUtils.toKmh(result.coords.speed)),

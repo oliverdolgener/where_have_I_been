@@ -4,7 +4,7 @@
   "private": true,
   "devDependencies": {
     "react-native-scripts": "1.14.0",
-    "jest-expo": "~27.0.0",
+    "jest-expo": "^28.0.0",
     "react-test-renderer": "16.3.1",
     "babel-eslint": "^8.2.3",
     "babel-preset-airbnb": "^2.4.0",
@@ -30,8 +30,8 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "expo": "^27.0.1",
+    "expo": "^28.0.0",
     "react": "16.3.1",
-    "react-native": "~0.55.2"
+    "react-native": "https://github.com/expo/react-native/archive/sdk-28.0.0.tar.gz"
   }
 }
