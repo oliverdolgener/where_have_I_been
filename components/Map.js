@@ -70,7 +70,6 @@ class Map extends Component {
         longitude: 13.206354,
       },
       visitedLocations: [],
-      holes: [],
       followLocation: true,
       speed: 0,
       altitude: 0,
@@ -95,11 +94,8 @@ class Map extends Component {
       .then((responseJson) => {
         const visitedLocations = responseJson;
         visitedLocations.sort(SortUtils.byLatitudeDesc);
-        const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
-        // const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
         this.setState({
           visitedLocations,
-          holes,
         });
       });
   }
@@ -148,11 +144,8 @@ class Map extends Component {
     const { visitedLocations } = this.state;
     const isInArray = visitedLocations.some(x => x.latitude === location.latitude && x.longitude === location.longitude);
     if (!isInArray) {
-      const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
-      // const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
       this.setState({
         visitedLocations,
-        holes,
       });
 
       this.locationsToSave.push(location);
@@ -184,7 +177,6 @@ class Map extends Component {
       dimensions,
       currentLocation,
       visitedLocations,
-      holes,
       followLocation,
       speed,
       altitude,
@@ -192,6 +184,9 @@ class Map extends Component {
       region,
       street,
     } = this.state;
+
+    // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
+    const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
 
     // const vertices = [];
     // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
