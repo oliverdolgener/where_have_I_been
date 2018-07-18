@@ -9,6 +9,7 @@ import * as Earth from '../constants/Earth';
 import iconLocation from '../assets/iconLocation.png';
 import iconSquare from '../assets/iconSquare.png';
 import iconSpeed from '../assets/iconSpeed.png';
+import iconAltitude from '../assets/iconAltitude.png';
 
 const styles = {
   container: {
@@ -33,6 +34,11 @@ const styles = {
     top: 80,
     right: 20,
   },
+  altitudeInfo: {
+    position: 'absolute',
+    top: 120,
+    right: 20,
+  },
 };
 
 class Map extends Component {
@@ -49,6 +55,7 @@ class Map extends Component {
       holes: [],
       followLocation: true,
       speed: 0,
+      altitude: 0,
     };
   }
 
@@ -85,9 +92,11 @@ class Map extends Component {
           latitude: result.coords.latitude,
           longitude: result.coords.longitude,
         };
+        console.log(result.coords.altitude);
         this.setState({
           currentLocation,
           speed: Math.round(MathUtils.toKmh(result.coords.speed)),
+          altitude: Math.round(result.coords.altitude),
         });
         this.moveToLocation();
 
@@ -146,6 +155,7 @@ class Map extends Component {
       holes,
       followLocation,
       speed,
+      altitude,
     } = this.state;
 
     // const vertices = [];
@@ -198,8 +208,9 @@ class Map extends Component {
             holes={holes}
           />
         </MapView>
-        <InfoText style={styles.speedInfo} label={speed} icon={iconSpeed} />
         <InfoText style={styles.tileInfo} label={visitedLocations.length} icon={iconSquare} />
+        <InfoText style={styles.speedInfo} label={speed} icon={iconSpeed} />
+        <InfoText style={styles.altitudeInfo} label={altitude} icon={iconAltitude} />
         {!followLocation && (
           <TouchableOpacity
             style={[styles.locationButton, { left: dimensions.width / 2 - 25 }]}
