@@ -3,7 +3,7 @@ import { View, Image, Text } from 'react-native';
 
 const styles = {
   container: {
-    width: 80,
+    width: 70,
     height: 30,
     display: 'flex',
     flexDirection: 'row',

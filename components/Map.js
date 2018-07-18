@@ -40,16 +40,19 @@ const styles = {
     right: 20,
   },
   countryInfo: {
+    width: 140,
     position: 'absolute',
     top: 40,
     left: 20,
   },
   regionInfo: {
+    width: 140,
     position: 'absolute',
     top: 80,
     left: 20,
   },
   streetInfo: {
+    width: 140,
     position: 'absolute',
     top: 120,
     left: 20,
@@ -240,9 +243,9 @@ class Map extends Component {
             holes={holes}
           />
         </MapView>
-        <InfoText style={styles.countryInfo} label={country} />
-        <InfoText style={styles.regionInfo} label={region} />
-        <InfoText style={styles.streetInfo} label={street} />
+        <InfoText style={styles.countryInfo} label={country} width={100} />
+        <InfoText style={styles.regionInfo} label={region} width={100} />
+        <InfoText style={styles.streetInfo} label={street} width={100} />
         <InfoText
           style={styles.tileInfo}
           label={visitedLocations.length}
