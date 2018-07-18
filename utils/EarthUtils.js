@@ -1,5 +1,6 @@
 import * as Earth from '../constants/Earth';
 import * as MathUtils from '../utils/MathUtils';
+import * as SortUtils from '../utils/SortUtils';
 
 export function circumferenceAtLatitude(latitude) {
   return 2 * Math.PI * Earth.EARTH_RADIUS * Math.cos(MathUtils.toRadians(latitude));
@@ -63,25 +64,38 @@ export function getRectangleCoordinates(topLeft, botRight) {
   return [
     {
       latitude: MathUtils.roundToDecimals(topLeft.latitude + Earth.GRID_DISTANCE / 2.01, 6),
-      longitude: MathUtils.roundToDecimals(topLeft.longitude - gridDistanceAtLatitude(topLeft.latitude) / 2.01, 6),
+      longitude: MathUtils.roundToDecimals(
+        topLeft.longitude - gridDistanceAtLatitude(topLeft.latitude) / 2.01,
+        6,
+      ),
     },
     {
       latitude: MathUtils.roundToDecimals(topLeft.latitude + Earth.GRID_DISTANCE / 2.01, 6),
-      longitude: MathUtils.roundToDecimals(botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / 2.01, 6),
+      longitude: MathUtils.roundToDecimals(
+        botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / 2.01,
+        6,
+      ),
     },
     {
       latitude: MathUtils.roundToDecimals(botRight.latitude - Earth.GRID_DISTANCE / 2.01, 6),
-      longitude: MathUtils.roundToDecimals(botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / 2.01, 6),
+      longitude: MathUtils.roundToDecimals(
+        botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / 2.01,
+        6,
+      ),
     },
     {
       latitude: MathUtils.roundToDecimals(botRight.latitude - Earth.GRID_DISTANCE / 2.01, 6),
-      longitude: MathUtils.roundToDecimals(topLeft.longitude - gridDistanceAtLatitude(topLeft.latitude) / 2.01, 6),
+      longitude: MathUtils.roundToDecimals(
+        topLeft.longitude - gridDistanceAtLatitude(topLeft.latitude) / 2.01,
+        6,
+      ),
     },
   ];
 }
 
 export function convertSquaresToSlices(squares) {
   const slices = [];
+  squares.sort(SortUtils.byLatitudeDesc);
   let first = squares[0];
   let last = squares[0];
 
@@ -143,9 +157,16 @@ export function isPointOnEdge(point, edge) {
 
   switch (getEdgeDirection(edge)) {
     case EdgeType.HORIZONTAL:
-      return (point.latitude === start.latitude) && (point.longitude >= start.longitude) && (point.longitude <= end.longitude);
+      return (
+        point.latitude === start.latitude &&
+        point.longitude >= start.longitude &&
+        point.longitude <= end.longitude
+      );
     case EdgeType.VERTICAL:
-      return (point.longitude === start.longitude) && (point.latitude <= start.latitude && point.latitude >= end.latitude);
+      return (
+        point.longitude === start.longitude &&
+        (point.latitude <= start.latitude && point.latitude >= end.latitude)
+      );
     default:
       return false;
   }

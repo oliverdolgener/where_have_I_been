@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Dimensions, View, Image, TouchableOpacity } from 'react-native';
 import { Location, Permissions, MapView } from 'expo';
 import InfoText from '../components/InfoText';
-import * as SortUtils from '../utils/SortUtils';
 import * as MathUtils from '../utils/MathUtils';
 import * as EarthUtils from '../utils/EarthUtils';
 import * as Earth from '../constants/Earth';
@@ -70,6 +69,7 @@ class Map extends Component {
         longitude: 13.206354,
       },
       visitedLocations: [],
+      holes: [],
       followLocation: true,
       speed: 0,
       altitude: 0,
@@ -93,9 +93,11 @@ class Map extends Component {
       .then(response => response.json())
       .then((responseJson) => {
         const visitedLocations = responseJson;
-        visitedLocations.sort(SortUtils.byLatitudeDesc);
+        // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
+        const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
         this.setState({
           visitedLocations,
+          holes,
         });
       });
   }
@@ -115,6 +117,7 @@ class Map extends Component {
     await Location.watchPositionAsync(
       { enableHighAccuracy: true, timeInterval: 100, distanceInterval: 1 },
       (result) => {
+        const { followLocation } = this.state;
         const currentLocation = {
           latitude: result.coords.latitude,
           longitude: result.coords.longitude,
@@ -124,7 +127,7 @@ class Map extends Component {
           speed: Math.round(MathUtils.toKmh(result.coords.speed)),
           altitude: Math.round(result.coords.altitude),
         });
-        this.moveToLocation();
+        followLocation && this.moveToLocation(currentLocation);
 
         if (result.coords.accuracy < 32) {
           const roundedLatitude = EarthUtils.getRoundedLatitude(currentLocation.latitude);
@@ -142,15 +145,16 @@ class Map extends Component {
 
   addLocation(location) {
     const { visitedLocations } = this.state;
-    const isInArray = visitedLocations.some(x => x.latitude === location.latitude && x.longitude === location.longitude);
-    if (!isInArray) {
-      this.setState({
-        visitedLocations,
-      });
-
+    if (!MathUtils.containsLocation(location, visitedLocations)) {
       this.locationsToSave.push(location);
       visitedLocations.push(location);
-      visitedLocations.sort(SortUtils.byLatitudeDesc);
+      // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
+      const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
+      this.setState({
+        visitedLocations,
+        holes,
+      });
+
       fetch('https://api.0llum.de/coordinates', {
         method: 'POST',
         headers: {
@@ -166,9 +170,8 @@ class Map extends Component {
     }
   }
 
-  moveToLocation() {
-    const { currentLocation, followLocation } = this.state;
-    followLocation && this.map.animateToCoordinate(currentLocation, 500);
+  moveToLocation(location) {
+    this.map.animateToCoordinate(location, 500);
     // this.map.animateToNavigation(currentLocation, result.coords.heading, 0, 500);
   }
 
@@ -177,6 +180,7 @@ class Map extends Component {
       dimensions,
       currentLocation,
       visitedLocations,
+      holes,
       followLocation,
       speed,
       altitude,
@@ -184,9 +188,6 @@ class Map extends Component {
       region,
       street,
     } = this.state;
-
-    // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
-    const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
 
     // const vertices = [];
     // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
@@ -215,7 +216,6 @@ class Map extends Component {
           showsIndoors={false}
           zoomControlEnabled={false}
           showsMyLocationButton={false}
-          loadingBackgroundColor="#000000"
           showsUserLocation
           followsUserLocation
           maxZoomLevel={18}
@@ -253,7 +253,7 @@ class Map extends Component {
           <TouchableOpacity
             style={[styles.locationButton, { left: dimensions.width / 2 - 25 }]}
             onPress={() => {
-              this.map.animateToCoordinate(currentLocation, 500);
+              this.moveToLocation(currentLocation);
               this.setState({
                 followLocation: true,
               });
