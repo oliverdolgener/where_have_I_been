@@ -3,7 +3,8 @@ import { View, Image, Text } from 'react-native';
 
 const styles = {
   container: {
-    width: 70,
+    width: 80,
+    height: 30,
     display: 'flex',
     flexDirection: 'row',
     padding: 5,
@@ -17,16 +18,20 @@ const styles = {
   },
   label: {
     flex: 1,
-    textAlign: 'right',
   },
 };
 
 const InfoText = (props) => {
-  const { label, icon, style } = props;
+  const {
+    label, icon, style, alignRight,
+  } = props;
+
+  const labelAlign = alignRight ? { textAlign: 'right' } : { textAlign: 'left' };
+
   return (
     <View style={{ ...styles.container, ...style }}>
-      <Image style={styles.icon} source={icon} />
-      <Text style={styles.label}>{label}</Text>
+      {icon && <Image style={styles.icon} source={icon} />}
+      <Text style={{ ...styles.label, ...labelAlign }}>{label}</Text>
     </View>
   );
 };

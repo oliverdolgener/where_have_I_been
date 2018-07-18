@@ -39,6 +39,21 @@ const styles = {
     top: 120,
     right: 20,
   },
+  countryInfo: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+  },
+  regionInfo: {
+    position: 'absolute',
+    top: 80,
+    left: 20,
+  },
+  streetInfo: {
+    position: 'absolute',
+    top: 120,
+    left: 20,
+  },
 };
 
 class Map extends Component {
@@ -56,6 +71,9 @@ class Map extends Component {
       followLocation: true,
       speed: 0,
       altitude: 0,
+      country: '',
+      region: '',
+      street: '',
     };
   }
 
@@ -83,6 +101,16 @@ class Map extends Component {
       });
   }
 
+  getGeolocationAsync = async (location) => {
+    await Permissions.askAsync(Permissions.LOCATION);
+    const geocode = await Location.reverseGeocodeAsync(location);
+    this.setState({
+      country: geocode[0].country,
+      region: geocode[0].region,
+      street: geocode[0].street,
+    });
+  };
+
   watchPositionAsync = async () => {
     await Permissions.askAsync(Permissions.LOCATION);
     await Location.watchPositionAsync(
@@ -107,6 +135,8 @@ class Map extends Component {
           };
           this.addLocation(roundedLocation);
         }
+
+        this.getGeolocationAsync(currentLocation);
       },
     );
   };
@@ -155,6 +185,9 @@ class Map extends Component {
       followLocation,
       speed,
       altitude,
+      country,
+      region,
+      street,
     } = this.state;
 
     // const vertices = [];
@@ -207,9 +240,17 @@ class Map extends Component {
             holes={holes}
           />
         </MapView>
-        <InfoText style={styles.tileInfo} label={visitedLocations.length} icon={iconSquare} />
-        <InfoText style={styles.speedInfo} label={speed} icon={iconSpeed} />
-        <InfoText style={styles.altitudeInfo} label={altitude} icon={iconAltitude} />
+        <InfoText style={styles.countryInfo} label={country} />
+        <InfoText style={styles.regionInfo} label={region} />
+        <InfoText style={styles.streetInfo} label={street} />
+        <InfoText
+          style={styles.tileInfo}
+          label={visitedLocations.length}
+          icon={iconSquare}
+          alignRight
+        />
+        <InfoText style={styles.speedInfo} label={speed} icon={iconSpeed} alignRight />
+        <InfoText style={styles.altitudeInfo} label={altitude} icon={iconAltitude} alignRight />
         {!followLocation && (
           <TouchableOpacity
             style={[styles.locationButton, { left: dimensions.width / 2 - 25 }]}
