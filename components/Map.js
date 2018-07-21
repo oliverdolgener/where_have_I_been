@@ -99,8 +99,8 @@ class Map extends Component {
       .then(response => response.json())
       .then((responseJson) => {
         const visitedLocations = responseJson.locations;
-        const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
-        // const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
+        // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
+        const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
         this.setState({
           visitedLocations,
           holes,
@@ -154,8 +154,8 @@ class Map extends Component {
     if (!MathUtils.containsLocation(location, visitedLocations)) {
       this.locationsToSave.push(location);
       visitedLocations.push(location);
-      const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
-      // const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
+      // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
+      const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
       this.setState({
         visitedLocations,
         holes,
