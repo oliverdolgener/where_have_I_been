@@ -1,5 +1,5 @@
 export const EARTH_RADIUS = 6371;
-export const GRID_DISTANCE = 0.0005;
+export const GRID_DISTANCE = 0.001;
 export const FOG = [
   {
     latitude: 89,

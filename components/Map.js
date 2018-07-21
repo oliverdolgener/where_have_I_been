@@ -89,10 +89,10 @@ class Map extends Component {
 
   componentDidMount() {
     this.watchPositionAsync();
-    fetch('https://api.0llum.de/coordinates')
+    fetch('https://api.0llum.de/users/5ae9c419728f801904a9624e')
       .then(response => response.json())
       .then((responseJson) => {
-        const visitedLocations = responseJson;
+        const visitedLocations = responseJson.locations;
         // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
         const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
         this.setState({
@@ -155,15 +155,17 @@ class Map extends Component {
         holes,
       });
 
-      fetch('https://api.0llum.de/coordinates', {
-        method: 'POST',
+      fetch('https://api.0llum.de/users/5ae9c419728f801904a9624e', {
+        method: 'PATCH',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(this.locationsToSave),
+        body: JSON.stringify({
+          locations: this.locationsToSave,
+        }),
       }).then((response) => {
-        if (response.status === 201) {
+        if (response.status === 200) {
           this.locationsToSave = [];
         }
       });
