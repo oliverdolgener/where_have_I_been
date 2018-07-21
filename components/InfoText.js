@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Image, Text } from 'react-native';
+import { LinearGradient } from 'expo';
 
 const styles = {
   container: {
@@ -23,16 +24,22 @@ const styles = {
 
 const InfoText = (props) => {
   const {
-    label, icon, style, alignRight,
+    label, icon, style, alignRight, gradient,
   } = props;
 
   const labelAlign = alignRight ? { textAlign: 'right' } : { textAlign: 'left' };
 
   return (
-    <View style={{ ...styles.container, ...style }}>
+    <LinearGradient
+      style={{ ...styles.container, ...style }}
+      colors={['rgba(100, 200, 250, 0.8)', 'transparent']}
+      start={[0, 0]}
+      end={[1, 0]}
+      locations={[gradient, gradient]}
+    >
       {icon && <Image style={styles.icon} source={icon} />}
       <Text style={{ ...styles.label, ...labelAlign }}>{label}</Text>
-    </View>
+    </LinearGradient>
   );
 };
 

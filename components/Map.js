@@ -5,6 +5,7 @@ import InfoText from '../components/InfoText';
 import * as MathUtils from '../utils/MathUtils';
 import * as EarthUtils from '../utils/EarthUtils';
 import * as Earth from '../constants/Earth';
+import iconLevel from '../assets/iconLevel.png';
 import iconLocation from '../assets/iconLocation.png';
 import iconSquare from '../assets/iconSquare.png';
 import iconSpeed from '../assets/iconSpeed.png';
@@ -23,19 +24,24 @@ const styles = {
     height: 50,
     tintColor: 'rgba(100, 200, 250, 0.8)',
   },
-  tileInfo: {
+  levelInfo: {
     position: 'absolute',
     top: 40,
     right: 20,
   },
-  speedInfo: {
+  tileInfo: {
     position: 'absolute',
     top: 80,
     right: 20,
   },
-  altitudeInfo: {
+  speedInfo: {
     position: 'absolute',
     top: 120,
+    right: 20,
+  },
+  altitudeInfo: {
+    position: 'absolute',
+    top: 160,
     right: 20,
   },
   countryInfo: {
@@ -93,8 +99,8 @@ class Map extends Component {
       .then(response => response.json())
       .then((responseJson) => {
         const visitedLocations = responseJson.locations;
-        // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
-        const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
+        const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
+        // const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
         this.setState({
           visitedLocations,
           holes,
@@ -148,8 +154,8 @@ class Map extends Component {
     if (!MathUtils.containsLocation(location, visitedLocations)) {
       this.locationsToSave.push(location);
       visitedLocations.push(location);
-      // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
-      const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
+      const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
+      // const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
       this.setState({
         visitedLocations,
         holes,
@@ -203,6 +209,12 @@ class Map extends Component {
     //   intersects.push(vertices.filter(vertex => EarthUtils.isPointOnEdge(vertex, edge)));
     // });
 
+    const level = Math.floor(Math.sqrt(visitedLocations.length));
+    const nextLevel = level + 1;
+    const gradient =
+      1 -
+      (nextLevel * nextLevel - visitedLocations.length) / (nextLevel * nextLevel - level * level);
+
     return (
       <View style={styles.container}>
         <MapView
@@ -240,17 +252,31 @@ class Map extends Component {
             holes={holes}
           />
         </MapView>
-        <InfoText style={styles.countryInfo} label={country} width={100} />
-        <InfoText style={styles.regionInfo} label={region} width={100} />
-        <InfoText style={styles.streetInfo} label={street} width={100} />
+        <InfoText style={styles.countryInfo} label={country} width={100} gradient={0} />
+        <InfoText style={styles.regionInfo} label={region} width={100} gradient={0} />
+        <InfoText style={styles.streetInfo} label={street} width={100} gradient={0} />
+        <InfoText
+          style={styles.levelInfo}
+          label={level}
+          icon={iconLevel}
+          alignRight
+          gradient={gradient}
+        />
         <InfoText
           style={styles.tileInfo}
           label={visitedLocations.length}
           icon={iconSquare}
           alignRight
+          gradient={0}
         />
-        <InfoText style={styles.speedInfo} label={speed} icon={iconSpeed} alignRight />
-        <InfoText style={styles.altitudeInfo} label={altitude} icon={iconAltitude} alignRight />
+        <InfoText style={styles.speedInfo} label={speed} icon={iconSpeed} alignRight gradient={0} />
+        <InfoText
+          style={styles.altitudeInfo}
+          label={altitude}
+          icon={iconAltitude}
+          alignRight
+          gradient={0}
+        />
         {!followLocation && (
           <TouchableOpacity
             style={[styles.locationButton, { left: dimensions.width / 2 - 25 }]}
