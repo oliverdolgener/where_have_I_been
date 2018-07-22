@@ -136,7 +136,7 @@ class Map extends Component {
         });
         followLocation && this.moveToLocation(currentLocation);
 
-        if (result.coords.accuracy < 32) {
+        if (result.coords.accuracy < 50) {
           const roundedLatitude = EarthUtils.getRoundedLatitude(currentLocation.latitude);
           const roundedLocation = {
             latitude: roundedLatitude,
@@ -146,6 +146,7 @@ class Map extends Component {
         }
 
         this.getGeolocationAsync(currentLocation);
+        this.saveLocatiions();
       },
     );
   };
@@ -161,7 +162,12 @@ class Map extends Component {
         visitedLocations,
         holes,
       });
+      this.saveLocatiions();
+    }
+  }
 
+  saveLocatiions() {
+    if (this.locationsToSave.length > 0) {
       fetch('https://api.0llum.de/users/5ae9c419728f801904a9624e', {
         method: 'PATCH',
         headers: {
