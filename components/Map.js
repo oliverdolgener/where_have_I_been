@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Dimensions, View, Image, TouchableOpacity } from 'react-native';
 import { Location, Permissions, MapView } from 'expo';
 import InfoText from '../components/InfoText';
+import * as LevelUtils from '../utils/LevelUtils';
 import * as MathUtils from '../utils/MathUtils';
 import * as EarthUtils from '../utils/EarthUtils';
 import * as Earth from '../constants/Earth';
@@ -209,11 +210,8 @@ class Map extends Component {
     //   intersects.push(vertices.filter(vertex => EarthUtils.isPointOnEdge(vertex, edge)));
     // });
 
-    const level = Math.floor(Math.sqrt(visitedLocations.length));
-    const nextLevel = level + 1;
-    const gradient =
-      1 -
-      (nextLevel * nextLevel - visitedLocations.length) / (nextLevel * nextLevel - level * level);
+    const level = LevelUtils.getLevelFromExp(visitedLocations.length);
+    const gradient = LevelUtils.getPercentToNextLevel(visitedLocations.length);
 
     return (
       <View style={styles.container}>
