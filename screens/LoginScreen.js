@@ -158,20 +158,14 @@ class LoginScreen extends React.Component {
       id: data._id,
       email: data.email,
       password: data.password,
-      matches: data.matches,
+      locations: data.locations,
     };
-    const resetAction = NavigationActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({
-          routeName: 'ListSelect',
-          params: {
-            user,
-          },
-        }),
-      ],
+    this.props.navigation.navigate({
+      routeName: 'Map',
+      params: {
+        user,
+      },
     });
-    this.props.navigation.dispatch(resetAction);
   };
 
   render() {

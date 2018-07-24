@@ -94,6 +94,10 @@ export function getRectangleCoordinates(topLeft, botRight) {
 }
 
 export function convertSquaresToSlices(squares) {
+  if (squares.length === 1) {
+    return [getSquareCoordinates(squares[0])];
+  }
+
   const slices = [];
   squares.sort(SortUtils.byLatitudeDesc);
   let first = squares[0];

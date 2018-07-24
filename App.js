@@ -1,49 +1,37 @@
 import React from 'react';
-import { Text } from 'react-native';
-import { StackNavigator, DrawerNavigator } from 'react-navigation';
+import { createStackNavigator, createDrawerNavigator, createSwitchNavigator } from 'react-navigation';
 import LoginScreen from './screens/LoginScreen';
 import MapScreen from './screens/MapScreen';
 
-const DrawerStack = DrawerNavigator({
+const DrawerStack = createDrawerNavigator({
   Map: { screen: MapScreen },
 });
 
-const DrawerNavigation = StackNavigator(
+const DrawerNavigation = createStackNavigator(
   {
     DrawerStack: { screen: DrawerStack },
   },
   {
-    headerMode: 'float',
-    navigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: 'green' },
-      title: 'Logged In to your app!',
-      headerLeft: <Text onPress={() => navigation.navigate('DrawerOpen')}>Menu</Text>,
-    }),
+    headerMode: 'none',
   },
 );
 
-const LoginStack = StackNavigator(
+const LoginStack = createStackNavigator(
   {
     Login: { screen: LoginScreen },
   },
   {
-    headerMode: 'float',
-    navigationOptions: {
-      headerStyle: { backgroundColor: 'red' },
-      title: 'You are not logged in',
-    },
+    headerMode: 'none',
   },
 );
 
-const PrimaryNav = StackNavigator(
+const PrimaryNav = createSwitchNavigator(
   {
     loginStack: { screen: LoginStack },
     drawerStack: { screen: DrawerNavigation },
   },
   {
-    // Default config for all screens
     headerMode: 'none',
-    title: 'Main',
     initialRouteName: 'loginStack',
   },
 );

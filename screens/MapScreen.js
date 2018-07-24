@@ -66,17 +66,23 @@ const styles = {
 };
 
 class Map extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    const { user } = props.navigation.state.params;
+    const visitedLocations = user.locations || [];
+    // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
+    const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
+    console.log(holes);
     this.locationsToSave = [];
+
     this.state = {
       dimensions: Dimensions.get('window'),
       currentLocation: {
         latitude: 52.5575,
         longitude: 13.206354,
       },
-      visitedLocations: [],
-      holes: [],
+      visitedLocations,
+      holes,
       followLocation: true,
       speed: 0,
       altitude: 0,
@@ -96,17 +102,6 @@ class Map extends Component {
 
   componentDidMount() {
     this.watchPositionAsync();
-    fetch('https://api.0llum.de/users/5ae9c419728f801904a9624e')
-      .then(response => response.json())
-      .then((responseJson) => {
-        const visitedLocations = responseJson.locations;
-        // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
-        const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
-        this.setState({
-          visitedLocations,
-          holes,
-        });
-      });
   }
 
   getGeolocationAsync = async (location) => {
@@ -146,7 +141,7 @@ class Map extends Component {
         }
 
         this.getGeolocationAsync(currentLocation);
-        this.saveLocatiions();
+        this.saveLocations();
       },
     );
   };
@@ -162,13 +157,14 @@ class Map extends Component {
         visitedLocations,
         holes,
       });
-      this.saveLocatiions();
+      this.saveLocations();
     }
   }
 
-  saveLocatiions() {
+  saveLocations() {
+    const { user } = this.props.navigation.state.params;
     if (this.locationsToSave.length > 0) {
-      fetch('https://api.0llum.de/users/5ae9c419728f801904a9624e', {
+      fetch(`https://api.0llum.de/users/${user.id}`, {
         method: 'PATCH',
         headers: {
           Accept: 'application/json',
