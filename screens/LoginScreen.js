@@ -1,6 +1,5 @@
 import React from 'react';
-import { KeyboardAvoidingView, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
-import { NavigationActions } from 'react-navigation';
+import { AsyncStorage, KeyboardAvoidingView, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
 import * as Colors from '../constants/Colors';
 
 const styles = StyleSheet.create({
@@ -46,6 +45,10 @@ class LoginScreen extends React.Component {
       emailError: '',
       passwordError: '',
     };
+  }
+
+  componentWillMount() {
+    this.getUserAsync();
   }
 
   onChangeEmail = (value) => {
@@ -122,6 +125,21 @@ class LoginScreen extends React.Component {
       });
   };
 
+  setUserAsync = async (id) => {
+    await AsyncStorage.setItem('id', id);
+  }
+
+  getUserAsync = async () => {
+    const id = await AsyncStorage.getItem('id');
+    console.log(id);
+    if (id) {
+      fetch(`https://api.0llum.de/users/${id}`).then(response => response.json())
+        .then((responseJson) => {
+          this.login(responseJson);
+        });
+    }
+  }
+
   validateEmail = () => {
     const { email } = this.state;
     const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -160,6 +178,7 @@ class LoginScreen extends React.Component {
       password: data.password,
       locations: data.locations,
     };
+    this.setUserAsync(user.id);
     this.props.navigation.navigate({
       routeName: 'Map',
       params: {

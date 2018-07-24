@@ -6,6 +6,7 @@ import * as LevelUtils from '../utils/LevelUtils';
 import * as MathUtils from '../utils/MathUtils';
 import * as EarthUtils from '../utils/EarthUtils';
 import * as Earth from '../constants/Earth';
+import iconMenu from '../assets/iconMenu.png';
 import iconLevel from '../assets/iconLevel.png';
 import iconLocation from '../assets/iconLocation.png';
 import iconSquare from '../assets/iconSquare.png';
@@ -15,6 +16,16 @@ import iconAltitude from '../assets/iconAltitude.png';
 const styles = {
   container: {
     flex: 1,
+  },
+  menuButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+  },
+  menuImage: {
+    width: 50,
+    height: 50,
+    tintColor: 'rgba(255, 255, 255, 0.8)',
   },
   locationButton: {
     position: 'absolute',
@@ -72,7 +83,6 @@ class Map extends Component {
     const visitedLocations = user.locations || [];
     // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
     const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
-    console.log(holes);
     this.locationsToSave = [];
 
     this.state = {
@@ -140,7 +150,7 @@ class Map extends Component {
           this.addLocation(roundedLocation);
         }
 
-        this.getGeolocationAsync(currentLocation);
+        // this.getGeolocationAsync(currentLocation);
         this.saveLocations();
       },
     );
@@ -252,9 +262,15 @@ class Map extends Component {
             holes={holes}
           />
         </MapView>
-        <InfoText style={styles.countryInfo} label={country} width={100} gradient={0} />
+        <TouchableOpacity
+          style={styles.menuButton}
+          onPress={() => this.props.navigation.openDrawer()}
+        >
+          <Image style={styles.menuImage} source={iconMenu} />
+        </TouchableOpacity>
+        {/* <InfoText style={styles.countryInfo} label={country} width={100} gradient={0} />
         <InfoText style={styles.regionInfo} label={region} width={100} gradient={0} />
-        <InfoText style={styles.streetInfo} label={street} width={100} gradient={0} />
+        <InfoText style={styles.streetInfo} label={street} width={100} gradient={0} /> */}
         <InfoText
           style={styles.levelInfo}
           label={level}
