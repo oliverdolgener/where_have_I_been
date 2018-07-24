@@ -19,8 +19,8 @@ const styles = {
   },
   menuButton: {
     position: 'absolute',
-    top: 40,
-    left: 20,
+    top: 30,
+    left: 10,
   },
   menuImage: {
     width: 50,

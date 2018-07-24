@@ -1,5 +1,12 @@
 import React from 'react';
-import { AsyncStorage, KeyboardAvoidingView, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
+import {
+  AsyncStorage,
+  KeyboardAvoidingView,
+  StyleSheet,
+  TextInput,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import * as Colors from '../constants/Colors';
 
 const styles = StyleSheet.create({
@@ -127,18 +134,18 @@ class LoginScreen extends React.Component {
 
   setUserAsync = async (id) => {
     await AsyncStorage.setItem('id', id);
-  }
+  };
 
   getUserAsync = async () => {
     const id = await AsyncStorage.getItem('id');
-    console.log(id);
     if (id) {
-      fetch(`https://api.0llum.de/users/${id}`).then(response => response.json())
+      fetch(`https://api.0llum.de/users/${id}`)
+        .then(response => response.json())
         .then((responseJson) => {
           this.login(responseJson);
         });
     }
-  }
+  };
 
   validateEmail = () => {
     const { email } = this.state;
