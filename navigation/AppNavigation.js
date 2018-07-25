@@ -3,9 +3,10 @@ import {
   createDrawerNavigator,
   createSwitchNavigator,
 } from 'react-navigation';
-import DrawerMenu from '../components/DrawerMenu';
+import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MapScreen from '../screens/MapScreen';
+import DrawerMenu from '../components/DrawerMenu';
 
 const DrawerStack = createDrawerNavigator(
   {
@@ -37,12 +38,13 @@ const LoginStack = createStackNavigator(
 
 const PrimaryNav = createSwitchNavigator(
   {
+    splash: { screen: SplashScreen },
     loginStack: { screen: LoginStack },
     drawerStack: { screen: DrawerNavigation },
   },
   {
     headerMode: 'none',
-    initialRouteName: 'loginStack',
+    initialRouteName: 'splash',
   },
 );
 

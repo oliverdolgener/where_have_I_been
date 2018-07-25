@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   TextInput,
+  View,
   Text,
   TouchableOpacity,
 } from 'react-native';
@@ -15,6 +16,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
     backgroundColor: Colors.white,
+  },
+  header: {
+    flex: 1,
+  },
+  title: {
+    alignSelf: 'center',
+    fontSize: 96,
+    marginBottom: 20,
+  },
+  subtitle: {
+    alignSelf: 'center',
+    fontSize: 24,
+    marginBottom: 20,
   },
   input: {
     height: 50,
@@ -52,10 +66,6 @@ class LoginScreen extends React.Component {
       emailError: '',
       passwordError: '',
     };
-  }
-
-  componentWillMount() {
-    this.getUserAsync();
   }
 
   onChangeEmail = (value) => {
@@ -136,17 +146,6 @@ class LoginScreen extends React.Component {
     await AsyncStorage.setItem('id', id);
   };
 
-  getUserAsync = async () => {
-    const id = await AsyncStorage.getItem('id');
-    if (id) {
-      fetch(`https://api.0llum.de/users/${id}`)
-        .then(response => response.json())
-        .then((responseJson) => {
-          this.login(responseJson);
-        });
-    }
-  };
-
   validateEmail = () => {
     const { email } = this.state;
     const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -197,6 +196,9 @@ class LoginScreen extends React.Component {
   render() {
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
+        <Text style={styles.title}>WHIB</Text>
+        <Text style={styles.subtitle}>Where Have I Been</Text>
+        <View style={styles.header} />
         <TextInput
           style={styles.input}
           placeholder="E-Mail Address"
