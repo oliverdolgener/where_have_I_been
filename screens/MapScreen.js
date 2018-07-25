@@ -199,8 +199,8 @@ class Map extends Component {
   }
 
   render() {
+    const { mapView } = this.props;
     const {
-      mapView,
       dimensions,
       currentLocation,
       visitedLocations,
@@ -212,8 +212,6 @@ class Map extends Component {
       region,
       street,
     } = this.state;
-
-    console.log(mapView);
 
     // const vertices = [];
     // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
