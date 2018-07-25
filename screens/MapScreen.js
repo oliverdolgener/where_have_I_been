@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Dimensions, View, Image, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
 import { Location, Permissions, MapView } from 'expo';
 import InfoText from '../components/InfoText';
 import * as LevelUtils from '../utils/LevelUtils';
@@ -199,6 +200,7 @@ class Map extends Component {
 
   render() {
     const {
+      mapView,
       dimensions,
       currentLocation,
       visitedLocations,
@@ -210,6 +212,8 @@ class Map extends Component {
       region,
       street,
     } = this.state;
+
+    console.log(mapView);
 
     // const vertices = [];
     // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
@@ -235,7 +239,7 @@ class Map extends Component {
           style={styles.container}
           mapPadding={{ top: 20 }}
           provider="google"
-          mapType="satellite"
+          mapType={mapView}
           rotateEnabled
           pitchEnabled={false}
           showsIndoors={false}
@@ -312,4 +316,8 @@ class Map extends Component {
   }
 }
 
-export default Map;
+const mapStateToProps = state => ({
+  mapView: state.map.get('mapView'),
+});
+
+export default connect(mapStateToProps)(Map);

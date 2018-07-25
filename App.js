@@ -1,52 +1,27 @@
 import React from 'react';
-import {
-  createStackNavigator,
-  createDrawerNavigator,
-  createSwitchNavigator,
-} from 'react-navigation';
-import DrawerMenu from './components/DrawerMenu';
-import LoginScreen from './screens/LoginScreen';
-import MapScreen from './screens/MapScreen';
+import { createStore, combineReducers } from 'redux';
+import { StyleSheet, View } from 'react-native';
+import { Provider } from 'react-redux';
+import MapReducer from './reducers/map';
+// import ReduxNavigation from './navigation/ReduxNavigation';
+import AppNavigation from './navigation/AppNavigation';
 
-const DrawerStack = createDrawerNavigator(
-  {
-    Map: { screen: MapScreen },
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
   },
-  {
-    contentComponent: DrawerMenu,
-    drawerBackgroundColor: 'transparent',
-  },
+});
+
+const store = createStore(combineReducers({
+  map: MapReducer,
+}));
+
+const App = () => (
+  <Provider store={store}>
+    <View style={styles.container}>
+      <AppNavigation />
+    </View>
+  </Provider>
 );
-
-const DrawerNavigation = createStackNavigator(
-  {
-    DrawerStack: { screen: DrawerStack },
-  },
-  {
-    headerMode: 'none',
-  },
-);
-
-const LoginStack = createStackNavigator(
-  {
-    Login: { screen: LoginScreen },
-  },
-  {
-    headerMode: 'none',
-  },
-);
-
-const PrimaryNav = createSwitchNavigator(
-  {
-    loginStack: { screen: LoginStack },
-    drawerStack: { screen: DrawerNavigation },
-  },
-  {
-    headerMode: 'none',
-    initialRouteName: 'loginStack',
-  },
-);
-
-const App = () => <PrimaryNav />;
 
 export default App;
