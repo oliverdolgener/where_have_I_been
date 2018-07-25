@@ -1,11 +1,12 @@
 import React from 'react';
 import { AsyncStorage, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
+import * as Colors from '../constants/Colors';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: Colors.white90,
   },
   content: {},
   item: {

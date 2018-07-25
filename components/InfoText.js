@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, Text } from 'react-native';
 import { LinearGradient } from 'expo';
+import * as Colors from '../constants/Colors';
 
 const styles = {
   container: {
@@ -10,12 +11,12 @@ const styles = {
     flexDirection: 'row',
     padding: 5,
     borderRadius: 5,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: Colors.white80,
   },
   icon: {
     width: 20,
     height: 20,
-    tintColor: '#000000',
+    tintColor: Colors.black,
   },
   label: {
     flex: 1,
@@ -32,7 +33,7 @@ const InfoText = (props) => {
   return (
     <LinearGradient
       style={{ ...styles.container, ...style }}
-      colors={['rgba(100, 200, 250, 0.8)', 'transparent']}
+      colors={[Colors.lightBlue80, 'transparent']}
       start={[0, 0]}
       end={[1, 0]}
       locations={[gradient, gradient]}

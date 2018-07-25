@@ -6,6 +6,7 @@ import * as LevelUtils from '../utils/LevelUtils';
 import * as MathUtils from '../utils/MathUtils';
 import * as EarthUtils from '../utils/EarthUtils';
 import * as Earth from '../constants/Earth';
+import * as Colors from '../constants/Colors';
 import iconMenu from '../assets/iconMenu.png';
 import iconLevel from '../assets/iconLevel.png';
 import iconLocation from '../assets/iconLocation.png';
@@ -25,7 +26,7 @@ const styles = {
   menuImage: {
     width: 50,
     height: 50,
-    tintColor: 'rgba(255, 255, 255, 0.8)',
+    tintColor: Colors.white80,
   },
   locationButton: {
     position: 'absolute',
@@ -34,7 +35,7 @@ const styles = {
   locationImage: {
     width: 50,
     height: 50,
-    tintColor: 'rgba(100, 200, 250, 0.8)',
+    tintColor: Colors.lightBlue80,
   },
   levelInfo: {
     position: 'absolute',
@@ -256,8 +257,8 @@ class Map extends Component {
           }}
         >
           <MapView.Polygon
-            fillColor="rgba(0, 0, 0, 1)"
-            strokeColor="rgba(0, 0, 0, 0)"
+            fillColor={Colors.black}
+            strokeColor={Colors.transparent}
             coordinates={Earth.FOG}
             holes={holes}
           />
