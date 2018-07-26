@@ -209,10 +209,15 @@ class LoginScreen extends React.Component {
           value={this.state.email}
           selectionColor={Colors.accent}
           underlineColorAndroid={Colors.accent}
+          returnKeyType="next"
+          onSubmitEditing={() => this.passwordInput.focus()}
         />
         <Text style={styles.error}>{this.state.emailError}</Text>
         <TextInput
           style={styles.input}
+          ref={(ref) => {
+            this.passwordInput = ref;
+          }}
           placeholder="Password"
           autoCapitalize="none"
           secureTextEntry
@@ -220,6 +225,8 @@ class LoginScreen extends React.Component {
           value={this.state.password}
           selectionColor={Colors.accent}
           underlineColorAndroid={Colors.accent}
+          returnKeyType="send"
+          onSubmitEditing={() => this.onLoginPress()}
         />
         <Text style={styles.error}>{this.state.passwordError}</Text>
         <TouchableOpacity style={styles.loginButton} onPress={this.onLoginPress}>
