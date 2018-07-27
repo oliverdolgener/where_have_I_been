@@ -214,8 +214,6 @@ class MapScreen extends Component {
       street,
     } = this.state;
 
-    console.log(isLoggedIn);
-
     // const vertices = [];
     // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
 
@@ -246,7 +244,7 @@ class MapScreen extends Component {
           provider="google"
           mapType={mapType === 'watercolor' ? 'none' : mapType}
           customMapStyle={mapStyle}
-          rotateEnabled
+          rotateEnabled={false}
           pitchEnabled={false}
           showsIndoors={false}
           zoomControlEnabled={false}
