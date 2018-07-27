@@ -79,7 +79,7 @@ const styles = {
   },
 };
 
-class Map extends Component {
+class MapScreen extends Component {
   constructor(props) {
     super(props);
     const { user } = props.navigation.state.params;
@@ -87,6 +87,7 @@ class Map extends Component {
     // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
     const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
     this.locationsToSave = [];
+    const positionListener = null;
 
     this.state = {
       dimensions: Dimensions.get('window'),
@@ -129,8 +130,8 @@ class Map extends Component {
 
   watchPositionAsync = async () => {
     await Permissions.askAsync(Permissions.LOCATION);
-    await Location.watchPositionAsync(
-      { enableHighAccuracy: true, timeInterval: 100, distanceInterval: 1 },
+    this.positionListener = await Location.watchPositionAsync(
+      { enableHighAccuracy: true, timeInterval: 0, distanceInterval: 0 },
       (result) => {
         const { followLocation } = this.state;
         const currentLocation = {
@@ -154,7 +155,6 @@ class Map extends Component {
         }
 
         // this.getGeolocationAsync(currentLocation);
-        this.saveLocations();
       },
     );
   };
@@ -200,7 +200,7 @@ class Map extends Component {
   }
 
   render() {
-    const { mapType } = this.props;
+    const { isLoggedIn, mapType } = this.props;
     const {
       dimensions,
       currentLocation,
@@ -214,6 +214,8 @@ class Map extends Component {
       street,
     } = this.state;
 
+    console.log(isLoggedIn);
+
     // const vertices = [];
     // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
 
@@ -225,6 +227,10 @@ class Map extends Component {
     // edges.forEach((edge) => {
     //   intersects.push(vertices.filter(vertex => EarthUtils.isPointOnEdge(vertex, edge)));
     // });
+
+    if (!isLoggedIn && this.positionListener) {
+      this.positionListener.remove();
+    }
 
     const level = LevelUtils.getLevelFromExp(visitedLocations.length);
     const gradient = LevelUtils.getPercentToNextLevel(visitedLocations.length);
@@ -260,16 +266,19 @@ class Map extends Component {
             });
           }}
         >
-          {mapType === 'watercolor' && <MapView.UrlTile
-            urlTemplate="http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg"
-            zIndex={-1}
-          />}
+          {mapType === 'watercolor' && (
+            <MapView.UrlTile
+              urlTemplate="http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg"
+              zIndex={-1}
+            />
+          )}
           <MapView.Polygon
             fillColor={Colors.black}
             strokeColor={Colors.transparent}
             coordinates={Earth.FOG}
             holes={holes}
           />
+          {/* {holes.map(x => <MapView.Polygon fillColor={Colors.black} coordinates={x} />)} */}
         </MapView>
         <TouchableOpacity
           style={styles.menuButton}
@@ -321,7 +330,8 @@ class Map extends Component {
 }
 
 const mapStateToProps = state => ({
+  isLoggedIn: state.user.get('isLoggedIn'),
   mapType: state.map.get('mapType'),
 });
 
-export default connect(mapStateToProps)(Map);
+export default connect(mapStateToProps)(MapScreen);

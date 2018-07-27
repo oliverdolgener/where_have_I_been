@@ -1,6 +1,7 @@
 import React from 'react';
 import { AsyncStorage, View, StyleSheet, Text } from 'react-native';
 import { connect } from 'react-redux';
+import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import * as Colors from '../constants/Colors';
 
@@ -53,6 +54,7 @@ class SplashScreen extends React.Component {
       password: data.password,
       locations: data.locations,
     };
+    this.props.login();
     this.props.navigation.navigate({
       routeName: 'Map',
       params: {
@@ -76,6 +78,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  login: userActions.login,
   setMapType: mapActions.setMapType,
 };
 

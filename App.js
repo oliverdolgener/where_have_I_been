@@ -2,8 +2,8 @@ import React from 'react';
 import { createStore, combineReducers } from 'redux';
 import { StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
+import UserReducer from './reducers/user';
 import MapReducer from './reducers/map';
-// import ReduxNavigation from './navigation/ReduxNavigation';
 import AppNavigation from './navigation/AppNavigation';
 
 const styles = StyleSheet.create({
@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
 });
 
 const store = createStore(combineReducers({
+  user: UserReducer,
   map: MapReducer,
 }));
 

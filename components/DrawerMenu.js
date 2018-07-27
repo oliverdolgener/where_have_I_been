@@ -2,6 +2,7 @@ import React from 'react';
 import { AsyncStorage, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
+import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
@@ -56,6 +57,7 @@ class DrawerMenu extends React.Component {
   logout = async () => {
     this.props.navigation.closeDrawer();
     await AsyncStorage.removeItem('id');
+    this.props.logout();
     this.props.navigation.navigate('Login');
   };
 
@@ -96,6 +98,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  logout: userActions.logout,
   setMapType: mapActions.setMapType,
 };
 

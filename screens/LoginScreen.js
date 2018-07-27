@@ -8,6 +8,8 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
+import { connect } from 'react-redux';
+import { actions as userActions } from '../reducers/user';
 import * as Colors from '../constants/Colors';
 
 const styles = StyleSheet.create({
@@ -184,6 +186,7 @@ class LoginScreen extends React.Component {
       password: data.password,
       locations: data.locations,
     };
+    this.props.login();
     this.setUserAsync(user.id);
     this.props.navigation.navigate({
       routeName: 'Map',
@@ -240,4 +243,13 @@ class LoginScreen extends React.Component {
   }
 }
 
-export default LoginScreen;
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = {
+  login: userActions.login,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(LoginScreen);
