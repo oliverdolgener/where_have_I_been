@@ -2,26 +2,26 @@ import { AsyncStorage } from 'react-native';
 import { Map } from 'immutable';
 
 export const types = {
-  SETMAPVIEW: 'MAP/SETMAPVIEW',
+  SETMAPTYPE: 'MAP/SETMAPTYPE',
 };
 
 export const actions = {
-  setMapView: mapView => ({ type: types.SETMAPVIEW, mapView }),
+  setMapType: mapType => ({ type: types.SETMAPTYPE, mapType }),
 };
 
 const initialState = Map({
-  mapView: 'satellite',
+  mapType: 'satellite',
 });
 
-const setMapViewAsync = async (mapView) => {
-  await AsyncStorage.setItem('mapView', mapView);
+const setMapTypeAsync = async (mapType) => {
+  await AsyncStorage.setItem('mapType', mapType);
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case types.SETMAPVIEW:
-      setMapViewAsync(action.mapView);
-      return state.set('mapView', action.mapView);
+    case types.SETMAPTYPE:
+      setMapTypeAsync(action.mapType);
+      return state.set('mapType', action.mapType);
     default:
       return state;
   }

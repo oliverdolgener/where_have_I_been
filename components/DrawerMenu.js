@@ -6,18 +6,19 @@ import { actions as mapActions } from '../reducers/map';
 import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
 import iconSatellite from '../assets/iconSatellite.png';
+import iconWatercolor from '../assets/iconWatercolor.png';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.white90,
   },
-  mapView: {
+  mapType: {
     position: 'absolute',
     top: 30,
     right: 10,
   },
-  mapViewIcon: {
+  mapTypeIcon: {
     width: 40,
     height: 40,
     tintColor: Colors.black,
@@ -33,9 +34,23 @@ const styles = StyleSheet.create({
 });
 
 class DrawerMenu extends React.Component {
-  toggleMapView = () => {
-    this.props.navigation.closeDrawer();
-    this.props.setMapView(this.props.mapView === 'standard' ? 'satellite' : 'standard');
+  toggleMapType = () => {
+    const { navigation, mapType, setMapType } = this.props;
+    navigation.closeDrawer();
+    switch (mapType) {
+      case 'satellite':
+        setMapType('standard');
+        break;
+      case 'standard':
+        setMapType('watercolor');
+        break;
+      case 'watercolor':
+        setMapType('satellite');
+        break;
+      default:
+        setMapType('satellite');
+        break;
+    }
   };
 
   logout = async () => {
@@ -45,10 +60,28 @@ class DrawerMenu extends React.Component {
   };
 
   render() {
+    const { mapType } = this.props;
+
+    let mapTypeIcon;
+    switch (mapType) {
+      case 'satellite':
+        mapTypeIcon = iconMap;
+        break;
+      case 'standard':
+        mapTypeIcon = iconWatercolor;
+        break;
+      case 'watercolor':
+        mapTypeIcon = iconSatellite;
+        break;
+      default:
+        mapTypeIcon = iconMap;
+        break;
+    }
+
     return (
       <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
-        <TouchableOpacity style={styles.mapView} onPress={() => this.toggleMapView()}>
-          <Image style={styles.mapViewIcon} source={this.props.mapView === 'standard' ? iconSatellite : iconMap} />
+        <TouchableOpacity style={styles.mapType} onPress={() => this.toggleMapType()}>
+          <Image style={styles.mapTypeIcon} source={mapTypeIcon} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.logout} onPress={() => this.logout()}>
           <Text style={styles.label}>Logout</Text>
@@ -59,11 +92,11 @@ class DrawerMenu extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  mapView: state.map.get('mapView'),
+  mapType: state.map.get('mapType'),
 });
 
 const mapDispatchToProps = {
-  setMapView: mapActions.setMapView,
+  setMapType: mapActions.setMapType,
 };
 
 export default connect(

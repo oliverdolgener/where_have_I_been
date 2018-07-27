@@ -28,7 +28,7 @@ class SplashScreen extends React.Component {
 
   getUserAsync = async () => {
     const id = await AsyncStorage.getItem('id');
-    const mapView = await AsyncStorage.getItem('mapView');
+    const mapType = await AsyncStorage.getItem('mapType');
     setTimeout(() => {
       if (id) {
         fetch(`https://api.0llum.de/users/${id}`)
@@ -40,8 +40,8 @@ class SplashScreen extends React.Component {
         this.props.navigation.navigate('Login');
       }
 
-      if (mapView) {
-        this.props.setMapView(mapView);
+      if (mapType) {
+        this.props.setMapType(mapType);
       }
     }, 3000);
   };
@@ -72,11 +72,11 @@ class SplashScreen extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  mapView: state.map.get('mapView'),
+  mapType: state.map.get('mapType'),
 });
 
 const mapDispatchToProps = {
-  setMapView: mapActions.setMapView,
+  setMapType: mapActions.setMapType,
 };
 
 export default connect(

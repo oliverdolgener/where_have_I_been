@@ -14,6 +14,7 @@ import iconLocation from '../assets/iconLocation.png';
 import iconSquare from '../assets/iconSquare.png';
 import iconSpeed from '../assets/iconSpeed.png';
 import iconAltitude from '../assets/iconAltitude.png';
+import mapStyle from '../assets/mapStyle.json';
 
 const styles = {
   container: {
@@ -199,7 +200,7 @@ class Map extends Component {
   }
 
   render() {
-    const { mapView } = this.props;
+    const { mapType } = this.props;
     const {
       dimensions,
       currentLocation,
@@ -237,7 +238,8 @@ class Map extends Component {
           style={styles.container}
           mapPadding={{ top: 20 }}
           provider="google"
-          mapType={mapView}
+          mapType={mapType === 'watercolor' ? 'none' : mapType}
+          customMapStyle={mapStyle}
           rotateEnabled
           pitchEnabled={false}
           showsIndoors={false}
@@ -258,6 +260,10 @@ class Map extends Component {
             });
           }}
         >
+          {mapType === 'watercolor' && <MapView.UrlTile
+            urlTemplate="http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg"
+            zIndex={-1}
+          />}
           <MapView.Polygon
             fillColor={Colors.black}
             strokeColor={Colors.transparent}
@@ -315,7 +321,7 @@ class Map extends Component {
 }
 
 const mapStateToProps = state => ({
-  mapView: state.map.get('mapView'),
+  mapType: state.map.get('mapType'),
 });
 
 export default connect(mapStateToProps)(Map);
