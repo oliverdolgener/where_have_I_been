@@ -12,14 +12,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white90,
   },
-  item: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-  },
-  label: {
-    fontSize: 20,
-  },
   mapView: {
     position: 'absolute',
     top: 30,
@@ -29,6 +21,14 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     tintColor: Colors.black,
+  },
+  logout: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+  },
+  label: {
+    fontSize: 20,
   },
 });
 
@@ -50,7 +50,7 @@ class DrawerMenu extends React.Component {
         <TouchableOpacity style={styles.mapView} onPress={() => this.toggleMapView()}>
           <Image style={styles.mapViewIcon} source={this.props.mapView === 'standard' ? iconSatellite : iconMap} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item} onPress={() => this.logout()}>
+        <TouchableOpacity style={styles.logout} onPress={() => this.logout()}>
           <Text style={styles.label}>Logout</Text>
         </TouchableOpacity>
       </SafeAreaView>
