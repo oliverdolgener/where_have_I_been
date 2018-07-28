@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions, View, Image, TouchableOpacity } from 'react-native';
+import { View, Image, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, Permissions, MapView } from 'expo';
 import InfoText from '../components/InfoText';
@@ -30,14 +30,21 @@ const styles = {
     height: 50,
     tintColor: Colors.white80,
   },
-  locationButton: {
+  geocodeContainer: {
     position: 'absolute',
-    bottom: 30,
+    top: 40,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
   },
-  locationImage: {
-    width: 50,
-    height: 50,
-    tintColor: Colors.lightBlue80,
+  countryInfo: {
+    fontSize: 20,
+    color: Colors.white,
+  },
+  regionInfo: {
+    fontSize: 16,
+    color: Colors.white,
   },
   levelInfo: {
     position: 'absolute',
@@ -59,23 +66,19 @@ const styles = {
     top: 160,
     right: 20,
   },
-  countryInfo: {
-    width: 140,
+  locationButton: {
     position: 'absolute',
-    top: 40,
-    left: 20,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 20,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
-  regionInfo: {
-    width: 140,
-    position: 'absolute',
-    top: 80,
-    left: 20,
-  },
-  streetInfo: {
-    width: 140,
-    position: 'absolute',
-    top: 120,
-    left: 20,
+  locationImage: {
+    width: 50,
+    height: 50,
+    tintColor: Colors.lightBlue80,
   },
 };
 
@@ -87,10 +90,8 @@ class MapScreen extends Component {
     // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
     const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
     this.locationsToSave = [];
-    const positionListener = null;
 
     this.state = {
-      dimensions: Dimensions.get('window'),
       currentLocation: {
         latitude: 52.5575,
         longitude: 13.206354,
@@ -100,18 +101,8 @@ class MapScreen extends Component {
       followLocation: true,
       speed: 0,
       altitude: 0,
-      country: '',
-      region: '',
-      street: '',
+      geocode: {},
     };
-  }
-
-  componentWillMount() {
-    Dimensions.addEventListener('change', (dimensions) => {
-      this.setState({
-        dimensions: dimensions.window,
-      });
-    });
   }
 
   componentDidMount() {
@@ -122,9 +113,10 @@ class MapScreen extends Component {
     await Permissions.askAsync(Permissions.LOCATION);
     const geocode = await Location.reverseGeocodeAsync(location);
     this.setState({
-      country: geocode[0].country,
-      region: geocode[0].region,
-      street: geocode[0].street,
+      geocode: {
+        country: geocode[0].country,
+        region: geocode[0].region,
+      },
     });
   };
 
@@ -154,7 +146,7 @@ class MapScreen extends Component {
           this.addLocation(roundedLocation);
         }
 
-        // this.getGeolocationAsync(currentLocation);
+        this.getGeolocationAsync(currentLocation);
       },
     );
   };
@@ -202,16 +194,13 @@ class MapScreen extends Component {
   render() {
     const { isLoggedIn, mapType } = this.props;
     const {
-      dimensions,
       currentLocation,
       visitedLocations,
       holes,
       followLocation,
       speed,
       altitude,
-      country,
-      region,
-      street,
+      geocode,
     } = this.state;
 
     // const vertices = [];
@@ -284,9 +273,10 @@ class MapScreen extends Component {
         >
           <Image style={styles.menuImage} source={iconMenu} />
         </TouchableOpacity>
-        {/* <InfoText style={styles.countryInfo} label={country} width={100} gradient={0} />
-        <InfoText style={styles.regionInfo} label={region} width={100} gradient={0} />
-        <InfoText style={styles.streetInfo} label={street} width={100} gradient={0} /> */}
+        <View style={styles.geocodeContainer}>
+          <Text style={styles.countryInfo}>{geocode.country}</Text>
+          <Text style={styles.regionInfo}>{geocode.region}</Text>
+        </View>
         <InfoText
           style={styles.levelInfo}
           label={level}
@@ -310,17 +300,18 @@ class MapScreen extends Component {
           gradient={0}
         />
         {!followLocation && (
-          <TouchableOpacity
-            style={[styles.locationButton, { left: dimensions.width / 2 - 25 }]}
-            onPress={() => {
-              this.moveToLocation(currentLocation);
-              this.setState({
-                followLocation: true,
-              });
-            }}
-          >
-            <Image style={styles.locationImage} source={iconLocation} />
-          </TouchableOpacity>
+          <View style={styles.locationButton}>
+            <TouchableOpacity
+              onPress={() => {
+                this.moveToLocation(currentLocation);
+                this.setState({
+                  followLocation: true,
+                });
+              }}
+            >
+              <Image style={styles.locationImage} source={iconLocation} />
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     );
