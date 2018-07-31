@@ -229,17 +229,18 @@ class MapScreen extends Component {
             this.map = ref;
           }}
           style={styles.container}
-          mapPadding={{ top: 20 }}
           provider="google"
           mapType={mapType === 'watercolor' ? 'none' : mapType}
           customMapStyle={mapStyle}
           rotateEnabled={false}
           pitchEnabled={false}
+          showsScale={false}
+          showsCompass={false}
+          showsPointsOfInterest={false}
           showsIndoors={false}
           zoomControlEnabled={false}
           showsMyLocationButton={false}
           showsUserLocation
-          followsUserLocation
           maxZoomLevel={18}
           initialRegion={{
             latitude: 52.5575,
