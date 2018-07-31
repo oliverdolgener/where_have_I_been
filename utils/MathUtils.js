@@ -1,3 +1,5 @@
+import * as SortUtils from '../utils/SortUtils';
+
 export function toRadians(degrees) {
   return (degrees * Math.PI) / 180;
 }
@@ -26,6 +28,58 @@ export function round(value, decimals, multiples = 1) {
   return roundToMultiples(value * 10 ** decimals, multiples) / 10 ** decimals;
 }
 
+export function isEqual(locationA, locationB) {
+  return locationA.latitude === locationB.latitude && locationA.longitude === locationB.longitude;
+}
+
 export function containsLocation(location, array) {
-  return array.find(x => x.latitude === location.latitude && x.longitude === location.longitude);
+  return array.find(x => isEqual(x, location));
+}
+
+export function removeDuplicateLocations(array) {
+  if (array.length < 1) {
+    return [];
+  }
+
+  if (array.length === 1) {
+    return array;
+  }
+
+  const unique = [];
+  array.sort(SortUtils.byLatitudeDesc);
+  unique.push(array[0]);
+  for (let i = 0; i < array.length - 1; i++) {
+    const current = array[i];
+    const next = array[i + 1];
+    if (!isEqual(current, next)) {
+      unique.push(next);
+    }
+  }
+
+  return unique;
+}
+
+export function removeBothDuplicateLocations(array) {
+  if (array.length < 1) {
+    return [];
+  }
+
+  if (array.length === 1) {
+    return array;
+  }
+
+  const unique = [];
+  array.sort(SortUtils.byLatitudeDesc);
+  unique.push(array[0]);
+  for (let i = 1; i < array.length - 1; i++) {
+    const previous = array[i - 1];
+    const current = array[i];
+    const next = array[i + 1];
+    if (!isEqual(current, next) && !isEqual(current, previous)) {
+      unique.push(current);
+    }
+  }
+  unique.push(array[array.length - 1]);
+
+  return unique;
 }

@@ -28,86 +28,75 @@ export function getRoundedLongitude(longitude, latitude) {
   );
 }
 
-export function getSquareCoordinates(location) {
-  const { latitude, longitude } = location;
-  return [
-    {
-      latitude: MathUtils.roundToDecimals(latitude + Earth.GRID_DISTANCE / 2.01, 6),
-      longitude: MathUtils.roundToDecimals(longitude - gridDistanceAtLatitude(latitude) / 2.01, 6),
-    },
-    {
-      latitude: MathUtils.roundToDecimals(latitude + Earth.GRID_DISTANCE / 2.01, 6),
-      longitude: MathUtils.roundToDecimals(longitude + gridDistanceAtLatitude(latitude) / 2.01, 6),
-    },
-    {
-      latitude: MathUtils.roundToDecimals(latitude - Earth.GRID_DISTANCE / 2.01, 6),
-      longitude: MathUtils.roundToDecimals(longitude + gridDistanceAtLatitude(latitude) / 2.01, 6),
-    },
-    {
-      latitude: MathUtils.roundToDecimals(latitude - Earth.GRID_DISTANCE / 2.01, 6),
-      longitude: MathUtils.roundToDecimals(longitude - gridDistanceAtLatitude(latitude) / 2.01, 6),
-    },
-  ];
-}
-
-export function getSquareEdges(location) {
-  const coordinates = getSquareCoordinates(location);
-  return [
-    [coordinates[0], coordinates[1]],
-    [coordinates[1], coordinates[2]],
-    [coordinates[3], coordinates[2]],
-    [coordinates[0], coordinates[3]],
-  ];
-}
-
 export function getRectangleCoordinates(topLeft, botRight) {
   return [
     {
-      latitude: MathUtils.roundToDecimals(topLeft.latitude + Earth.GRID_DISTANCE / 2.01, 6),
+      latitude: MathUtils.roundToDecimals(
+        topLeft.latitude + Earth.GRID_DISTANCE / Earth.SQUARE_OFFSET,
+        6,
+      ),
       longitude: MathUtils.roundToDecimals(
-        topLeft.longitude - gridDistanceAtLatitude(topLeft.latitude) / 2.01,
+        topLeft.longitude -
+          gridDistanceAtLatitude(topLeft.latitude) / Earth.SQUARE_OFFSET -
+          0.000001,
         6,
       ),
     },
     {
-      latitude: MathUtils.roundToDecimals(topLeft.latitude + Earth.GRID_DISTANCE / 2.01, 6),
+      latitude: MathUtils.roundToDecimals(
+        topLeft.latitude + Earth.GRID_DISTANCE / Earth.SQUARE_OFFSET,
+        6,
+      ),
       longitude: MathUtils.roundToDecimals(
-        botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / 2.01,
+        botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / Earth.SQUARE_OFFSET,
         6,
       ),
     },
     {
-      latitude: MathUtils.roundToDecimals(botRight.latitude - Earth.GRID_DISTANCE / 2.01, 6),
+      latitude: MathUtils.roundToDecimals(
+        botRight.latitude - Earth.GRID_DISTANCE / Earth.SQUARE_OFFSET,
+        6,
+      ),
       longitude: MathUtils.roundToDecimals(
-        botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / 2.01,
+        botRight.longitude + gridDistanceAtLatitude(botRight.latitude) / Earth.SQUARE_OFFSET,
         6,
       ),
     },
     {
-      latitude: MathUtils.roundToDecimals(botRight.latitude - Earth.GRID_DISTANCE / 2.01, 6),
+      latitude: MathUtils.roundToDecimals(
+        botRight.latitude - Earth.GRID_DISTANCE / Earth.SQUARE_OFFSET,
+        6,
+      ),
       longitude: MathUtils.roundToDecimals(
-        topLeft.longitude - gridDistanceAtLatitude(topLeft.latitude) / 2.01,
+        topLeft.longitude -
+          gridDistanceAtLatitude(topLeft.latitude) / Earth.SQUARE_OFFSET -
+          0.000001,
         6,
       ),
     },
   ];
 }
 
-export function convertSquaresToSlices(squares) {
-  if (squares.length === 1) {
-    return [getSquareCoordinates(squares[0])];
+export function getSquareCoordinates(location) {
+  return getRectangleCoordinates(location, location);
+}
+
+export function getSliceCoordinates(locations) {
+  if (locations.length === 1) {
+    return [getSquareCoordinates(locations[0])];
   }
 
   const slices = [];
-  squares.sort(SortUtils.byLatitudeDesc);
-  let first = squares[0];
-  let last = squares[0];
+  locations.sort(SortUtils.byLatitudeDesc);
+  let first = locations[0];
+  let last = locations[0];
 
-  for (let i = 0; i < squares.length; i++) {
-    const current = squares[i];
-    const next = squares[i + 1];
+  for (let i = 0; i < locations.length; i++) {
+    const current = locations[i];
+    const next = locations[i + 1];
 
-    if (!current || !next) {
+    if (!next) {
+      slices.push(getRectangleCoordinates(first, last));
       break;
     }
 
@@ -132,6 +121,16 @@ export function convertSquaresToSlices(squares) {
 export function convertSlicesToPolygons(slices) {
   const polygons = slices;
   return polygons;
+}
+
+export function getSquareEdges(location) {
+  const coordinates = getSquareCoordinates(location);
+  return [
+    [coordinates[0], coordinates[1]],
+    [coordinates[1], coordinates[2]],
+    [coordinates[3], coordinates[2]],
+    [coordinates[0], coordinates[3]],
+  ];
 }
 
 export const EdgeType = {

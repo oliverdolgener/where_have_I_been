@@ -88,7 +88,28 @@ class MapScreen extends Component {
     const { user } = props.navigation.state.params;
     const visitedLocations = user.locations || [];
     // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
-    const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
+    const holes = EarthUtils.getSliceCoordinates(visitedLocations);
+    // let vertices = [];
+    // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
+    // vertices = MathUtils.removeBothDuplicateLocations(vertices);
+    // vertices.sort((a, b) => {
+    //   const latC = 52.5568;
+    //   const longC = 13.207;
+    //   const lat1 = a.latitude;
+    //   const long1 = a.longitude;
+    //   const lat2 = b.latitude;
+    //   const long2 = b.longitude;
+    //   const angle1 = Math.atan2(lat1 - latC, long1 - longC);
+    //   const angle2 = Math.atan2(lat2 - latC, long2 - longC);
+
+    //   if (angle1 < angle2) {
+    //     return -1;
+    //   }
+
+    //   return 1;
+    // });
+    // const holes = [vertices];
+
     this.locationsToSave = [];
 
     this.state = {
@@ -157,7 +178,7 @@ class MapScreen extends Component {
       this.locationsToSave.push(location);
       visitedLocations.push(location);
       // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
-      const holes = EarthUtils.convertSquaresToSlices(visitedLocations);
+      const holes = EarthUtils.getSliceCoordinates(visitedLocations);
       this.setState({
         visitedLocations,
         holes,
