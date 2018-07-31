@@ -14,20 +14,6 @@ export function gridDistanceAtLatitude(latitude) {
   return 360 / pointsAtLatitude(latitude);
 }
 
-export function getRoundedLatitude(latitude) {
-  return MathUtils.roundToDecimals(
-    Math.round(latitude / Earth.GRID_DISTANCE) * Earth.GRID_DISTANCE,
-    6,
-  );
-}
-
-export function getRoundedLongitude(longitude, latitude) {
-  return MathUtils.roundToDecimals(
-    Math.round(longitude / gridDistanceAtLatitude(latitude)) * gridDistanceAtLatitude(latitude),
-    6,
-  );
-}
-
 export function getRectangleCoordinates(topLeft, botRight) {
   return [
     {

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, Permissions, MapView } from 'expo';
+import Coordinate from '../model/Coordinate';
 import InfoText from '../components/InfoText';
 import * as LevelUtils from '../utils/LevelUtils';
 import * as MathUtils from '../utils/MathUtils';
-import * as EarthUtils from '../utils/EarthUtils';
 import * as Earth from '../constants/Earth';
 import * as Colors from '../constants/Colors';
 import iconMenu from '../assets/iconMenu.png';
@@ -86,9 +86,9 @@ class MapScreen extends Component {
   constructor(props) {
     super(props);
     const { user } = props.navigation.state.params;
-    const visitedLocations = user.locations || [];
-    // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
-    const holes = EarthUtils.getSliceCoordinates(visitedLocations);
+    const visitedLocations = user.locations.map(x => new Coordinate(x.latitude, x.longitude));
+    const holes = visitedLocations.map(x => x.getCorners());
+    // const holes = EarthUtils.getSliceCoordinates(visitedLocations);
     // let vertices = [];
     // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
     // vertices = MathUtils.removeBothDuplicateLocations(vertices);
@@ -113,10 +113,7 @@ class MapScreen extends Component {
     this.locationsToSave = [];
 
     this.state = {
-      currentLocation: {
-        latitude: 52.5575,
-        longitude: 13.206354,
-      },
+      currentLocation: new Coordinate(52.5575, 13.206354),
       visitedLocations,
       holes,
       followLocation: true,
@@ -146,24 +143,23 @@ class MapScreen extends Component {
     this.positionListener = await Location.watchPositionAsync(
       { enableHighAccuracy: true, timeInterval: 0, distanceInterval: 0 },
       (result) => {
+        const {
+          latitude, longitude, speed, altitude,
+        } = result.coords;
         const { followLocation } = this.state;
-        const currentLocation = {
-          latitude: result.coords.latitude,
-          longitude: result.coords.longitude,
-        };
+        const currentLocation = new Coordinate(latitude, longitude);
         this.setState({
           currentLocation,
-          speed: Math.round(MathUtils.toKmh(result.coords.speed)),
-          altitude: Math.round(result.coords.altitude),
+          speed: Math.round(MathUtils.toKmh(speed)),
+          altitude: Math.round(altitude),
         });
         followLocation && this.moveToLocation(currentLocation);
 
         if (result.coords.accuracy < 50) {
-          const roundedLatitude = EarthUtils.getRoundedLatitude(currentLocation.latitude);
-          const roundedLocation = {
-            latitude: roundedLatitude,
-            longitude: EarthUtils.getRoundedLongitude(currentLocation.longitude, roundedLatitude),
-          };
+          const roundedLocation = new Coordinate(
+            currentLocation.getRoundedLatitude(),
+            currentLocation.getRoundedLongitude(),
+          );
           this.addLocation(roundedLocation);
         }
 
@@ -177,8 +173,8 @@ class MapScreen extends Component {
     if (!MathUtils.containsLocation(location, visitedLocations)) {
       this.locationsToSave.push(location);
       visitedLocations.push(location);
-      // const holes = visitedLocations.map(x => [...EarthUtils.getSquareCoordinates(x)]);
-      const holes = EarthUtils.getSliceCoordinates(visitedLocations);
+      const holes = visitedLocations.map(x => x.getCorners());
+      // const holes = EarthUtils.getSliceCoordinates(visitedLocations);
       this.setState({
         visitedLocations,
         holes,
