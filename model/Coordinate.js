@@ -8,6 +8,13 @@ export default class Coordinate {
     this.longitude = longitude;
   }
 
+  static isEqual(coordinateA, coordinateB) {
+    return (
+      coordinateA.latitude === coordinateB.latitude &&
+      coordinateA.longitude === coordinateB.longitude
+    );
+  }
+
   static getRoundedLatitude(latitude) {
     return MathUtils.roundToDecimals(
       Math.round(latitude / Earth.GRID_DISTANCE) * Earth.GRID_DISTANCE,
@@ -22,6 +29,23 @@ export default class Coordinate {
         EarthUtils.gridDistanceAtLatitude(roundedLatitude),
       6,
     );
+  }
+
+  static getNeighbours(coordinate, array) {
+    const neighbours = [];
+    array.forEach((x) => {
+      if (
+        (x.latitude - coordinate.latitude) ** 2 / Earth.GRID_DISTANCE ** 2 <= 1.01 &&
+        (x.longitude - coordinate.longitude) ** 2 /
+          EarthUtils.gridDistanceAtLatitude(coordinate.latitude) ** 2 <=
+          1.001
+      ) {
+        if (!Coordinate.isEqual(x, coordinate)) {
+          neighbours.push(x);
+        }
+      }
+    });
+    return neighbours;
   }
 
   getRoundedLatitude() {

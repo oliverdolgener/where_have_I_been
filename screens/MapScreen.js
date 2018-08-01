@@ -86,7 +86,8 @@ class MapScreen extends Component {
   constructor(props) {
     super(props);
     const { user } = props.navigation.state.params;
-    const visitedLocations = user.locations.map(x => new Coordinate(x.latitude, x.longitude));
+    let visitedLocations = user.locations.map(x => new Coordinate(x.latitude, x.longitude));
+    visitedLocations = MathUtils.removeDuplicateLocations(visitedLocations);
     const holes = visitedLocations.map(x => x.getCorners());
     // const holes = EarthUtils.getSliceCoordinates(visitedLocations);
     // let vertices = [];
@@ -113,7 +114,7 @@ class MapScreen extends Component {
     this.locationsToSave = [];
 
     this.state = {
-      currentLocation: new Coordinate(52.5575, 13.206354),
+      currentLocation: new Coordinate(52.557, 13.206354),
       visitedLocations,
       holes,
       followLocation: true,
@@ -284,6 +285,13 @@ class MapScreen extends Component {
             holes={holes}
           />
           {/* {holes.map(x => <MapView.Polygon fillColor={Colors.black} coordinates={x} />)} */}
+          {/* {Coordinate.getNeighbours(
+            new Coordinate(
+              currentLocation.getRoundedLatitude(),
+              currentLocation.getRoundedLongitude(),
+            ),
+            visitedLocations,
+          ).map(x => <MapView.Marker coordinate={x} />)} */}
         </MapView>
         <TouchableOpacity
           style={styles.menuButton}
