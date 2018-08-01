@@ -112,6 +112,7 @@ class MapScreen extends Component {
     // const holes = [vertices];
 
     this.locationsToSave = [];
+    this.lastTile = {};
 
     this.state = {
       currentLocation: new Coordinate(52.557, 13.206354),
@@ -126,6 +127,12 @@ class MapScreen extends Component {
 
   componentDidMount() {
     this.watchPositionAsync();
+  }
+
+  onTileChange() {
+    const { currentLocation } = this.state;
+    this.getGeolocationAsync(currentLocation);
+    this.addLocation(this.lastTile);
   }
 
   getGeolocationAsync = async (location) => {
@@ -149,22 +156,24 @@ class MapScreen extends Component {
         } = result.coords;
         const { followLocation } = this.state;
         const currentLocation = new Coordinate(latitude, longitude);
-        this.setState({
-          currentLocation,
-          speed: Math.round(MathUtils.toKmh(speed)),
-          altitude: Math.round(altitude),
-        });
-        followLocation && this.moveToLocation(currentLocation);
 
         if (result.coords.accuracy < 50) {
           const roundedLocation = new Coordinate(
             currentLocation.getRoundedLatitude(),
             currentLocation.getRoundedLongitude(),
           );
-          this.addLocation(roundedLocation);
+          if (!Coordinate.isEqual(this.lastTile, roundedLocation)) {
+            this.lastTile = roundedLocation;
+            this.onTileChange();
+          }
         }
 
-        this.getGeolocationAsync(currentLocation);
+        followLocation && this.moveToLocation(currentLocation);
+        this.setState({
+          currentLocation,
+          speed: Math.round(MathUtils.toKmh(speed)),
+          altitude: Math.round(altitude),
+        });
       },
     );
   };
