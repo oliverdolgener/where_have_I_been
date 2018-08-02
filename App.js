@@ -22,13 +22,19 @@ class App extends Component {
   componentDidMount() {
     KeepAwake.activate();
     DangerZone.DeviceMotion.setUpdateInterval(1000);
-    DangerZone.DeviceMotion.addListener((result) => {
-      if (result.rotation && result.rotation.beta < -0.75) {
-        Brightness.setBrightnessAsync(0);
-      } else if (result.rotation && result.rotation.beta > 0.75) {
-        this.resetBrightnessAsync();
-      }
-    });
+    this.motionListener = DangerZone.DeviceMotion.addListener(result => this.handleMotionEvent(result));
+  }
+
+  componentWillUnmount() {
+    this.motionListener.remove();
+  }
+
+  handleMotionEvent(result) {
+    if (result.rotation && result.rotation.beta < -0.75) {
+      Brightness.setBrightnessAsync(0);
+    } else if (result.rotation && result.rotation.beta > 0.75) {
+      this.resetBrightnessAsync();
+    }
   }
 
   resetBrightnessAsync = async () => {
