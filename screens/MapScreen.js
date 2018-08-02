@@ -6,6 +6,7 @@ import Coordinate from '../model/Coordinate';
 import InfoText from '../components/InfoText';
 import * as LevelUtils from '../utils/LevelUtils';
 import * as MathUtils from '../utils/MathUtils';
+import * as EarthUtils from '../utils/EarthUtils';
 import * as Earth from '../constants/Earth';
 import * as Colors from '../constants/Colors';
 import iconMenu from '../assets/iconMenu.png';
@@ -88,8 +89,8 @@ class MapScreen extends Component {
     const { user } = props.navigation.state.params;
     let visitedLocations = user.locations.map(x => new Coordinate(x.latitude, x.longitude));
     visitedLocations = MathUtils.removeDuplicateLocations(visitedLocations);
-    const holes = visitedLocations.map(x => x.getCorners());
-    // const holes = EarthUtils.getSliceCoordinates(visitedLocations);
+    // const holes = visitedLocations.map(x => x.getCorners());
+    const holes = EarthUtils.getSliceCoordinates(visitedLocations);
     // let vertices = [];
     // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
     // vertices = MathUtils.removeBothDuplicateLocations(vertices);
@@ -183,8 +184,8 @@ class MapScreen extends Component {
     if (!MathUtils.containsLocation(location, visitedLocations)) {
       this.locationsToSave.push(location);
       visitedLocations.push(location);
-      const holes = visitedLocations.map(x => x.getCorners());
-      // const holes = EarthUtils.getSliceCoordinates(visitedLocations);
+      // const holes = visitedLocations.map(x => x.getCorners());
+      const holes = EarthUtils.getSliceCoordinates(visitedLocations);
       this.setState({
         visitedLocations,
         holes,
