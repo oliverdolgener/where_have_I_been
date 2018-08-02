@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
-import { KeepAwake } from 'expo';
+import { KeepAwake, DangerZone, Brightness } from 'expo';
 import UserReducer from './reducers/user';
 import MapReducer from './reducers/map';
 import AppNavigation from './navigation/AppNavigation';
@@ -18,14 +18,34 @@ const store = createStore(combineReducers({
   map: MapReducer,
 }));
 
-const App = () => (
-  <Provider store={store}>
-    <View style={styles.container}>
-      <KeepAwake />
-      <AppNavigation />
-    </View>
-  </Provider>
-);
+class App extends Component {
+  componentDidMount() {
+    KeepAwake.activate();
+    DangerZone.DeviceMotion.setUpdateInterval(1000);
+    DangerZone.DeviceMotion.addListener((result) => {
+      if (result.rotation && result.rotation.beta < -0.75) {
+        Brightness.setBrightnessAsync(0);
+      } else if (result.rotation && result.rotation.beta > 0.75) {
+        this.resetBrightnessAsync();
+      }
+    });
+  }
+
+  resetBrightnessAsync = async () => {
+    const systemBrightness = await Brightness.getSystemBrightnessAsync();
+    Brightness.setBrightnessAsync(systemBrightness);
+  }
+
+  render() {
+    return (
+      <Provider store={store}>
+        <View style={styles.container}>
+          <AppNavigation />
+        </View>
+      </Provider>
+    );
+  }
+}
 
 console.disableYellowBox = true;
 
