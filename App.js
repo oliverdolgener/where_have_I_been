@@ -1,7 +1,8 @@
 import React from 'react';
-import { createStore, combineReducers } from 'redux';
 import { StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
+import { createStore, combineReducers } from 'redux';
+import { KeepAwake } from 'expo';
 import UserReducer from './reducers/user';
 import MapReducer from './reducers/map';
 import AppNavigation from './navigation/AppNavigation';
@@ -20,6 +21,7 @@ const store = createStore(combineReducers({
 const App = () => (
   <Provider store={store}>
     <View style={styles.container}>
+      <KeepAwake />
       <AppNavigation />
     </View>
   </Provider>
