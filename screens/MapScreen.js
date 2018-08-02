@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, Permissions, MapView } from 'expo';
+import { actions as mapActions } from '../reducers/map';
 import Coordinate from '../model/Coordinate';
 import InfoText from '../components/InfoText';
 import * as LevelUtils from '../utils/LevelUtils';
@@ -112,7 +113,6 @@ class MapScreen extends Component {
     // });
     // const holes = [vertices];
 
-    this.locationsToSave = [];
     this.lastTile = {};
 
     this.state = {
@@ -182,7 +182,9 @@ class MapScreen extends Component {
   addLocation(location) {
     const { visitedLocations } = this.state;
     if (!MathUtils.containsLocation(location, visitedLocations)) {
-      this.locationsToSave.push(location);
+      const tilesToSaveCopy = this.props.tilesToSave;
+      tilesToSaveCopy.push(location);
+      this.props.setTilesToSave(tilesToSaveCopy);
       visitedLocations.push(location);
       // const holes = visitedLocations.map(x => x.getCorners());
       const holes = EarthUtils.getSliceCoordinates(visitedLocations);
@@ -190,13 +192,13 @@ class MapScreen extends Component {
         visitedLocations,
         holes,
       });
-      this.saveLocations();
     }
+    this.saveLocations();
   }
 
   saveLocations() {
     const { user } = this.props.navigation.state.params;
-    if (this.locationsToSave.length > 0) {
+    if (this.props.tilesToSave.length > 0) {
       fetch(`https://api.0llum.de/users/${user.id}`, {
         method: 'PATCH',
         headers: {
@@ -204,11 +206,11 @@ class MapScreen extends Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          locations: this.locationsToSave,
+          locations: this.props.tilesToSave,
         }),
       }).then((response) => {
         if (response.status === 200) {
-          this.locationsToSave = [];
+          this.props.setTilesToSave([]);
         }
       });
     }
@@ -357,6 +359,11 @@ class MapScreen extends Component {
 const mapStateToProps = state => ({
   isLoggedIn: state.user.get('isLoggedIn'),
   mapType: state.map.get('mapType'),
+  tilesToSave: state.map.get('tilesToSave'),
 });
 
-export default connect(mapStateToProps)(MapScreen);
+const mapDispatchToProps = {
+  setTilesToSave: mapActions.setTilesToSave,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);

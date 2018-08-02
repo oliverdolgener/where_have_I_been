@@ -30,8 +30,15 @@ class SplashScreen extends React.Component {
   getUserAsync = async () => {
     const id = await AsyncStorage.getItem('id');
     const mapType = await AsyncStorage.getItem('mapType');
+    const tilesToSave = await AsyncStorage.getItem('tilesToSave');
     setTimeout(() => {
       if (id) {
+        if (mapType) {
+          this.props.setMapType(mapType);
+        }
+        if (tilesToSave) {
+          this.props.setTilesToSave(JSON.parse(tilesToSave));
+        }
         fetch(`https://api.0llum.de/users/${id}`)
           .then(response => response.json())
           .then((responseJson) => {
@@ -39,10 +46,6 @@ class SplashScreen extends React.Component {
           });
       } else {
         this.props.navigation.navigate('Login');
-      }
-
-      if (mapType) {
-        this.props.setMapType(mapType);
       }
     }, 3000);
   };
@@ -80,6 +83,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   login: userActions.login,
   setMapType: mapActions.setMapType,
+  setTilesToSave: mapActions.setTilesToSave,
 };
 
 export default connect(
