@@ -90,7 +90,7 @@ class MapScreen extends Component {
     const { user } = props.navigation.state.params;
     let visitedLocations = user.locations.map(x => new Coordinate(x.latitude, x.longitude));
     visitedLocations = MathUtils.removeDuplicateLocations(visitedLocations);
-    this.coherentTiles = Coordinate.getCoherentTiles(visitedLocations);
+    // this.coherentTiles = Coordinate.getCoherentTiles(visitedLocations);
     // const holes = visitedLocations.map(x => x.getCorners());
     const holes = EarthUtils.getSliceCoordinates(visitedLocations);
 
@@ -275,8 +275,8 @@ class MapScreen extends Component {
           showsUserLocation
           maxZoomLevel={18}
           initialRegion={{
-            latitude: 52.5575,
-            longitude: 13.206354,
+            latitude: 52.558,
+            longitude: 13.206504,
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           }}
