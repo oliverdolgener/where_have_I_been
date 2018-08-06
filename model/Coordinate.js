@@ -38,7 +38,7 @@ export default class Coordinate {
         (x.latitude - coordinate.latitude) ** 2 / Earth.GRID_DISTANCE ** 2 <= 1.01 &&
         (x.longitude - coordinate.longitude) ** 2 /
           EarthUtils.gridDistanceAtLatitude(coordinate.latitude) ** 2 <=
-          1.001
+          1.002
       ) {
         if (!Coordinate.isEqual(x, coordinate)) {
           neighbours.push(x);
@@ -46,6 +46,38 @@ export default class Coordinate {
       }
     });
     return neighbours;
+  }
+
+  static breadFirstSearch(array, start) {
+    if (array.length < 1) {
+      return [];
+    }
+
+    if (array.length === 1) {
+      return array;
+    }
+
+    array.forEach(x => x.visited = false);
+    const BFS = [];
+    const queue = [];
+    const startTile = array.find(x => Coordinate.isEqual(x, start));
+    startTile.visited = true;
+    queue.push(startTile);
+    BFS.push(startTile);
+
+    while (queue.length > 0) {
+      const tile = queue.shift();
+      const neighbours = Coordinate.getNeighbours(tile, array);
+      neighbours.forEach((x) => {
+        if (!x.visited) {
+          x.visited = true;
+          queue.push(x);
+          BFS.push(x);
+        }
+      });
+    }
+
+    return BFS;
   }
 
   getRoundedLatitude() {
