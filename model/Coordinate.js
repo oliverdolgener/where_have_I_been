@@ -80,6 +80,45 @@ export default class Coordinate {
     return BFS;
   }
 
+  static getCoherentTiles(array) {
+    if (array.length < 1) {
+      return [];
+    }
+
+    if (array.length === 1) {
+      return array;
+    }
+
+    const coherentTiles = [];
+    array.forEach(x => x.visited = false);
+
+    for (let i = 0; i < array.length; i++) {
+      if (!array[i].visited) {
+        const BFS = [];
+        const queue = [];
+        const startTile = array.find(x => Coordinate.isEqual(x, array[i]));
+        startTile.visited = true;
+        queue.push(startTile);
+        BFS.push(startTile);
+
+        while (queue.length > 0) {
+          const tile = queue.shift();
+          const neighbours = Coordinate.getNeighbours(tile, array);
+          neighbours.forEach((x) => {
+            if (!x.visited) {
+              x.visited = true;
+              queue.push(x);
+              BFS.push(x);
+            }
+          });
+        }
+        coherentTiles.push(BFS);
+      }
+    }
+
+    return coherentTiles;
+  }
+
   getRoundedLatitude() {
     return Coordinate.getRoundedLatitude(this.latitude);
   }
