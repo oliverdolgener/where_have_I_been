@@ -22,7 +22,8 @@ class App extends Component {
   componentDidMount() {
     KeepAwake.activate();
     DangerZone.DeviceMotion.setUpdateInterval(1000);
-    this.motionListener = DangerZone.DeviceMotion.addListener(result => this.handleMotionEvent(result));
+    this.motionListener = DangerZone.DeviceMotion.addListener(result =>
+      this.handleMotionEvent(result));
   }
 
   componentWillUnmount() {
@@ -40,7 +41,7 @@ class App extends Component {
   resetBrightnessAsync = async () => {
     const systemBrightness = await Brightness.getSystemBrightnessAsync();
     Brightness.setBrightnessAsync(systemBrightness);
-  }
+  };
 
   render() {
     return (

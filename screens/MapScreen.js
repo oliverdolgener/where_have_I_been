@@ -125,6 +125,7 @@ class MapScreen extends Component {
       speed: 0,
       altitude: 0,
       geocode: {},
+      region: {},
     };
   }
 
@@ -136,6 +137,12 @@ class MapScreen extends Component {
     const { currentLocation } = this.state;
     this.getGeolocationAsync(currentLocation);
     this.addLocation(this.lastTile);
+  }
+
+  onRegionChange(event) {
+    this.setState({
+      region: event,
+    });
   }
 
   getGeolocationAsync = async (location) => {
@@ -233,6 +240,7 @@ class MapScreen extends Component {
       speed,
       altitude,
       geocode,
+      region,
     } = this.state;
 
     // const vertices = [];
@@ -253,6 +261,12 @@ class MapScreen extends Component {
 
     const level = LevelUtils.getLevelFromExp(visitedLocations.length);
     const gradient = LevelUtils.getPercentToNextLevel(visitedLocations.length);
+
+    const visibleLocations = visitedLocations.filter(x =>
+      x.latitude <= region.latitude + region.latitudeDelta &&
+        x.latitude >= region.latitude - region.latitudeDelta &&
+        x.longitude <= region.longitude + region.longitudeDelta &&
+        x.longitude >= region.longitude - region.longitudeDelta);
 
     return (
       <View style={styles.container}>
@@ -280,6 +294,7 @@ class MapScreen extends Component {
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           }}
+          onRegionChange={event => this.onRegionChange(event)}
           onPanDrag={() => {
             this.setState({
               followLocation: false,
@@ -362,4 +377,7 @@ const mapDispatchToProps = {
   setTilesToSave: mapActions.setTilesToSave,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(MapScreen);
