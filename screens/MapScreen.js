@@ -88,11 +88,10 @@ class MapScreen extends Component {
   constructor(props) {
     super(props);
     const { user } = props.navigation.state.params;
+    const currentLocation = new Coordinate(52.558, 13.206504);
     let visitedLocations = user.locations.map(x => new Coordinate(x.latitude, x.longitude));
     visitedLocations = MathUtils.removeDuplicateLocations(visitedLocations);
     // this.coherentTiles = Coordinate.getCoherentTiles(visitedLocations);
-    // const holes = visitedLocations.map(x => x.getCorners());
-    const holes = EarthUtils.getSliceCoordinates(visitedLocations);
 
     // let vertices = [];
     // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
@@ -118,14 +117,18 @@ class MapScreen extends Component {
     this.lastTile = {};
 
     this.state = {
-      currentLocation: new Coordinate(52.558, 13.206504),
+      currentLocation,
+      region: {
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+      },
       visitedLocations,
-      holes,
       followLocation: true,
       speed: 0,
       altitude: 0,
       geocode: {},
-      region: {},
     };
   }
 
@@ -137,12 +140,6 @@ class MapScreen extends Component {
     const { currentLocation } = this.state;
     this.getGeolocationAsync(currentLocation);
     this.addLocation(this.lastTile);
-  }
-
-  onRegionChange(event) {
-    this.setState({
-      region: event,
-    });
   }
 
   getGeolocationAsync = async (location) => {
@@ -195,11 +192,8 @@ class MapScreen extends Component {
       tilesToSaveCopy.push(location);
       this.props.setTilesToSave(tilesToSaveCopy);
       visitedLocations.push(location);
-      // const holes = visitedLocations.map(x => x.getCorners());
-      const holes = EarthUtils.getSliceCoordinates(visitedLocations);
       this.setState({
         visitedLocations,
-        holes,
       });
     }
     this.saveLocations();
@@ -234,13 +228,12 @@ class MapScreen extends Component {
     const { isLoggedIn, mapType } = this.props;
     const {
       currentLocation,
+      region,
       visitedLocations,
-      holes,
       followLocation,
       speed,
       altitude,
       geocode,
-      region,
     } = this.state;
 
     // const vertices = [];
@@ -255,18 +248,17 @@ class MapScreen extends Component {
     //   intersects.push(vertices.filter(vertex => EarthUtils.isPointOnEdge(vertex, edge)));
     // });
 
+    const visibleLocations = visitedLocations.filter(x => x.isInRegion(region));
+
+    // const holes = visibleLocations.map(x => x.getCorners());
+    const holes = EarthUtils.getSliceCoordinates(visibleLocations);
+
     if (!isLoggedIn && this.positionListener) {
       this.positionListener.remove();
     }
 
     const level = LevelUtils.getLevelFromExp(visitedLocations.length);
     const gradient = LevelUtils.getPercentToNextLevel(visitedLocations.length);
-
-    const visibleLocations = visitedLocations.filter(x =>
-      x.latitude <= region.latitude + region.latitudeDelta &&
-        x.latitude >= region.latitude - region.latitudeDelta &&
-        x.longitude <= region.longitude + region.longitudeDelta &&
-        x.longitude >= region.longitude - region.longitudeDelta);
 
     return (
       <View style={styles.container}>
@@ -288,18 +280,9 @@ class MapScreen extends Component {
           showsMyLocationButton={false}
           showsUserLocation
           maxZoomLevel={18}
-          initialRegion={{
-            latitude: 52.558,
-            longitude: 13.206504,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
-          }}
-          onRegionChange={event => this.onRegionChange(event)}
-          onPanDrag={() => {
-            this.setState({
-              followLocation: false,
-            });
-          }}
+          initialRegion={region}
+          onRegionChangeComplete={newRegion => this.setState({ region: newRegion })}
+          onPanDrag={() => this.setState({ followLocation: false })}
         >
           {mapType === 'watercolor' && (
             <MapView.UrlTile
@@ -307,12 +290,12 @@ class MapScreen extends Component {
               zIndex={-1}
             />
           )}
-          <MapView.Polygon
-            fillColor={Colors.black}
+          {<MapView.Polygon
+            fillColor={Colors.black90}
             strokeColor={Colors.transparent}
             coordinates={Earth.FOG}
-            holes={holes}
-          />
+            holes={holes || []}
+          />}
           {/* {holes.map(x => <MapView.Polygon fillColor={Colors.black} coordinates={x} />)} */}
           {/* {this.coherentTiles.map(x => x.map(y => <MapView.Marker coordinate={y} key={JSON.stringify(y)} />))} */}
         </MapView>

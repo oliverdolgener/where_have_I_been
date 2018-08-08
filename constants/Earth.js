@@ -4,11 +4,11 @@ export const SQUARE_OFFSET = 2.01;
 export const FOG = [
   {
     latitude: 89,
-    longitude: -179.9,
+    longitude: -179.99,
   },
   {
     latitude: -89,
-    longitude: -179.9,
+    longitude: -179.99,
   },
   {
     latitude: -89,
@@ -16,11 +16,11 @@ export const FOG = [
   },
   {
     latitude: -89,
-    longitude: 179.9,
+    longitude: 179.99,
   },
   {
     latitude: 89,
-    longitude: 179.9,
+    longitude: 179.99,
   },
   {
     latitude: 89,

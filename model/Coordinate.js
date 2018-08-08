@@ -31,6 +31,13 @@ export default class Coordinate {
     );
   }
 
+  static isCoordinateInRegion(coordinate, region) {
+    return coordinate.latitude <= region.latitude + region.latitudeDelta &&
+    coordinate.latitude >= region.latitude - region.latitudeDelta &&
+    coordinate.longitude <= region.longitude + region.longitudeDelta &&
+    coordinate.longitude >= region.longitude - region.longitudeDelta;
+  }
+
   static getNeighbours(coordinate, array) {
     const neighbours = [];
     array.forEach((x) => {
@@ -125,6 +132,13 @@ export default class Coordinate {
 
   getRoundedLongitude() {
     return Coordinate.getRoundedLongitude(this.longitude, this.latitude);
+  }
+
+  isInRegion(region) {
+    return this.latitude <= region.latitude + region.latitudeDelta &&
+    this.latitude >= region.latitude - region.latitudeDelta &&
+    this.longitude <= region.longitude + region.longitudeDelta &&
+    this.longitude >= region.longitude - region.longitudeDelta;
   }
 
   getCorners() {
