@@ -12,7 +12,7 @@ export const actions = {
 };
 
 const initialState = Map({
-  mapType: 'satellite',
+  mapType: 'hybrid',
   tilesToSave: [],
 });
 

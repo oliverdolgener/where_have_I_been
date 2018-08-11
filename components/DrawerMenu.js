@@ -39,17 +39,17 @@ class DrawerMenu extends React.Component {
     const { navigation, mapType, setMapType } = this.props;
     navigation.closeDrawer();
     switch (mapType) {
-      case 'satellite':
+      case 'hybrid':
         setMapType('standard');
         break;
       case 'standard':
         setMapType('watercolor');
         break;
       case 'watercolor':
-        setMapType('satellite');
+        setMapType('hybrid');
         break;
       default:
-        setMapType('satellite');
+        setMapType('hybrid');
         break;
     }
   };
@@ -66,7 +66,7 @@ class DrawerMenu extends React.Component {
 
     let mapTypeIcon;
     switch (mapType) {
-      case 'satellite':
+      case 'hybrid':
         mapTypeIcon = iconMap;
         break;
       case 'standard':

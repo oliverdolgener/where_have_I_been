@@ -248,10 +248,9 @@ class MapScreen extends Component {
     //   intersects.push(vertices.filter(vertex => EarthUtils.isPointOnEdge(vertex, edge)));
     // });
 
-    const visibleLocations = visitedLocations.filter(x => x.isInRegion(region));
-
+    // const visibleLocations = visitedLocations.filter(x => x.isInRegion(region));
     // const holes = visibleLocations.map(x => x.getCorners());
-    const holes = EarthUtils.getSliceCoordinates(visibleLocations);
+    const holes = EarthUtils.getSliceCoordinates(visitedLocations);
 
     if (!isLoggedIn && this.positionListener) {
       this.positionListener.remove();

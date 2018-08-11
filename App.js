@@ -21,13 +21,13 @@ const store = createStore(combineReducers({
 class App extends Component {
   componentDidMount() {
     KeepAwake.activate();
-    DangerZone.DeviceMotion.setUpdateInterval(1000);
-    this.motionListener = DangerZone.DeviceMotion.addListener(result =>
-      this.handleMotionEvent(result));
+    // DangerZone.DeviceMotion.setUpdateInterval(1000);
+    // this.motionListener = DangerZone.DeviceMotion.addListener(result =>
+    //   this.handleMotionEvent(result));
   }
 
   componentWillUnmount() {
-    this.motionListener.remove();
+    // this.motionListener.remove();
   }
 
   handleMotionEvent(result) {
