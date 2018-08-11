@@ -91,6 +91,9 @@ class MapScreen extends Component {
     const currentLocation = new Coordinate(52.558, 13.206504);
     let visitedLocations = user.locations.map(x => new Coordinate(x.latitude, x.longitude));
     visitedLocations = MathUtils.removeDuplicateLocations(visitedLocations);
+    // const visibleLocations = visitedLocations.filter(x => x.isInRegion(region));
+    // const holes = visibleLocations.map(x => x.getCorners());
+    const holes = EarthUtils.getSliceCoordinates(visitedLocations);
     // this.coherentTiles = Coordinate.getCoherentTiles(visitedLocations);
 
     // let vertices = [];
@@ -125,6 +128,7 @@ class MapScreen extends Component {
         longitudeDelta: 0.005,
       },
       visitedLocations,
+      holes,
       followLocation: true,
       speed: 0,
       altitude: 0,
@@ -192,8 +196,12 @@ class MapScreen extends Component {
       tilesToSaveCopy.push(location);
       this.props.setTilesToSave(tilesToSaveCopy);
       visitedLocations.push(location);
+      // const visibleLocations = visitedLocations.filter(x => x.isInRegion(region));
+      // const holes = visibleLocations.map(x => x.getCorners());
+      const holes = EarthUtils.getSliceCoordinates(visitedLocations);
       this.setState({
         visitedLocations,
+        holes,
       });
     }
     this.saveLocations();
@@ -230,6 +238,7 @@ class MapScreen extends Component {
       currentLocation,
       region,
       visitedLocations,
+      holes,
       followLocation,
       speed,
       altitude,
@@ -249,8 +258,6 @@ class MapScreen extends Component {
     // });
 
     // const visibleLocations = visitedLocations.filter(x => x.isInRegion(region));
-    // const holes = visibleLocations.map(x => x.getCorners());
-    const holes = EarthUtils.getSliceCoordinates(visitedLocations);
 
     if (!isLoggedIn && this.positionListener) {
       this.positionListener.remove();
@@ -289,12 +296,12 @@ class MapScreen extends Component {
               zIndex={-1}
             />
           )}
-          {<MapView.Polygon
+          <MapView.Polygon
             fillColor={Colors.black90}
             strokeColor={Colors.transparent}
             coordinates={Earth.FOG}
             holes={holes || []}
-          />}
+          />
           {/* {holes.map(x => <MapView.Polygon fillColor={Colors.black} coordinates={x} />)} */}
           {/* {this.coherentTiles.map(x => x.map(y => <MapView.Marker coordinate={y} key={JSON.stringify(y)} />))} */}
         </MapView>
