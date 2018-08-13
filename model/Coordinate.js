@@ -3,9 +3,10 @@ import * as EarthUtils from '../utils/EarthUtils';
 import * as Earth from '../constants/Earth';
 
 export default class Coordinate {
-  constructor(latitude, longitude) {
+  constructor(latitude, longitude, timestamp) {
     this.latitude = latitude;
     this.longitude = longitude;
+    this.timestamp = timestamp;
   }
 
   static isEqual(coordinateA, coordinateB) {
@@ -32,10 +33,12 @@ export default class Coordinate {
   }
 
   static isCoordinateInRegion(coordinate, region) {
-    return coordinate.latitude <= region.latitude + region.latitudeDelta &&
-    coordinate.latitude >= region.latitude - region.latitudeDelta &&
-    coordinate.longitude <= region.longitude + region.longitudeDelta &&
-    coordinate.longitude >= region.longitude - region.longitudeDelta;
+    return (
+      coordinate.latitude <= region.latitude + region.latitudeDelta &&
+      coordinate.latitude >= region.latitude - region.latitudeDelta &&
+      coordinate.longitude <= region.longitude + region.longitudeDelta &&
+      coordinate.longitude >= region.longitude - region.longitudeDelta
+    );
   }
 
   static getNeighbours(coordinate, array) {
@@ -64,7 +67,7 @@ export default class Coordinate {
       return array;
     }
 
-    array.forEach(x => x.visited = false);
+    array.forEach(x => (x.visited = false));
     const BFS = [];
     const queue = [];
     const startTile = array.find(x => Coordinate.isEqual(x, start));
@@ -97,7 +100,7 @@ export default class Coordinate {
     }
 
     const coherentTiles = [];
-    array.forEach(x => x.visited = false);
+    array.forEach(x => (x.visited = false));
 
     for (let i = 0; i < array.length; i++) {
       if (!array[i].visited) {
@@ -135,10 +138,12 @@ export default class Coordinate {
   }
 
   isInRegion(region) {
-    return this.latitude <= region.latitude + region.latitudeDelta &&
-    this.latitude >= region.latitude - region.latitudeDelta &&
-    this.longitude <= region.longitude + region.longitudeDelta &&
-    this.longitude >= region.longitude - region.longitudeDelta;
+    return (
+      this.latitude <= region.latitude + region.latitudeDelta &&
+      this.latitude >= region.latitude - region.latitudeDelta &&
+      this.longitude <= region.longitude + region.longitudeDelta &&
+      this.longitude >= region.longitude - region.longitudeDelta
+    );
   }
 
   getCorners() {

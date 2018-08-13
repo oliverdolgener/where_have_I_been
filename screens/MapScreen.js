@@ -163,15 +163,17 @@ class MapScreen extends Component {
       { enableHighAccuracy: true, timeInterval: 0, distanceInterval: 0 },
       (result) => {
         const {
-          latitude, longitude, speed, altitude,
+          latitude, longitude, speed, altitude, accuracy,
         } = result.coords;
+        const { timestamp } = result;
         const { followLocation } = this.state;
         const currentLocation = new Coordinate(latitude, longitude);
 
-        if (result.coords.accuracy < 50) {
+        if (accuracy < 50) {
           const roundedLocation = new Coordinate(
             currentLocation.getRoundedLatitude(),
             currentLocation.getRoundedLongitude(),
+            timestamp,
           );
           if (!Coordinate.isEqual(this.lastTile, roundedLocation)) {
             this.lastTile = roundedLocation;
@@ -209,7 +211,8 @@ class MapScreen extends Component {
 
   saveLocations() {
     const { user } = this.props.navigation.state.params;
-    if (this.props.tilesToSave.length > 0) {
+    const { tilesToSave, setTilesToSave } = this.props;
+    if (tilesToSave.length > 0) {
       fetch(`https://api.0llum.de/users/${user.id}`, {
         method: 'PATCH',
         headers: {
@@ -217,11 +220,11 @@ class MapScreen extends Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          locations: this.props.tilesToSave,
+          locations: tilesToSave,
         }),
       }).then((response) => {
         if (response.status === 200) {
-          this.props.setTilesToSave([]);
+          setTilesToSave([]);
         }
       });
     }
