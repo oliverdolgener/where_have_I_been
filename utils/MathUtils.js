@@ -36,6 +36,41 @@ export function containsLocation(location, array) {
   return array.find(x => isEqual(x, location));
 }
 
+export function containsDuplicateLocations(array) {
+  if (array < 2) {
+    return false;
+  }
+
+  array.sort(SortUtils.byLatitudeDesc);
+  for (let i = 0; i < array.length - 1; i++) {
+    const current = array[i];
+    const next = array[i + 1];
+    if (isEqual(current, next)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+export function getDuplicateLocations(array) {
+  if (array < 2) {
+    return [];
+  }
+
+  const duplicates = [];
+  array.sort(SortUtils.byLatitudeDesc);
+  for (let i = 0; i < array.length - 1; i++) {
+    const current = array[i];
+    const next = array[i + 1];
+    if (isEqual(current, next)) {
+      duplicates.push(next);
+    }
+  }
+
+  return duplicates;
+}
+
 export function removeDuplicateLocations(array) {
   if (array.length < 1) {
     return [];
