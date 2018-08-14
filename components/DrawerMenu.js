@@ -1,5 +1,5 @@
 import React from 'react';
-import { AsyncStorage, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
+import { AsyncStorage, StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import { actions as userActions } from '../reducers/user';
@@ -8,6 +8,8 @@ import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
 import iconSatellite from '../assets/iconSatellite.png';
 import iconWatercolor from '../assets/iconWatercolor.png';
+import iconSync from '../assets/iconSync.png';
+import iconLogout from '../assets/iconLogout.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -17,20 +19,33 @@ const styles = StyleSheet.create({
   mapType: {
     position: 'absolute',
     top: 30,
-    right: 10,
+    right: 5,
   },
-  mapTypeIcon: {
-    width: 40,
-    height: 40,
+  menuContainer: {
+    flex: 1,
+    marginTop: 60,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 5,
+    marginBottom: 20,
+  },
+  menuIcon: {
+    width: 30,
+    height: 30,
     tintColor: Colors.black,
   },
-  logout: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
+  menuLabel: {
+    flex: 1,
+    marginLeft: 20,
+    fontSize: 24,
   },
-  label: {
-    fontSize: 20,
+  menuBadge: {
+    padding: 3,
+    fontSize: 16,
+    borderWidth: 1,
+    borderRadius: 5,
   },
 });
 
@@ -83,11 +98,19 @@ class DrawerMenu extends React.Component {
     return (
       <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
         <TouchableOpacity style={styles.mapType} onPress={() => this.toggleMapType()}>
-          <Image style={styles.mapTypeIcon} source={mapTypeIcon} />
+          <Image style={styles.menuIcon} source={mapTypeIcon} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.logout} onPress={() => this.logout()}>
-          <Text style={styles.label}>Logout</Text>
-        </TouchableOpacity>
+        <View style={styles.menuContainer}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => this.syncData()}>
+            <Image style={styles.menuIcon} source={iconSync} />
+            <Text style={styles.menuLabel}>Sync Data</Text>
+            <Text style={styles.menuBadge}>20</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => this.logout()}>
+            <Image style={styles.menuIcon} source={iconLogout} />
+            <Text style={styles.menuLabel}>Logout</Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     );
   }
