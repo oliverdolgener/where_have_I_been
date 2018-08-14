@@ -57,13 +57,8 @@ class SplashScreen extends React.Component {
       password: data.password,
       locations: data.locations,
     };
-    this.props.login();
-    this.props.navigation.navigate({
-      routeName: 'Map',
-      params: {
-        user,
-      },
-    });
+    this.props.login(user);
+    this.props.navigation.navigate('Map');
   };
 
   render() {

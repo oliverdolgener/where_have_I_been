@@ -186,14 +186,9 @@ class LoginScreen extends React.Component {
       password: data.password,
       locations: data.locations,
     };
-    this.props.login();
+    this.props.login(user);
     this.setUserAsync(user.id);
-    this.props.navigation.navigate({
-      routeName: 'Map',
-      params: {
-        user,
-      },
-    });
+    this.props.navigation.navigate('Map');
   };
 
   render() {

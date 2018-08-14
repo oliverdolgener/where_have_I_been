@@ -87,9 +87,9 @@ const styles = {
 class MapScreen extends Component {
   constructor(props) {
     super(props);
-    const { user } = props.navigation.state.params;
+    const { locations } = props;
     const currentLocation = new Coordinate(52.558, 13.206504);
-    let visitedLocations = user.locations.map(x => new Coordinate(x.latitude, x.longitude));
+    let visitedLocations = locations.map(x => new Coordinate(x.latitude, x.longitude));
     visitedLocations = MathUtils.removeDuplicateLocations(visitedLocations);
     // const visibleLocations = visitedLocations.filter(x => x.isInRegion(region));
     // const holes = visibleLocations.map(x => x.getCorners());
@@ -210,10 +210,9 @@ class MapScreen extends Component {
   }
 
   saveLocations() {
-    const { user } = this.props.navigation.state.params;
-    const { tilesToSave, setTilesToSave } = this.props;
+    const { userId, tilesToSave, setTilesToSave } = this.props;
     if (tilesToSave.length > 0) {
-      fetch(`https://api.0llum.de/users/${user.id}`, {
+      fetch(`https://api.0llum.de/users/${userId}`, {
         method: 'PATCH',
         headers: {
           Accept: 'application/json',
@@ -360,6 +359,8 @@ class MapScreen extends Component {
 }
 
 const mapStateToProps = state => ({
+  userId: state.user.get('userId'),
+  locations: state.user.get('visitedLocations'),
   isLoggedIn: state.user.get('isLoggedIn'),
   mapType: state.map.get('mapType'),
   tilesToSave: state.map.get('tilesToSave'),

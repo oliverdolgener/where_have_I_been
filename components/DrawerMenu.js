@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 1,
     borderRadius: 5,
+    textAlign: 'center',
   },
 });
 
@@ -69,6 +70,26 @@ class DrawerMenu extends React.Component {
     }
   };
 
+  syncData() {
+    const { userId, tilesToSave, setTilesToSave } = this.props;
+    if (tilesToSave.length > 0) {
+      fetch(`https://api.0llum.de/users/${userId}`, {
+        method: 'PATCH',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          locations: tilesToSave,
+        }),
+      }).then((response) => {
+        if (response.status === 200) {
+          setTilesToSave([]);
+        }
+      });
+    }
+  }
+
   logout = async () => {
     this.props.navigation.closeDrawer();
     await AsyncStorage.removeItem('id');
@@ -77,7 +98,7 @@ class DrawerMenu extends React.Component {
   };
 
   render() {
-    const { mapType } = this.props;
+    const { mapType, tilesToSave } = this.props;
 
     let mapTypeIcon;
     switch (mapType) {
@@ -104,7 +125,7 @@ class DrawerMenu extends React.Component {
           <TouchableOpacity style={styles.menuItem} onPress={() => this.syncData()}>
             <Image style={styles.menuIcon} source={iconSync} />
             <Text style={styles.menuLabel}>Sync Data</Text>
-            <Text style={styles.menuBadge}>20</Text>
+            <Text style={styles.menuBadge}>{tilesToSave.length}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => this.logout()}>
             <Image style={styles.menuIcon} source={iconLogout} />
@@ -117,12 +138,15 @@ class DrawerMenu extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  userId: state.user.get('userId'),
   mapType: state.map.get('mapType'),
+  tilesToSave: state.map.get('tilesToSave'),
 });
 
 const mapDispatchToProps = {
   logout: userActions.logout,
   setMapType: mapActions.setMapType,
+  setTilesToSave: mapActions.setTilesToSave,
 };
 
 export default connect(
