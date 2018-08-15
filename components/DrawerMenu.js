@@ -71,22 +71,9 @@ class DrawerMenu extends React.Component {
   };
 
   syncData() {
-    const { userId, tilesToSave, setTilesToSave } = this.props;
+    const { userId, tilesToSave, saveTiles } = this.props;
     if (tilesToSave.length > 0) {
-      fetch(`https://api.0llum.de/users/${userId}`, {
-        method: 'PATCH',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          locations: tilesToSave,
-        }),
-      }).then((response) => {
-        if (response.status === 200) {
-          setTilesToSave([]);
-        }
-      });
+      saveTiles(userId, tilesToSave);
     }
   }
 
@@ -145,7 +132,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   logout: userActions.logout,
   setMapType: mapActions.setMapType,
-  setTilesToSave: mapActions.setTilesToSave,
+  saveTiles: mapActions.saveTiles,
 };
 
 export default connect(

@@ -193,10 +193,14 @@ class MapScreen extends Component {
 
   addLocation(location) {
     const { visitedLocations } = this.state;
+    const {
+      userId, tilesToSave, setTilesToSave, saveTiles,
+    } = this.props;
+
     if (!MathUtils.containsLocation(location, visitedLocations)) {
       const tilesToSaveCopy = this.props.tilesToSave;
       tilesToSaveCopy.push(location);
-      this.props.setTilesToSave(tilesToSaveCopy);
+      setTilesToSave(tilesToSaveCopy);
       visitedLocations.push(location);
       // const visibleLocations = visitedLocations.filter(x => x.isInRegion(region));
       // const holes = visibleLocations.map(x => x.getCorners());
@@ -206,26 +210,9 @@ class MapScreen extends Component {
         holes,
       });
     }
-    this.saveLocations();
-  }
 
-  saveLocations() {
-    const { userId, tilesToSave, setTilesToSave } = this.props;
     if (tilesToSave.length > 0) {
-      fetch(`https://api.0llum.de/users/${userId}`, {
-        method: 'PATCH',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          locations: tilesToSave,
-        }),
-      }).then((response) => {
-        if (response.status === 200) {
-          setTilesToSave([]);
-        }
-      });
+      saveTiles(userId, tilesToSave);
     }
   }
 
@@ -368,6 +355,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   setTilesToSave: mapActions.setTilesToSave,
+  saveTiles: mapActions.saveTiles,
 };
 
 export default connect(
