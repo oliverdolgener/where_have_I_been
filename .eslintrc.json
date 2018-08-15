@@ -53,6 +53,7 @@
       { "extensions": [".js", ".jsx"] }
     ],
     "react/forbid-prop-types": "off",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "no-underscore-dangle": "off"
   }
 }

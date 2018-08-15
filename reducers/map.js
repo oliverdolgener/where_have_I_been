@@ -33,7 +33,7 @@ const setTilesToSaveAsync = async (tilesToSave) => {
 };
 
 export default (state = initialState, action = {}) => {
-  const { type, payload } = action;
+  const { type } = action;
   switch (type) {
     case types.SETMAPTYPE:
       setMapTypeAsync(action.mapType);

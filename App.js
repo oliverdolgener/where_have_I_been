@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { middleware as reduxPackMiddleware } from 'redux-pack';
-import { KeepAwake, DangerZone, Brightness } from 'expo';
+import { KeepAwake, Brightness } from 'expo';
 import UserReducer from './reducers/user';
 import MapReducer from './reducers/map';
 import AppNavigation from './navigation/AppNavigation';
@@ -28,13 +28,6 @@ class App extends Component {
   componentDidMount() {
     navigator = this.navigator;
     KeepAwake.activate();
-    // DangerZone.DeviceMotion.setUpdateInterval(1000);
-    // this.motionListener = DangerZone.DeviceMotion.addListener(result =>
-    //   this.handleMotionEvent(result));
-  }
-
-  componentWillUnmount() {
-    // this.motionListener.remove();
   }
 
   handleMotionEvent(result) {

@@ -13,7 +13,9 @@ const headers = {
 const fetchJson = (url, options) =>
   fetch(url, options)
     .then(response => response.json()
-      .then(json => (response.ok ? { headers: response.headers, data: json } : Promise.reject(json))));
+      .then(json => (response.ok
+        ? { headers: response.headers, data: json }
+        : Promise.reject(json))));
 
 export const getUser = (userId) => {
   const url = new URI(API_URL);

@@ -91,31 +91,7 @@ class MapScreen extends Component {
     const currentLocation = new Coordinate(52.558, 13.206504);
     let visitedLocations = locations.map(x => new Coordinate(x.latitude, x.longitude));
     visitedLocations = MathUtils.removeDuplicateLocations(visitedLocations);
-    // const visibleLocations = visitedLocations.filter(x => x.isInRegion(region));
-    // const holes = visibleLocations.map(x => x.getCorners());
     const holes = EarthUtils.getSliceCoordinates(visitedLocations);
-    // this.coherentTiles = Coordinate.getCoherentTiles(visitedLocations);
-
-    // let vertices = [];
-    // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
-    // vertices = MathUtils.removeBothDuplicateLocations(vertices);
-    // vertices.sort((a, b) => {
-    //   const latC = 52.5568;
-    //   const longC = 13.207;
-    //   const lat1 = a.latitude;
-    //   const long1 = a.longitude;
-    //   const lat2 = b.latitude;
-    //   const long2 = b.longitude;
-    //   const angle1 = Math.atan2(lat1 - latC, long1 - longC);
-    //   const angle2 = Math.atan2(lat2 - latC, long2 - longC);
-
-    //   if (angle1 < angle2) {
-    //     return -1;
-    //   }
-
-    //   return 1;
-    // });
-    // const holes = [vertices];
 
     this.lastTile = {};
 
@@ -202,8 +178,6 @@ class MapScreen extends Component {
       tilesToSaveCopy.push(location);
       setTilesToSave(tilesToSaveCopy);
       visitedLocations.push(location);
-      // const visibleLocations = visitedLocations.filter(x => x.isInRegion(region));
-      // const holes = visibleLocations.map(x => x.getCorners());
       const holes = EarthUtils.getSliceCoordinates(visitedLocations);
       this.setState({
         visitedLocations,
@@ -218,7 +192,6 @@ class MapScreen extends Component {
 
   moveToLocation(location) {
     this.map.animateToCoordinate(location, 500);
-    // this.map.animateToNavigation(currentLocation, result.coords.heading, 0, 500);
   }
 
   render() {
@@ -233,20 +206,6 @@ class MapScreen extends Component {
       altitude,
       geocode,
     } = this.state;
-
-    // const vertices = [];
-    // visitedLocations.forEach(x => vertices.push(...EarthUtils.getSquareCoordinates(x)));
-
-    // const edges = [];
-    // visitedLocations.forEach(x => edges.push(...EarthUtils.getSquareEdges(x)));
-
-    // const intersects = [];
-
-    // edges.forEach((edge) => {
-    //   intersects.push(vertices.filter(vertex => EarthUtils.isPointOnEdge(vertex, edge)));
-    // });
-
-    // const visibleLocations = visitedLocations.filter(x => x.isInRegion(region));
 
     if (!isLoggedIn && this.positionListener) {
       this.positionListener.remove();
@@ -291,8 +250,6 @@ class MapScreen extends Component {
             coordinates={Earth.FOG}
             holes={holes || []}
           />
-          {/* {holes.map(x => <MapView.Polygon fillColor={Colors.black} coordinates={x} />)} */}
-          {/* {this.coherentTiles.map(x => x.map(y => <MapView.Marker coordinate={y} key={JSON.stringify(y)} />))} */}
         </MapView>
         <TouchableOpacity
           style={styles.menuButton}
