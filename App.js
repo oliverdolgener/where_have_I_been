@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { middleware as reduxPackMiddleware } from 'redux-pack';
 import { KeepAwake, DangerZone, Brightness } from 'expo';
 import UserReducer from './reducers/user';
 import MapReducer from './reducers/map';
@@ -13,13 +14,19 @@ const styles = StyleSheet.create({
   },
 });
 
-const store = createStore(combineReducers({
-  user: UserReducer,
-  map: MapReducer,
-}));
+const store = createStore(
+  combineReducers({
+    user: UserReducer,
+    map: MapReducer,
+  }),
+  applyMiddleware(reduxPackMiddleware),
+);
+
+export let navigator;
 
 class App extends Component {
   componentDidMount() {
+    navigator = this.navigator;
     KeepAwake.activate();
     // DangerZone.DeviceMotion.setUpdateInterval(1000);
     // this.motionListener = DangerZone.DeviceMotion.addListener(result =>
@@ -47,7 +54,7 @@ class App extends Component {
     return (
       <Provider store={store}>
         <View style={styles.container}>
-          <AppNavigation />
+          <AppNavigation ref={(nav) => { this.navigator = nav; }} />
         </View>
       </Provider>
     );

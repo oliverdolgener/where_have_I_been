@@ -28,37 +28,23 @@ class SplashScreen extends React.Component {
   }
 
   getUserAsync = async () => {
+    const { getUser, setMapType, setTilesToSave } = this.props;
     const id = await AsyncStorage.getItem('id');
     const mapType = await AsyncStorage.getItem('mapType');
     const tilesToSave = await AsyncStorage.getItem('tilesToSave');
     setTimeout(() => {
       if (id) {
         if (mapType) {
-          this.props.setMapType(mapType);
+          setMapType(mapType);
         }
         if (tilesToSave) {
-          this.props.setTilesToSave(JSON.parse(tilesToSave));
+          setTilesToSave(JSON.parse(tilesToSave));
         }
-        fetch(`https://api.0llum.de/users/${id}`)
-          .then(response => response.json())
-          .then((responseJson) => {
-            this.login(responseJson);
-          });
+        getUser(id);
       } else {
         this.props.navigation.navigate('Login');
       }
     }, 3000);
-  };
-
-  login = (data) => {
-    const user = {
-      id: data._id,
-      email: data.email,
-      password: data.password,
-      locations: data.locations,
-    };
-    this.props.login(user);
-    this.props.navigation.navigate('Map');
   };
 
   render() {
@@ -71,12 +57,10 @@ class SplashScreen extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  mapType: state.map.get('mapType'),
-});
+const mapStateToProps = state => ({});
 
 const mapDispatchToProps = {
-  login: userActions.login,
+  getUser: userActions.getUser,
   setMapType: mapActions.setMapType,
   setTilesToSave: mapActions.setTilesToSave,
 };

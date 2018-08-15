@@ -1,5 +1,5 @@
 import React from 'react';
-import { AsyncStorage, StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import { actions as userActions } from '../reducers/user';
@@ -91,10 +91,9 @@ class DrawerMenu extends React.Component {
   }
 
   logout = async () => {
-    this.props.navigation.closeDrawer();
-    await AsyncStorage.removeItem('id');
-    this.props.logout();
-    this.props.navigation.navigate('Login');
+    const { logout, navigation } = this.props;
+    navigation.closeDrawer();
+    logout();
   };
 
   render() {

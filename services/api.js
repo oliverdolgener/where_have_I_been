@@ -3,7 +3,7 @@ import URI from 'urijs';
 const API_URL = 'https://api.0llum.de/';
 
 const ENDPOINT_USERS = 'users';
-const ENDPOINT_LOGIN = 'users/login';
+const ENDPOINT_LOGIN = 'login';
 
 const headers = {
   Accept: 'application/json',
@@ -11,9 +11,8 @@ const headers = {
 };
 
 const fetchJson = (url, options) =>
-  fetch(url, options).then(response =>
-    response.json()
-      .then(json => (response.ok ? { headers: response.headers, data: json } : Promise.reject(json))));
+  fetch(url, options).then(response => response.json()
+    .then(json => (response.ok ? { headers: response.headers, data: json } : Promise.reject(json))));
 
 export const getUser = (userId) => {
   const url = new URI(API_URL);
@@ -36,7 +35,7 @@ export const login = (email, password) => {
   return fetchJson(url.href(), options);
 };
 
-export const signUp = (email, password) => {
+export const signup = (email, password) => {
   const url = new URI(API_URL);
   url.segment(ENDPOINT_USERS);
   const body = JSON.stringify({

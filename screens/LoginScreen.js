@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  AsyncStorage,
   KeyboardAvoidingView,
   StyleSheet,
   TextInput,
@@ -65,8 +64,6 @@ class LoginScreen extends React.Component {
     this.state = {
       email: '',
       password: '',
-      emailError: '',
-      passwordError: '',
     };
   }
 
@@ -79,6 +76,9 @@ class LoginScreen extends React.Component {
   };
 
   onLoginPress = () => {
+    const { email, password } = this.state;
+    const { login } = this.props;
+
     if (!this.validateEmail()) {
       return;
     }
@@ -87,31 +87,13 @@ class LoginScreen extends React.Component {
       return;
     }
 
-    const request = new Request('https://api.0llum.de/users/login', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password,
-      }),
-    });
-
-    fetch(request)
-      .then(response => response.json())
-      .then((responseJson) => {
-        this.login(responseJson);
-      })
-      .catch(() => {
-        this.setState({
-          passwordError: 'Wrong email or password',
-        });
-      });
+    login(email, password);
   };
 
   onSignUpPress = () => {
+    const { email, password } = this.state;
+    const { signup } = this.props;
+
     if (!this.validateEmail()) {
       return;
     }
@@ -120,78 +102,37 @@ class LoginScreen extends React.Component {
       return;
     }
 
-    const request = new Request('https://api.0llum.de/users/', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password,
-      }),
-    });
-
-    fetch(request)
-      .then(response => response.json())
-      .then((responseJson) => {
-        this.login(responseJson);
-      })
-      .catch(() => {
-        this.setState({
-          passwordError: 'Email address already in use. Try to login instead.',
-        });
-      });
-  };
-
-  setUserAsync = async (id) => {
-    await AsyncStorage.setItem('id', id);
+    signup(email, password);
   };
 
   validateEmail = () => {
     const { email } = this.state;
+    const { setEmailError } = this.props;
     const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!email || pattern.test(String(email).toLowerCase)) {
-      this.setState({
-        emailError: 'Please enter a valid email address',
-      });
+      setEmailError('Please enter a valid email address');
       return false;
     }
 
-    this.setState({
-      emailError: '',
-    });
+    setEmailError('');
     return true;
   };
 
   validatePassword = () => {
     const { password } = this.state;
+    const { setPasswordError } = this.props;
     if (!password) {
-      this.setState({
-        passwordError: 'Please enter a password',
-      });
+      setPasswordError('Please enter a password');
       return false;
     }
 
-    this.setState({
-      passwordError: '',
-    });
+    setPasswordError('');
     return true;
   };
 
-  login = (data) => {
-    const user = {
-      id: data._id,
-      email: data.email,
-      password: data.password,
-      locations: data.locations,
-    };
-    this.props.login(user);
-    this.setUserAsync(user.id);
-    this.props.navigation.navigate('Map');
-  };
-
   render() {
+    const { emailError, passwordError } = this.props;
+
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
         <Text style={styles.title}>WHIB</Text>
@@ -210,7 +151,7 @@ class LoginScreen extends React.Component {
           returnKeyType="next"
           onSubmitEditing={() => this.passwordInput.focus()}
         />
-        <Text style={styles.error}>{this.state.emailError}</Text>
+        <Text style={styles.error}>{emailError}</Text>
         <TextInput
           style={styles.input}
           ref={(ref) => {
@@ -226,7 +167,7 @@ class LoginScreen extends React.Component {
           returnKeyType="send"
           onSubmitEditing={() => this.onLoginPress()}
         />
-        <Text style={styles.error}>{this.state.passwordError}</Text>
+        <Text style={styles.error}>{passwordError}</Text>
         <TouchableOpacity style={styles.loginButton} onPress={this.onLoginPress}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
@@ -238,10 +179,16 @@ class LoginScreen extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  emailError: state.user.get('emailError'),
+  passwordError: state.user.get('passwordError'),
+});
 
 const mapDispatchToProps = {
   login: userActions.login,
+  signup: userActions.signup,
+  setEmailError: userActions.setEmailError,
+  setPasswordError: userActions.setPasswordError,
 };
 
 export default connect(
