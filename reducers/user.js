@@ -1,4 +1,7 @@
 import { Map } from 'immutable';
+import { handle } from 'redux-pack';
+
+import { getUser, login, signup } from '../services/api';
 
 export const types = {
   LOGIN: 'USER/LOGIN',
