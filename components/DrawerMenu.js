@@ -71,7 +71,10 @@ class DrawerMenu extends React.Component {
   };
 
   syncData() {
-    const { userId, tilesToSave, saveTiles } = this.props;
+    const {
+      userId, tilesToSave, saveTiles, navigation,
+    } = this.props;
+    navigation.closeDrawer();
     if (tilesToSave.length > 0) {
       saveTiles(userId, tilesToSave);
     }
