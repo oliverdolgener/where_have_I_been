@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, Permissions, MapView } from 'expo';
+import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import Coordinate from '../model/Coordinate';
 import InfoText from '../components/InfoText';
 import * as LevelUtils from '../utils/LevelUtils';
 import * as MathUtils from '../utils/MathUtils';
-import * as EarthUtils from '../utils/EarthUtils';
 import * as Earth from '../constants/Earth';
 import * as Colors from '../constants/Colors';
 import iconMenu from '../assets/iconMenu.png';
@@ -87,11 +87,7 @@ const styles = {
 class MapScreen extends Component {
   constructor(props) {
     super(props);
-    const { locations } = props;
     const currentLocation = new Coordinate(52.558, 13.206504);
-    let visitedLocations = locations.map(x => new Coordinate(x.latitude, x.longitude));
-    visitedLocations = MathUtils.removeDuplicateLocations(visitedLocations);
-    const holes = EarthUtils.getSliceCoordinates(visitedLocations);
 
     this.lastTile = {};
 
@@ -103,8 +99,6 @@ class MapScreen extends Component {
         latitudeDelta: 0.005,
         longitudeDelta: 0.005,
       },
-      visitedLocations,
-      holes,
       followLocation: true,
       speed: 0,
       altitude: 0,
@@ -168,21 +162,16 @@ class MapScreen extends Component {
   };
 
   addLocation(location) {
-    const { visitedLocations } = this.state;
     const {
-      userId, tilesToSave, setTilesToSave, saveTiles,
+      userId, tilesToSave, setTilesToSave, saveTiles, visitedLocations, setLocations,
     } = this.props;
 
     if (!MathUtils.containsLocation(location, visitedLocations)) {
-      const tilesToSaveCopy = this.props.tilesToSave;
+      const tilesToSaveCopy = tilesToSave;
       tilesToSaveCopy.push(location);
       setTilesToSave(tilesToSaveCopy);
       visitedLocations.push(location);
-      const holes = EarthUtils.getSliceCoordinates(visitedLocations);
-      this.setState({
-        visitedLocations,
-        holes,
-      });
+      setLocations(visitedLocations);
     }
 
     if (tilesToSave.length > 0) {
@@ -195,12 +184,16 @@ class MapScreen extends Component {
   }
 
   render() {
-    const { isLoggedIn, mapType } = this.props;
+    const {
+      isLoggedIn,
+      mapType,
+      visitedLocations,
+      holes,
+    } = this.props;
+
     const {
       currentLocation,
       region,
-      visitedLocations,
-      holes,
       followLocation,
       speed,
       altitude,
@@ -288,9 +281,7 @@ class MapScreen extends Component {
             <TouchableOpacity
               onPress={() => {
                 this.moveToLocation(currentLocation);
-                this.setState({
-                  followLocation: true,
-                });
+                this.setState({ followLocation: true });
               }}
             >
               <Image style={styles.locationImage} source={iconLocation} />
@@ -304,7 +295,8 @@ class MapScreen extends Component {
 
 const mapStateToProps = state => ({
   userId: state.user.get('userId'),
-  locations: state.user.get('visitedLocations'),
+  visitedLocations: state.user.get('visitedLocations'),
+  holes: state.user.get('holes'),
   isLoggedIn: state.user.get('isLoggedIn'),
   mapType: state.map.get('mapType'),
   tilesToSave: state.map.get('tilesToSave'),
@@ -313,6 +305,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   setTilesToSave: mapActions.setTilesToSave,
   saveTiles: mapActions.saveTiles,
+  setLocations: userActions.setLocations,
 };
 
 export default connect(
