@@ -14,6 +14,7 @@ export const types = {
   LOGOUT: 'USER/LOGOUT',
   SIGNUP: 'USER/SIGNUP',
   GET_USER: 'USER/GET_USER',
+  RELOG_USER: 'USER/RELOG_USER',
   SET_EMAIL_ERROR: 'USER/SET_EMAIL_ERROR',
   SET_PASSWORD_ERROR: 'USER/SET_PASSWORD_ERROR',
   SET_LOCATIONS: 'USER/SET_LOCATIONS',
@@ -51,6 +52,10 @@ export const actions = {
   }),
   getUser: userId => ({
     type: types.GET_USER,
+    promise: getUser(userId),
+  }),
+  relogUser: userId => ({
+    type: types.RELOG_USER,
     promise: getUser(userId),
     meta: {
       onSuccess: (result) => {
@@ -124,6 +129,17 @@ export default (state = initialState, action = {}) => {
           .set('passwordError', ''),
       });
     case types.GET_USER:
+      return handle(state, action, {
+        success: (prevState) => {
+          const visitedLocations = prepareLocations(payload.data.locations);
+          return prevState
+            .set('isLoggedIn', true)
+            .set('userId', payload.data._id)
+            .set('visitedLocations', visitedLocations)
+            .set('holes', prepareHoles(visitedLocations));
+        },
+      });
+    case types.RELOG_USER:
       return handle(state, action, {
         success: (prevState) => {
           const visitedLocations = prepareLocations(payload.data.locations);
