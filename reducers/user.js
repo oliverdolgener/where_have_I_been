@@ -18,6 +18,7 @@ export const types = {
   SET_EMAIL_ERROR: 'USER/SET_EMAIL_ERROR',
   SET_PASSWORD_ERROR: 'USER/SET_PASSWORD_ERROR',
   SET_LOCATIONS: 'USER/SET_LOCATIONS',
+  SET_REGION: 'USER/SET_REGION',
 };
 
 const setUserAsync = async (id) => {
@@ -70,11 +71,18 @@ export const actions = {
   setEmailError: error => ({ type: types.SET_EMAIL_ERROR, error }),
   setPasswordError: error => ({ type: types.SET_PASSWORD_ERROR, error }),
   setLocations: locations => ({ type: types.SET_LOCATIONS, locations }),
+  setRegion: region => ({ type: types.SET_REGION, region }),
 };
 
 const initialState = Map({
   isLoggedIn: false,
   userId: false,
+  region: {
+    latitude: 52.558,
+    longitude: 13.206504,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005,
+  },
   visitedLocations: [],
   holes: [],
   emailError: '',
@@ -86,7 +94,10 @@ const prepareLocations = (locations) => {
   return MathUtils.removeDuplicateLocations(visitedLocations);
 };
 
-const prepareHoles = locations => EarthUtils.getSliceCoordinates(locations);
+const prepareHoles = (locations, region) => {
+  const visibleLocations = locations.filter(x => x.isInRegion(region));
+  return EarthUtils.getSliceCoordinates(visibleLocations);
+};
 
 export default (state = initialState, action = {}) => {
   const { type, payload } = action;
@@ -95,17 +106,17 @@ export default (state = initialState, action = {}) => {
       return handle(state, action, {
         success: (prevState) => {
           const visitedLocations = prepareLocations(payload.data.locations);
+          const holes = prepareHoles(visitedLocations, state.get('region'));
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data._id)
             .set('visitedLocations', visitedLocations)
-            .set('holes', prepareHoles(visitedLocations))
+            .set('holes', holes)
             .set('emailError', '')
             .set('passwordError', '');
         },
-        failure: prevState => prevState
-          .set('emailError', '')
-          .set('passwordError', 'Wrong Email or Password'),
+        failure: prevState =>
+          prevState.set('emailError', '').set('passwordError', 'Wrong Email or Password'),
       });
     case types.LOGOUT:
       removeUserAsync();
@@ -117,37 +128,41 @@ export default (state = initialState, action = {}) => {
         .set('holes', []);
     case types.SIGNUP:
       return handle(state, action, {
-        success: prevState => prevState
-          .set('isLoggedIn', true)
-          .set('userId', payload.data._id)
-          .set('visitedLocations', [])
-          .set('holes', [])
-          .set('emailError', '')
-          .set('passwordError', ''),
-        failure: prevState => prevState
-          .set('emailError', 'Email address already in use. Try to login instead.')
-          .set('passwordError', ''),
+        success: prevState =>
+          prevState
+            .set('isLoggedIn', true)
+            .set('userId', payload.data._id)
+            .set('visitedLocations', [])
+            .set('holes', [])
+            .set('emailError', '')
+            .set('passwordError', ''),
+        failure: prevState =>
+          prevState
+            .set('emailError', 'Email address already in use. Try to login instead.')
+            .set('passwordError', ''),
       });
     case types.GET_USER:
       return handle(state, action, {
         success: (prevState) => {
           const visitedLocations = prepareLocations(payload.data.locations);
+          const holes = prepareHoles(visitedLocations, state.get('region'));
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data._id)
             .set('visitedLocations', visitedLocations)
-            .set('holes', prepareHoles(visitedLocations));
+            .set('holes', holes);
         },
       });
     case types.RELOG_USER:
       return handle(state, action, {
         success: (prevState) => {
           const visitedLocations = prepareLocations(payload.data.locations);
+          const holes = prepareHoles(visitedLocations, state.get('region'));
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data._id)
             .set('visitedLocations', visitedLocations)
-            .set('holes', prepareHoles(visitedLocations));
+            .set('holes', holes);
         },
       });
     case types.SET_EMAIL_ERROR:
@@ -156,9 +171,12 @@ export default (state = initialState, action = {}) => {
       return state.set('passwordError', action.error);
     case types.SET_LOCATIONS: {
       const visitedLocations = prepareLocations(action.locations);
-      return state
-        .set('visitedLocations', visitedLocations)
-        .set('holes', prepareHoles(visitedLocations));
+      const holes = prepareHoles(visitedLocations, state.get('region'));
+      return state.set('visitedLocations', visitedLocations).set('holes', holes);
+    }
+    case types.SET_REGION: {
+      const holes = prepareHoles(state.get('visitedLocations'), action.region);
+      return state.set('region', action.region).set('holes', holes);
     }
     default:
       return state;

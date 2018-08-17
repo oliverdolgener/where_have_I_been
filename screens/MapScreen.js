@@ -48,6 +48,10 @@ const styles = {
     fontSize: 16,
     color: Colors.white,
   },
+  cityInfo: {
+    fontSize: 16,
+    color: Colors.white,
+  },
   levelInfo: {
     position: 'absolute',
     top: 40,
@@ -93,12 +97,6 @@ class MapScreen extends Component {
 
     this.state = {
       currentLocation,
-      region: {
-        latitude: currentLocation.latitude,
-        longitude: currentLocation.longitude,
-        latitudeDelta: 0.005,
-        longitudeDelta: 0.005,
-      },
       followLocation: true,
       speed: 0,
       altitude: 0,
@@ -111,9 +109,15 @@ class MapScreen extends Component {
   }
 
   onTileChange() {
-    const { currentLocation } = this.state;
+    const { currentLocation, followLocation } = this.state;
     this.getGeolocationAsync(currentLocation);
     this.addLocation(this.lastTile);
+    followLocation && this.moveToLocation(this.lastTile);
+  }
+
+  onRegionChangeComplete(region) {
+    const { setRegion } = this.props;
+    setRegion(region);
   }
 
   getGeolocationAsync = async (location) => {
@@ -123,6 +127,7 @@ class MapScreen extends Component {
       geocode: {
         country: geocode[0].country,
         region: geocode[0].region,
+        city: geocode[0].city,
       },
     });
   };
@@ -136,7 +141,6 @@ class MapScreen extends Component {
           latitude, longitude, speed, altitude, accuracy,
         } = result.coords;
         const { timestamp } = result;
-        const { followLocation } = this.state;
         const currentLocation = new Coordinate(latitude, longitude);
 
         if (accuracy < 50) {
@@ -151,7 +155,6 @@ class MapScreen extends Component {
           }
         }
 
-        followLocation && this.moveToLocation(currentLocation);
         this.setState({
           currentLocation,
           speed: Math.round(MathUtils.toKmh(speed)),
@@ -163,7 +166,12 @@ class MapScreen extends Component {
 
   addLocation(location) {
     const {
-      userId, tilesToSave, setTilesToSave, saveTiles, visitedLocations, setLocations,
+      userId,
+      tilesToSave,
+      setTilesToSave,
+      saveTiles,
+      visitedLocations,
+      setLocations,
     } = this.props;
 
     if (!MathUtils.containsLocation(location, visitedLocations)) {
@@ -185,19 +193,11 @@ class MapScreen extends Component {
 
   render() {
     const {
-      isLoggedIn,
-      mapType,
-      visitedLocations,
-      holes,
+      isLoggedIn, mapType, visitedLocations, holes, region,
     } = this.props;
 
     const {
-      currentLocation,
-      region,
-      followLocation,
-      speed,
-      altitude,
-      geocode,
+      currentLocation, followLocation, speed, altitude, geocode,
     } = this.state;
 
     if (!isLoggedIn && this.positionListener) {
@@ -228,7 +228,7 @@ class MapScreen extends Component {
           showsUserLocation
           maxZoomLevel={18}
           initialRegion={region}
-          onRegionChangeComplete={newRegion => this.setState({ region: newRegion })}
+          onRegionChangeComplete={newRegion => this.onRegionChangeComplete(newRegion)}
           onPanDrag={() => this.setState({ followLocation: false })}
         >
           {mapType === 'watercolor' && (
@@ -253,6 +253,7 @@ class MapScreen extends Component {
         <View style={styles.geocodeContainer}>
           <Text style={styles.countryInfo}>{geocode.country}</Text>
           <Text style={styles.regionInfo}>{geocode.region}</Text>
+          <Text style={styles.cityInfo}>{geocode.city}</Text>
         </View>
         <InfoText
           style={styles.levelInfo}
@@ -295,6 +296,7 @@ class MapScreen extends Component {
 
 const mapStateToProps = state => ({
   userId: state.user.get('userId'),
+  region: state.user.get('region'),
   visitedLocations: state.user.get('visitedLocations'),
   holes: state.user.get('holes'),
   isLoggedIn: state.user.get('isLoggedIn'),
@@ -303,9 +305,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  setLocations: userActions.setLocations,
+  setRegion: userActions.setRegion,
   setTilesToSave: mapActions.setTilesToSave,
   saveTiles: mapActions.saveTiles,
-  setLocations: userActions.setLocations,
 };
 
 export default connect(
