@@ -43,8 +43,7 @@ export default (state = initialState, action = {}) => {
       return state.set('tilesToSave', action.tilesToSave);
     case types.SAVE_TILES:
       return handle(state, action, {
-        success: prevState => prevState
-          .set('tilesToSave', []),
+        success: prevState => prevState.set('tilesToSave', []),
       });
     default:
       return state;

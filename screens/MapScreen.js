@@ -40,15 +40,15 @@ const styles = {
     bottom: 0,
     alignItems: 'center',
   },
-  countryInfo: {
+  cityInfo: {
     fontSize: 20,
     color: Colors.white,
   },
   regionInfo: {
-    fontSize: 16,
+    fontSize: 18,
     color: Colors.white,
   },
-  cityInfo: {
+  countryInfo: {
     fontSize: 16,
     color: Colors.white,
   },
@@ -251,9 +251,9 @@ class MapScreen extends Component {
           <Image style={styles.menuImage} source={iconMenu} />
         </TouchableOpacity>
         <View style={styles.geocodeContainer}>
-          <Text style={styles.countryInfo}>{geocode.country}</Text>
-          <Text style={styles.regionInfo}>{geocode.region}</Text>
           <Text style={styles.cityInfo}>{geocode.city}</Text>
+          <Text style={styles.regionInfo}>{geocode.region}</Text>
+          <Text style={styles.countryInfo}>{geocode.country}</Text>
         </View>
         <InfoText
           style={styles.levelInfo}
