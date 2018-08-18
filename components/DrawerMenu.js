@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import { actions as userActions } from '../reducers/user';
-import { actions as mapActions } from '../reducers/map';
 import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
 import iconSatellite from '../assets/iconSatellite.png';
@@ -131,15 +130,15 @@ class DrawerMenu extends React.Component {
 
 const mapStateToProps = state => ({
   userId: state.user.get('userId'),
-  mapType: state.map.get('mapType'),
-  tilesToSave: state.map.get('tilesToSave'),
+  mapType: state.user.get('mapType'),
+  tilesToSave: state.user.get('tilesToSave'),
 });
 
 const mapDispatchToProps = {
   getUser: userActions.getUser,
   logout: userActions.logout,
-  setMapType: mapActions.setMapType,
-  saveTiles: mapActions.saveTiles,
+  setMapType: userActions.setMapType,
+  saveTiles: userActions.saveTiles,
 };
 
 export default connect(

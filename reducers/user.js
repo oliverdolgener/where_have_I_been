@@ -6,7 +6,7 @@ import { AsyncStorage } from 'react-native';
 import Coordinate from '../model/Coordinate';
 import * as MathUtils from '../utils/MathUtils';
 import * as EarthUtils from '../utils/EarthUtils';
-import { getUser, login, signup } from '../services/api';
+import { getUser, login, signup, saveTiles } from '../services/api';
 import { navigator } from '../App';
 
 export const types = {
@@ -19,6 +19,9 @@ export const types = {
   SET_PASSWORD_ERROR: 'USER/SET_PASSWORD_ERROR',
   SET_LOCATIONS: 'USER/SET_LOCATIONS',
   SET_REGION: 'USER/SET_REGION',
+  SET_MAPTYPE: 'MAP/SET_MAPTYPE',
+  SET_TILES_TO_SAVE: 'MAP/SET_TILES_TO_SAVE',
+  SAVE_TILES: 'MAP/SAVE_TILES',
 };
 
 const setUserAsync = async (id) => {
@@ -72,6 +75,12 @@ export const actions = {
   setPasswordError: error => ({ type: types.SET_PASSWORD_ERROR, error }),
   setLocations: locations => ({ type: types.SET_LOCATIONS, locations }),
   setRegion: region => ({ type: types.SET_REGION, region }),
+  setMapType: mapType => ({ type: types.SET_MAPTYPE, mapType }),
+  setTilesToSave: tilesToSave => ({ type: types.SET_TILES_TO_SAVE, tilesToSave }),
+  saveTiles: (userId, tilesToSave) => ({
+    type: types.SAVE_TILES,
+    promise: saveTiles(userId, tilesToSave),
+  }),
 };
 
 const initialState = Map({
@@ -87,6 +96,8 @@ const initialState = Map({
   holes: [],
   emailError: '',
   passwordError: '',
+  mapType: 'hybrid',
+  tilesToSave: [],
 });
 
 const prepareLocations = (locations) => {
@@ -97,6 +108,14 @@ const prepareLocations = (locations) => {
 const prepareHoles = (locations, region) => {
   const visibleLocations = locations.filter(x => x.isInRegion(region));
   return EarthUtils.getSliceCoordinates(visibleLocations);
+};
+
+const setMapTypeAsync = async (mapType) => {
+  await AsyncStorage.setItem('mapType', mapType);
+};
+
+const setTilesToSaveAsync = async (tilesToSave) => {
+  await AsyncStorage.setItem('tilesToSave', JSON.stringify(tilesToSave));
 };
 
 export default (state = initialState, action = {}) => {
@@ -178,6 +197,16 @@ export default (state = initialState, action = {}) => {
       const holes = prepareHoles(state.get('visitedLocations'), action.region);
       return state.set('region', action.region).set('holes', holes);
     }
+    case types.SET_MAPTYPE:
+      setMapTypeAsync(action.mapType);
+      return state.set('mapType', action.mapType);
+    case types.SET_TILES_TO_SAVE:
+      setTilesToSaveAsync(action.tilesToSave);
+      return state.set('tilesToSave', action.tilesToSave);
+    case types.SAVE_TILES:
+      return handle(state, action, {
+        success: prevState => prevState.set('tilesToSave', []),
+      });
     default:
       return state;
   }

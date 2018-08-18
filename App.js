@@ -5,7 +5,6 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { middleware as reduxPackMiddleware } from 'redux-pack';
 import { KeepAwake, Brightness } from 'expo';
 import UserReducer from './reducers/user';
-import MapReducer from './reducers/map';
 import AppNavigation from './navigation/AppNavigation';
 
 const styles = StyleSheet.create({
@@ -17,7 +16,6 @@ const styles = StyleSheet.create({
 const store = createStore(
   combineReducers({
     user: UserReducer,
-    map: MapReducer,
   }),
   applyMiddleware(reduxPackMiddleware),
 );
@@ -47,7 +45,11 @@ class App extends Component {
     return (
       <Provider store={store}>
         <View style={styles.container}>
-          <AppNavigation ref={(nav) => { this.navigator = nav; }} />
+          <AppNavigation
+            ref={(nav) => {
+              this.navigator = nav;
+            }}
+          />
         </View>
       </Provider>
     );

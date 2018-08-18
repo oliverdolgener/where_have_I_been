@@ -3,7 +3,6 @@ import { View, Image, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, Permissions, MapView } from 'expo';
 import { actions as userActions } from '../reducers/user';
-import { actions as mapActions } from '../reducers/map';
 import Coordinate from '../model/Coordinate';
 import InfoText from '../components/InfoText';
 import * as LevelUtils from '../utils/LevelUtils';
@@ -300,15 +299,15 @@ const mapStateToProps = state => ({
   visitedLocations: state.user.get('visitedLocations'),
   holes: state.user.get('holes'),
   isLoggedIn: state.user.get('isLoggedIn'),
-  mapType: state.map.get('mapType'),
-  tilesToSave: state.map.get('tilesToSave'),
+  mapType: state.user.get('mapType'),
+  tilesToSave: state.user.get('tilesToSave'),
 });
 
 const mapDispatchToProps = {
   setLocations: userActions.setLocations,
   setRegion: userActions.setRegion,
-  setTilesToSave: mapActions.setTilesToSave,
-  saveTiles: mapActions.saveTiles,
+  setTilesToSave: userActions.setTilesToSave,
+  saveTiles: userActions.saveTiles,
 };
 
 export default connect(

@@ -2,7 +2,6 @@ import React from 'react';
 import { AsyncStorage, View, StyleSheet, Text } from 'react-native';
 import { connect } from 'react-redux';
 import { actions as userActions } from '../reducers/user';
-import { actions as mapActions } from '../reducers/map';
 import * as Colors from '../constants/Colors';
 
 const styles = StyleSheet.create({
@@ -61,8 +60,8 @@ const mapStateToProps = state => ({});
 
 const mapDispatchToProps = {
   relogUser: userActions.relogUser,
-  setMapType: mapActions.setMapType,
-  setTilesToSave: mapActions.setTilesToSave,
+  setMapType: userActions.setMapType,
+  setTilesToSave: userActions.setTilesToSave,
 };
 
 export default connect(
