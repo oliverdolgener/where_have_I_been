@@ -100,6 +100,7 @@ class MapScreen extends Component {
       speed: 0,
       altitude: 0,
       geocode: {},
+      markers: [],
     };
   }
 
@@ -117,6 +118,22 @@ class MapScreen extends Component {
   onRegionChangeComplete(region) {
     const { setRegion } = this.props;
     setRegion(region);
+  }
+
+  onPress(event) {
+    const { markers } = this.state;
+    const coordinate = new Coordinate(
+      event.nativeEvent.coordinate.latitude,
+      event.nativeEvent.coordinate.longitude,
+    );
+    const roundedCoordinate = new Coordinate(
+      coordinate.getRoundedLatitude(),
+      coordinate.getRoundedLongitude(),
+    );
+    markers.push(roundedCoordinate);
+    this.setState({
+      markers,
+    });
   }
 
   getGeolocationAsync = async (location) => {
@@ -196,7 +213,7 @@ class MapScreen extends Component {
     } = this.props;
 
     const {
-      currentLocation, followLocation, speed, altitude, geocode,
+      currentLocation, followLocation, speed, altitude, geocode, markers,
     } = this.state;
 
     if (!isLoggedIn && this.positionListener) {
@@ -229,6 +246,7 @@ class MapScreen extends Component {
           initialRegion={region}
           onRegionChangeComplete={newRegion => this.onRegionChangeComplete(newRegion)}
           onPanDrag={() => this.setState({ followLocation: false })}
+          onPress={event => this.onPress(event)}
         >
           {mapType === 'watercolor' && (
             <MapView.UrlTile
@@ -241,7 +259,11 @@ class MapScreen extends Component {
             strokeColor={Colors.transparent}
             coordinates={Earth.FOG}
             holes={holes || []}
+            onPress={event => this.onPress(event)}
           />
+          {markers.map((x, i) => (
+            <MapView.Marker key={i.toString()} coordinate={x} />
+          ))}
         </MapView>
         <TouchableOpacity
           style={styles.menuButton}
