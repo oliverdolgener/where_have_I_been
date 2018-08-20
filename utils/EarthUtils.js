@@ -117,7 +117,11 @@ export function getGridDistanceByRegion(region) {
     return Earth.GRID_DISTANCE;
   }
 
-  return zoom / 100;
+  if (zoom > 50) {
+    return Earth.GRID_DISTANCE * 1000;
+  }
+
+  return zoom / 50;
 
   // if (zoom < 0.25) {
   //   return Earth.GRID_DISTANCE * 2.5;
