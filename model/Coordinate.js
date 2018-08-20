@@ -45,10 +45,8 @@ export default class Coordinate {
     const neighbours = [];
     array.forEach((x) => {
       if (
-        (x.latitude - coordinate.latitude) ** 2 / Earth.GRID_DISTANCE ** 2 <= 1.01 &&
-        (x.longitude - coordinate.longitude) ** 2 /
-          EarthUtils.gridDistanceAtLatitude(coordinate.latitude) ** 2 <=
-          1.002
+        (x.latitude - coordinate.latitude) ** 2 / Earth.GRID_DISTANCE ** 2 <= Earth.NEIGHBOUR_BOUNDARY + Earth.NEIGHBOUR_OFFSET_LAT &&
+        (x.longitude - coordinate.longitude) ** 2 / EarthUtils.gridDistanceAtLatitude(coordinate.latitude) ** 2 <= Earth.NEIGHBOUR_BOUNDARY + Earth.NEIGHBOUR_OFFSET_LONG
       ) {
         if (!Coordinate.isEqual(x, coordinate)) {
           neighbours.push(x);

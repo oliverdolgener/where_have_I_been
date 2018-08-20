@@ -24,7 +24,7 @@ export function getRectangleCoordinates(topLeft, botRight) {
       longitude: MathUtils.roundToDecimals(
         topLeft.longitude -
           gridDistanceAtLatitude(topLeft.latitude) / Earth.SQUARE_OFFSET -
-          0.000001,
+          Earth.ROUND_OFFSET_LONG,
         6,
       ),
     },
@@ -56,7 +56,7 @@ export function getRectangleCoordinates(topLeft, botRight) {
       longitude: MathUtils.roundToDecimals(
         topLeft.longitude -
           gridDistanceAtLatitude(topLeft.latitude) / Earth.SQUARE_OFFSET -
-          0.000001,
+          Earth.ROUND_OFFSET_LONG,
         6,
       ),
     },
@@ -87,7 +87,7 @@ export function getSliceCoordinates(locations) {
     }
 
     if (current.latitude === next.latitude) {
-      if (next.longitude - current.longitude < gridDistanceAtLatitude(current.latitude) + 0.0001) {
+      if (next.longitude - current.longitude < gridDistanceAtLatitude(current.latitude) + Earth.SLICE_OFFSET) {
         last = next;
       } else {
         slices.push(getRectangleCoordinates(first, last));

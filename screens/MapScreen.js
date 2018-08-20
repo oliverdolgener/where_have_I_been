@@ -238,6 +238,7 @@ class MapScreen extends Component {
           )}
           <MapView.Polygon
             fillColor={Colors.black80}
+            strokeWidth={0}
             strokeColor={Colors.transparent}
             coordinates={Earth.FOG}
             holes={holes || []}
