@@ -16,18 +16,15 @@ export default class Coordinate {
     );
   }
 
-  static getRoundedLatitude(latitude) {
-    return MathUtils.roundToDecimals(
-      Math.round(latitude / Earth.GRID_DISTANCE) * Earth.GRID_DISTANCE,
-      6,
-    );
+  static getRoundedLatitude(latitude, gridDistance = Earth.GRID_DISTANCE) {
+    return MathUtils.roundToDecimals(Math.round(latitude / gridDistance) * gridDistance, 6);
   }
 
-  static getRoundedLongitude(longitude, latitude) {
-    const roundedLatitude = Coordinate.getRoundedLatitude(latitude);
+  static getRoundedLongitude(longitude, latitude, gridDistance = Earth.GRID_DISTANCE) {
+    const roundedLatitude = Coordinate.getRoundedLatitude(latitude, gridDistance);
     return MathUtils.roundToDecimals(
-      Math.round(longitude / EarthUtils.gridDistanceAtLatitude(roundedLatitude)) *
-        EarthUtils.gridDistanceAtLatitude(roundedLatitude),
+      Math.round(longitude / EarthUtils.gridDistanceAtLatitude(roundedLatitude, gridDistance)) *
+        EarthUtils.gridDistanceAtLatitude(roundedLatitude, gridDistance),
       6,
     );
   }
@@ -41,11 +38,11 @@ export default class Coordinate {
     );
   }
 
-  static getNeighbours(coordinate, array) {
+  static getNeighbours(coordinate, array, gridDistance = Earth.GRID_DISTANCE) {
     const neighbours = [];
     array.forEach((x) => {
       if (
-        (x.latitude - coordinate.latitude) ** 2 / Earth.GRID_DISTANCE ** 2 <=
+        (x.latitude - coordinate.latitude) ** 2 / gridDistance ** 2 <=
           Earth.NEIGHBOUR_BOUNDARY + Earth.NEIGHBOUR_OFFSET_LAT &&
         (x.longitude - coordinate.longitude) ** 2 /
           EarthUtils.gridDistanceAtLatitude(coordinate.latitude) ** 2 <=
@@ -147,37 +144,37 @@ export default class Coordinate {
     );
   }
 
-  getCorners() {
+  getCorners(gridDistance = Earth.GRID_DISTANCE) {
     return [
       new Coordinate(
-        MathUtils.roundToDecimals(this.latitude + Earth.GRID_DISTANCE / Earth.SQUARE_OFFSET, 6),
+        MathUtils.roundToDecimals(this.latitude + gridDistance / Earth.SQUARE_OFFSET, 6),
         MathUtils.roundToDecimals(
           this.longitude -
             EarthUtils.gridDistanceAtLatitude(this.latitude) / Earth.SQUARE_OFFSET -
-            0.000001,
+            Earth.ROUND_OFFSET_LONG,
           6,
         ),
       ),
       new Coordinate(
-        MathUtils.roundToDecimals(this.latitude + Earth.GRID_DISTANCE / Earth.SQUARE_OFFSET, 6),
+        MathUtils.roundToDecimals(this.latitude + gridDistance / Earth.SQUARE_OFFSET, 6),
         MathUtils.roundToDecimals(
           this.longitude + EarthUtils.gridDistanceAtLatitude(this.latitude) / Earth.SQUARE_OFFSET,
           6,
         ),
       ),
       new Coordinate(
-        MathUtils.roundToDecimals(this.latitude - Earth.GRID_DISTANCE / Earth.SQUARE_OFFSET, 6),
+        MathUtils.roundToDecimals(this.latitude - gridDistance / Earth.SQUARE_OFFSET, 6),
         MathUtils.roundToDecimals(
           this.longitude + EarthUtils.gridDistanceAtLatitude(this.latitude) / Earth.SQUARE_OFFSET,
           6,
         ),
       ),
       new Coordinate(
-        MathUtils.roundToDecimals(this.latitude - Earth.GRID_DISTANCE / Earth.SQUARE_OFFSET, 6),
+        MathUtils.roundToDecimals(this.latitude - gridDistance / Earth.SQUARE_OFFSET, 6),
         MathUtils.roundToDecimals(
           this.longitude -
             EarthUtils.gridDistanceAtLatitude(this.latitude) / Earth.SQUARE_OFFSET -
-            0.000001,
+            Earth.ROUND_OFFSET_LONG,
           6,
         ),
       ),
