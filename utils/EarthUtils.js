@@ -111,43 +111,45 @@ export function getSliceCoordinates(locations, gridDistance = Earth.GRID_DISTANC
 }
 
 export function getGridDistanceByRegion(region) {
-  const zoom = region.latitudeDelta;
+  const zoom = region.longitudeDelta > 0 ? region.longitudeDelta : 360 + region.longitudeDelta;
 
-  if (zoom < 0.1) {
+  if (zoom < 0.05) {
     return Earth.GRID_DISTANCE;
   }
 
-  if (zoom < 0.25) {
-    return Earth.GRID_DISTANCE * 2.5;
-  }
+  return zoom / 100;
 
-  if (zoom < 0.5) {
-    return Earth.GRID_DISTANCE * 5;
-  }
+  // if (zoom < 0.25) {
+  //   return Earth.GRID_DISTANCE * 2.5;
+  // }
 
-  if (zoom < 1) {
-    return Earth.GRID_DISTANCE * 10;
-  }
+  // if (zoom < 0.5) {
+  //   return Earth.GRID_DISTANCE * 5;
+  // }
 
-  if (zoom < 2.5) {
-    return Earth.GRID_DISTANCE * 25;
-  }
+  // if (zoom < 1) {
+  //   return Earth.GRID_DISTANCE * 10;
+  // }
 
-  if (zoom < 5) {
-    return Earth.GRID_DISTANCE * 50;
-  }
+  // if (zoom < 2.5) {
+  //   return Earth.GRID_DISTANCE * 25;
+  // }
 
-  if (zoom < 10) {
-    return Earth.GRID_DISTANCE * 100;
-  }
+  // if (zoom < 5) {
+  //   return Earth.GRID_DISTANCE * 50;
+  // }
 
-  if (zoom < 25) {
-    return Earth.GRID_DISTANCE * 250;
-  }
+  // if (zoom < 10) {
+  //   return Earth.GRID_DISTANCE * 100;
+  // }
 
-  if (zoom < 50) {
-    return Earth.GRID_DISTANCE * 500;
-  }
+  // if (zoom < 25) {
+  //   return Earth.GRID_DISTANCE * 250;
+  // }
 
-  return Earth.GRID_DISTANCE * 1000;
+  // if (zoom < 50) {
+  //   return Earth.GRID_DISTANCE * 500;
+  // }
+
+  // return Earth.GRID_DISTANCE * 1000;
 }
