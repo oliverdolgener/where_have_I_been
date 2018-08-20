@@ -87,7 +87,10 @@ export function getSliceCoordinates(locations) {
     }
 
     if (current.latitude === next.latitude) {
-      if (next.longitude - current.longitude < gridDistanceAtLatitude(current.latitude) + Earth.SLICE_OFFSET) {
+      if (
+        next.longitude - current.longitude <
+        gridDistanceAtLatitude(current.latitude) + Earth.SLICE_OFFSET
+      ) {
         last = next;
       } else {
         slices.push(getRectangleCoordinates(first, last));
