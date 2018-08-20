@@ -213,19 +213,27 @@ class MapScreen extends Component {
           }}
           style={styles.container}
           provider="google"
+          initialRegion={region}
           mapType={mapType === 'watercolor' ? 'none' : mapType}
           customMapStyle={mapStyle}
-          rotateEnabled={false}
-          pitchEnabled={false}
-          showsScale={false}
-          showsCompass={false}
-          showsPointsOfInterest={false}
-          showsIndoors={false}
-          zoomControlEnabled={false}
-          showsMyLocationButton={false}
           showsUserLocation
+          showsMyLocationButton={false}
+          showsPointsOfInterest
+          showsCompass={false}
+          showsScale
+          showsBuildings
+          showsTraffic={false}
+          showsIndoors={false}
+          showsIndoorLevelPicker={false}
+          zoomEnabled
+          zoomControlEnabled={false}
+          minZoomLevel={0}
           maxZoomLevel={18}
-          initialRegion={region}
+          rotateEnabled={false}
+          scrollEnabled
+          pitchEnabled={false}
+          toolbarEnabled={false}
+          loadingEnabled
           onRegionChangeComplete={newRegion => this.onRegionChangeComplete(newRegion)}
           onPanDrag={() => this.setState({ followLocation: false })}
         >
