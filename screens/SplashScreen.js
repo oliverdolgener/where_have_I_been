@@ -27,7 +27,9 @@ class SplashScreen extends React.Component {
   }
 
   getUserAsync = async () => {
-    const { relogUser, setMapType, setTilesToSave } = this.props;
+    const {
+      relogUser, setMapType, setTilesToSave, navigation,
+    } = this.props;
     const id = await AsyncStorage.getItem('id');
     const mapType = await AsyncStorage.getItem('mapType');
     const tilesToSave = await AsyncStorage.getItem('tilesToSave');
@@ -41,7 +43,7 @@ class SplashScreen extends React.Component {
         }
         relogUser(id);
       } else {
-        this.props.navigation.navigate('Login');
+        navigation.navigate('Login');
       }
     }, 3000);
   };

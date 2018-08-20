@@ -174,15 +174,14 @@ class MapScreen extends Component {
     } = this.props;
 
     if (!MathUtils.containsLocation(location, visitedLocations)) {
-      const tilesToSaveCopy = tilesToSave;
-      tilesToSaveCopy.push(location);
-      setTilesToSave(tilesToSaveCopy);
-      visitedLocations.push(location);
-      setLocations(visitedLocations);
-    }
+      const unsaved = [...tilesToSave, location];
+      const visited = [...visitedLocations, location];
+      setTilesToSave(unsaved);
+      setLocations(visited);
 
-    if (tilesToSave.length > 0) {
-      saveTiles(userId, tilesToSave);
+      if (unsaved.length > 0) {
+        saveTiles(userId, unsaved);
+      }
     }
   }
 
@@ -192,7 +191,7 @@ class MapScreen extends Component {
 
   render() {
     const {
-      isLoggedIn, mapType, visitedLocations, holes, region,
+      isLoggedIn, mapType, visitedLocations, holes, region, navigation,
     } = this.props;
 
     const {
@@ -246,7 +245,7 @@ class MapScreen extends Component {
         </MapView>
         <TouchableOpacity
           style={styles.menuButton}
-          onPress={() => this.props.navigation.openDrawer()}
+          onPress={() => navigation.openDrawer()}
         >
           <Image style={styles.menuImage} source={iconMenu} />
         </TouchableOpacity>
