@@ -284,7 +284,8 @@ class MapScreen extends Component {
         />
         <InfoText
           style={styles.speedInfo}
-          label={speed} icon={iconSpeed}
+          label={speed}
+          icon={iconSpeed}
           alignRight
           gradient={0}
           pointerEvents="none"

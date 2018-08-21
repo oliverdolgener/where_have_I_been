@@ -111,10 +111,18 @@ export function getSliceCoordinates(locations, gridDistance = Earth.GRID_DISTANC
 }
 
 export function getGridDistanceByRegion(region) {
-  const zoom = region.longitudeDelta > 0 ? region.longitudeDelta : 360 + region.longitudeDelta;
+  let zoom = region.longitudeDelta > 0 ? region.longitudeDelta : 360 + region.longitudeDelta;
 
-  if (zoom < 0.05) {
+  if (zoom < 0.1) {
     return Earth.GRID_DISTANCE;
+  }
+
+  if (zoom < 1) {
+    zoom = Math.round(zoom * 10) / 10;
+  } else if (zoom < 10) {
+    zoom = Math.round(zoom);
+  } else {
+    zoom = Math.round(zoom / 10) * 10;
   }
 
   if (zoom > 50) {
@@ -122,38 +130,4 @@ export function getGridDistanceByRegion(region) {
   }
 
   return zoom / 50;
-
-  // if (zoom < 0.25) {
-  //   return Earth.GRID_DISTANCE * 2.5;
-  // }
-
-  // if (zoom < 0.5) {
-  //   return Earth.GRID_DISTANCE * 5;
-  // }
-
-  // if (zoom < 1) {
-  //   return Earth.GRID_DISTANCE * 10;
-  // }
-
-  // if (zoom < 2.5) {
-  //   return Earth.GRID_DISTANCE * 25;
-  // }
-
-  // if (zoom < 5) {
-  //   return Earth.GRID_DISTANCE * 50;
-  // }
-
-  // if (zoom < 10) {
-  //   return Earth.GRID_DISTANCE * 100;
-  // }
-
-  // if (zoom < 25) {
-  //   return Earth.GRID_DISTANCE * 250;
-  // }
-
-  // if (zoom < 50) {
-  //   return Earth.GRID_DISTANCE * 500;
-  // }
-
-  // return Earth.GRID_DISTANCE * 1000;
 }
