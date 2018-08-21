@@ -106,7 +106,7 @@ const prepareLocations = (locations) => {
 };
 
 const prepareHoles = (locations, region) => {
-  const visibleLocations = locations.filter(x => x.isInRegion(region));
+  const visibleLocations = locations.filter(x => x.isInRegion(region, 2));
   const gridDistance = EarthUtils.getGridDistanceByRegion(region);
   return EarthUtils.getSliceCoordinates(visibleLocations, gridDistance);
 };

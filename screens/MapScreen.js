@@ -36,7 +36,6 @@ const styles = {
     top: 40,
     left: 0,
     right: 0,
-    bottom: 0,
     alignItems: 'center',
   },
   cityInfo: {
@@ -73,7 +72,6 @@ const styles = {
   },
   locationButton: {
     position: 'absolute',
-    top: 0,
     left: 0,
     right: 0,
     bottom: 20,
@@ -116,7 +114,14 @@ class MapScreen extends Component {
 
   onRegionChangeComplete(region) {
     const { setRegion } = this.props;
+    const { currentLocation } = this.state;
     setRegion(region);
+
+    if (!currentLocation.isInRegion(region)) {
+      this.setState({
+        followLocation: false,
+      });
+    }
   }
 
   getGeolocationAsync = async (location) => {
@@ -220,7 +225,7 @@ class MapScreen extends Component {
           showsMyLocationButton={false}
           showsPointsOfInterest
           showsCompass={false}
-          showsScale
+          showsScale={false}
           showsBuildings
           showsTraffic={false}
           showsIndoors={false}
@@ -235,7 +240,6 @@ class MapScreen extends Component {
           toolbarEnabled={false}
           loadingEnabled
           onRegionChangeComplete={newRegion => this.onRegionChangeComplete(newRegion)}
-          onPanDrag={() => this.setState({ followLocation: false })}
         >
           {mapType === 'watercolor' && (
             <MapView.UrlTile
@@ -257,7 +261,7 @@ class MapScreen extends Component {
         >
           <Image style={styles.menuImage} source={iconMenu} />
         </TouchableOpacity>
-        <View style={styles.geocodeContainer}>
+        <View style={styles.geocodeContainer} pointerEvents="none">
           <Text style={styles.cityInfo}>{geocode.city}</Text>
           <Text style={styles.regionInfo}>{geocode.region}</Text>
           <Text style={styles.countryInfo}>{geocode.country}</Text>
@@ -268,6 +272,7 @@ class MapScreen extends Component {
           icon={iconLevel}
           alignRight
           gradient={gradient}
+          pointerEvents="none"
         />
         <InfoText
           style={styles.tileInfo}
@@ -275,14 +280,22 @@ class MapScreen extends Component {
           icon={iconSquare}
           alignRight
           gradient={0}
+          pointerEvents="none"
         />
-        <InfoText style={styles.speedInfo} label={speed} icon={iconSpeed} alignRight gradient={0} />
+        <InfoText
+          style={styles.speedInfo}
+          label={speed} icon={iconSpeed}
+          alignRight
+          gradient={0}
+          pointerEvents="none"
+        />
         <InfoText
           style={styles.altitudeInfo}
           label={altitude}
           icon={iconAltitude}
           alignRight
           gradient={0}
+          pointerEvents="none"
         />
         {!followLocation && (
           <View style={styles.locationButton}>

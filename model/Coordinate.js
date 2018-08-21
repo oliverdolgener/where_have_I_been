@@ -29,12 +29,12 @@ export default class Coordinate {
     );
   }
 
-  static isCoordinateInRegion(coordinate, region) {
+  static isCoordinateInRegion(coordinate, region, factor = 1) {
     return (
-      coordinate.latitude <= region.latitude + region.latitudeDelta &&
-      coordinate.latitude >= region.latitude - region.latitudeDelta &&
-      coordinate.longitude <= region.longitude + region.longitudeDelta &&
-      coordinate.longitude >= region.longitude - region.longitudeDelta
+      coordinate.latitude <= region.latitude + region.latitudeDelta / (2 / factor) &&
+      coordinate.latitude >= region.latitude - region.latitudeDelta / (2 / factor) &&
+      coordinate.longitude <= region.longitude + region.longitudeDelta / (2 / factor) &&
+      coordinate.longitude >= region.longitude - region.longitudeDelta / (2 / factor)
     );
   }
 
@@ -135,13 +135,9 @@ export default class Coordinate {
     return Coordinate.getRoundedLongitude(this.longitude, this.latitude);
   }
 
-  isInRegion(region) {
-    return (
-      this.latitude <= region.latitude + region.latitudeDelta &&
-      this.latitude >= region.latitude - region.latitudeDelta &&
-      this.longitude <= region.longitude + region.longitudeDelta &&
-      this.longitude >= region.longitude - region.longitudeDelta
-    );
+  isInRegion(region, factor = 1) {
+    const coordinate = new Coordinate(this.latitude, this.longitude, this.timestamp);
+    return Coordinate.isCoordinateInRegion(coordinate, region, factor);
   }
 
   getCorners(gridDistance = Earth.GRID_DISTANCE) {
