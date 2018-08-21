@@ -32,6 +32,25 @@ const removeUserAsync = async () => {
   await AsyncStorage.removeItem('id');
 };
 
+const setMapTypeAsync = async (mapType) => {
+  await AsyncStorage.setItem('mapType', mapType);
+};
+
+const setTilesToSaveAsync = async (tilesToSave) => {
+  await AsyncStorage.setItem('tilesToSave', JSON.stringify(tilesToSave));
+};
+
+const prepareLocations = (locations) => {
+  const visitedLocations = locations.map(x => new Coordinate(x.latitude, x.longitude));
+  return MathUtils.removeDuplicateLocations(visitedLocations);
+};
+
+const prepareHoles = (locations, region) => {
+  const visibleLocations = locations.filter(x => x.isInRegion(region, 2));
+  const gridDistance = EarthUtils.getGridDistanceByRegion(region);
+  return EarthUtils.getSliceCoordinates(visibleLocations, gridDistance);
+};
+
 export const actions = {
   login: (email, password) => ({
     type: types.LOGIN,
@@ -80,6 +99,11 @@ export const actions = {
   saveTiles: (userId, tilesToSave) => ({
     type: types.SAVE_TILES,
     promise: saveTiles(userId, tilesToSave),
+    meta: {
+      onSuccess: () => {
+        setTilesToSaveAsync([]);
+      },
+    },
   }),
 };
 
@@ -99,25 +123,6 @@ const initialState = Map({
   mapType: 'hybrid',
   tilesToSave: [],
 });
-
-const prepareLocations = (locations) => {
-  const visitedLocations = locations.map(x => new Coordinate(x.latitude, x.longitude));
-  return MathUtils.removeDuplicateLocations(visitedLocations);
-};
-
-const prepareHoles = (locations, region) => {
-  const visibleLocations = locations.filter(x => x.isInRegion(region, 2));
-  const gridDistance = EarthUtils.getGridDistanceByRegion(region);
-  return EarthUtils.getSliceCoordinates(visibleLocations, gridDistance);
-};
-
-const setMapTypeAsync = async (mapType) => {
-  await AsyncStorage.setItem('mapType', mapType);
-};
-
-const setTilesToSaveAsync = async (tilesToSave) => {
-  await AsyncStorage.setItem('tilesToSave', JSON.stringify(tilesToSave));
-};
 
 export default (state = initialState, action = {}) => {
   const { type, payload } = action;
