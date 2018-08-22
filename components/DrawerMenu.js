@@ -1,12 +1,19 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
+import Collapsible from 'react-native-collapsible';
+
 import { actions as userActions } from '../reducers/user';
 import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
 import iconSatellite from '../assets/iconSatellite.png';
 import iconWatercolor from '../assets/iconWatercolor.png';
+import iconFriendlist from '../assets/iconFriendlist.png';
+import iconCollapse from '../assets/iconCollapse.png';
+import iconExpand from '../assets/iconExpand.png';
+import iconRemove from '../assets/iconRemove.png';
+import iconWorld from '../assets/iconWorld.png';
 import iconSync from '../assets/iconSync.png';
 import iconLogout from '../assets/iconLogout.png';
 
@@ -50,6 +57,14 @@ const styles = StyleSheet.create({
 });
 
 class DrawerMenu extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      showFriendlist: false,
+      showCountries: false,
+    };
+  }
+
   toggleMapType = () => {
     const { navigation, mapType, setMapType } = this.props;
     navigation.closeDrawer();
@@ -67,6 +82,22 @@ class DrawerMenu extends React.Component {
         setMapType('hybrid');
         break;
     }
+  };
+
+  toggleFriendlist = () => {
+    const { showFriendlist } = this.state;
+    this.setState({
+      showFriendlist: !showFriendlist,
+      showCountries: false,
+    });
+  };
+
+  toggleCountries = () => {
+    const { showCountries } = this.state;
+    this.setState({
+      showCountries: !showCountries,
+      showFriendlist: false,
+    });
   };
 
   syncData() {
@@ -90,6 +121,7 @@ class DrawerMenu extends React.Component {
 
   render() {
     const { mapType, tilesToSave } = this.props;
+    const { showFriendlist, showCountries } = this.state;
 
     let mapTypeIcon;
     switch (mapType) {
@@ -107,12 +139,51 @@ class DrawerMenu extends React.Component {
         break;
     }
 
+    const testData = [
+      { id: 0, nickname: 'Olli' },
+      { id: 1, nickname: 'Liz' },
+      { id: 2, nickname: 'Ute' },
+    ];
+
     return (
       <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
         <TouchableOpacity style={styles.mapType} onPress={() => this.toggleMapType()}>
           <Image style={styles.menuIcon} source={mapTypeIcon} />
         </TouchableOpacity>
         <View style={styles.menuContainer}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleFriendlist()}>
+            <Image style={styles.menuIcon} source={iconFriendlist} />
+            <Text style={styles.menuLabel}>Friendlist</Text>
+            <Image style={styles.menuIcon} source={showFriendlist ? iconCollapse : iconExpand} />
+          </TouchableOpacity>
+          <Collapsible collapsed={!showFriendlist} collapsedHeight={0}>
+            <FlatList
+              data={testData}
+              keyExtractor={item => item.id.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity style={styles.menuItem}>
+                  <Text style={styles.menuLabel}>{item.nickname}</Text>
+                  <Image style={styles.menuIcon} source={iconRemove} />
+                </TouchableOpacity>
+              )}
+            />
+          </Collapsible>
+          <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountries()}>
+            <Image style={styles.menuIcon} source={iconWorld} />
+            <Text style={styles.menuLabel}>Countries</Text>
+            <Image style={styles.menuIcon} source={showCountries ? iconCollapse : iconExpand} />
+          </TouchableOpacity>
+          <Collapsible collapsed={!showCountries} collapsedHeight={0}>
+            <FlatList
+              data={testData}
+              keyExtractor={item => item.id.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity style={styles.menuItem}>
+                  <Text style={styles.menuLabel}>{item.nickname}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </Collapsible>
           <TouchableOpacity style={styles.menuItem} onPress={() => this.syncData()}>
             <Image style={styles.menuIcon} source={iconSync} />
             <Text style={styles.menuLabel}>Sync Data</Text>
