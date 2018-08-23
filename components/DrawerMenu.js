@@ -120,7 +120,8 @@ class DrawerMenu extends React.Component {
   };
 
   showFriend(id) {
-    const { getFriend } = this.props;
+    const { getFriend, navigation } = this.props;
+    navigation.closeDrawer();
     getFriend(id);
   }
 
