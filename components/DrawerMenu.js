@@ -119,6 +119,11 @@ class DrawerMenu extends React.Component {
     logout();
   };
 
+  showFriend(id) {
+    const { getFriend } = this.props;
+    getFriend(id);
+  }
+
   render() {
     const { mapType, tilesToSave } = this.props;
     const { showFriendlist, showCountries } = this.state;
@@ -139,10 +144,22 @@ class DrawerMenu extends React.Component {
         break;
     }
 
-    const testData = [
-      { id: 0, nickname: 'Olli' },
-      { id: 1, nickname: 'Liz' },
-      { id: 2, nickname: 'Ute' },
+    const testFriends = [
+      {
+        id: '5ae9c419728f801904a9624e', username: '0llum', tiles: 10000, level: 21,
+      },
+      {
+        id: '5aeae9800a576c69ca1e023b', username: 'Liz', tiles: 36, level: 3,
+      },
+      {
+        id: '5b675aa93d4ee00f1f4e2adf', username: 'Ute', tiles: 4321, level: 16,
+      },
+    ];
+
+    const testCountries = [
+      { id: 0, name: 'Germany' },
+      { id: 1, name: 'Croatia' },
+      { id: 2, name: 'Czech Republic' },
     ];
 
     return (
@@ -158,12 +175,12 @@ class DrawerMenu extends React.Component {
           </TouchableOpacity>
           <Collapsible collapsed={!showFriendlist} collapsedHeight={0}>
             <FlatList
-              data={testData}
-              keyExtractor={item => item.id.toString()}
+              data={testFriends}
+              keyExtractor={item => item.id}
               renderItem={({ item }) => (
-                <TouchableOpacity style={styles.menuItem}>
-                  <Text style={styles.menuLabel}>{item.nickname}</Text>
-                  <Image style={styles.menuIcon} source={iconRemove} />
+                <TouchableOpacity style={styles.menuItem} onPress={() => this.showFriend(item.id)}>
+                  <Text style={styles.menuLabel}>{item.username}</Text>
+                  <Text style={styles.menuBadge}>{item.level}</Text>
                 </TouchableOpacity>
               )}
             />
@@ -175,11 +192,11 @@ class DrawerMenu extends React.Component {
           </TouchableOpacity>
           <Collapsible collapsed={!showCountries} collapsedHeight={0}>
             <FlatList
-              data={testData}
+              data={testCountries}
               keyExtractor={item => item.id.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity style={styles.menuItem}>
-                  <Text style={styles.menuLabel}>{item.nickname}</Text>
+                  <Text style={styles.menuLabel}>{item.name}</Text>
                 </TouchableOpacity>
               )}
             />
@@ -207,6 +224,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   getUser: userActions.getUser,
+  getFriend: userActions.getFriend,
   logout: userActions.logout,
   setMapType: userActions.setMapType,
   saveTiles: userActions.saveTiles,

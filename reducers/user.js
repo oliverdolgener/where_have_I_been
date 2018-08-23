@@ -14,6 +14,7 @@ export const types = {
   LOGOUT: 'USER/LOGOUT',
   SIGNUP: 'USER/SIGNUP',
   GET_USER: 'USER/GET_USER',
+  GET_FRIEND: 'USER/GET_FRIEND',
   RELOG_USER: 'USER/RELOG_USER',
   SET_EMAIL_ERROR: 'USER/SET_EMAIL_ERROR',
   SET_PASSWORD_ERROR: 'USER/SET_PASSWORD_ERROR',
@@ -77,6 +78,10 @@ export const actions = {
     type: types.GET_USER,
     promise: getUser(userId),
   }),
+  getFriend: friendId => ({
+    type: types.GET_FRIEND,
+    promise: getUser(friendId),
+  }),
   relogUser: userId => ({
     type: types.RELOG_USER,
     promise: getUser(userId),
@@ -110,6 +115,7 @@ export const actions = {
 const initialState = Map({
   isLoggedIn: false,
   userId: false,
+  friendId: false,
   region: {
     latitude: 52.558,
     longitude: 13.206504,
@@ -117,6 +123,7 @@ const initialState = Map({
     longitudeDelta: 0.005,
   },
   visitedLocations: [],
+  friendLocations: [],
   holes: [],
   emailError: '',
   passwordError: '',
@@ -149,6 +156,7 @@ export default (state = initialState, action = {}) => {
       return state
         .set('isLoggedIn', false)
         .set('userId', false)
+        .set('friendId', false)
         .set('visitedLocations', [])
         .set('holes', []);
     case types.SIGNUP:
@@ -178,6 +186,17 @@ export default (state = initialState, action = {}) => {
             .set('holes', holes);
         },
       });
+    case types.GET_FRIEND:
+      return handle(state, action, {
+        success: (prevState) => {
+          const friendLocations = prepareLocations(payload.data.locations);
+          const holes = prepareHoles(friendLocations, state.get('region'));
+          return prevState
+            .set('friendId', payload.data._id)
+            .set('friendLocations', friendLocations)
+            .set('holes', holes);
+        },
+      });
     case types.RELOG_USER:
       return handle(state, action, {
         success: (prevState) => {
@@ -200,7 +219,8 @@ export default (state = initialState, action = {}) => {
       return state.set('visitedLocations', visitedLocations).set('holes', holes);
     }
     case types.SET_REGION: {
-      const holes = prepareHoles(state.get('visitedLocations'), action.region);
+      const locations = state.get('friendId') ? state.get('friendLocations') : state.get('visitedLocations');
+      const holes = prepareHoles(locations, action.region);
       return state.set('region', action.region).set('holes', holes);
     }
     case types.SET_MAPTYPE:

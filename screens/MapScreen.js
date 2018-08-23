@@ -196,7 +196,12 @@ class MapScreen extends Component {
 
   render() {
     const {
-      isLoggedIn, mapType, visitedLocations, holes, region, navigation,
+      isLoggedIn,
+      mapType,
+      visitedLocations,
+      holes,
+      region,
+      navigation,
     } = this.props;
 
     const {
@@ -252,7 +257,7 @@ class MapScreen extends Component {
             strokeWidth={0}
             strokeColor={Colors.transparent}
             coordinates={Earth.FOG}
-            holes={holes || []}
+            holes={holes}
           />
         </MapView>
         <TouchableOpacity
