@@ -282,7 +282,6 @@ class MapScreen extends Component {
           icon={iconLevel}
           alignRight
           gradient={gradient}
-          pointerEvents="none"
         />
         <InfoText
           style={styles.tileInfo}
@@ -290,7 +289,6 @@ class MapScreen extends Component {
           icon={iconSquare}
           alignRight
           gradient={0}
-          pointerEvents="none"
         />
         <InfoText
           style={styles.speedInfo}
@@ -298,7 +296,6 @@ class MapScreen extends Component {
           icon={iconSpeed}
           alignRight
           gradient={0}
-          pointerEvents="none"
         />
         <InfoText
           style={styles.altitudeInfo}
@@ -306,7 +303,6 @@ class MapScreen extends Component {
           icon={iconAltitude}
           alignRight
           gradient={0}
-          pointerEvents="none"
         />
         {friendId ? (
           <View style={styles.locationButton}>

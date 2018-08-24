@@ -37,6 +37,7 @@ const InfoText = (props) => {
       start={[0, 0]}
       end={[1, 0]}
       locations={[gradient, gradient]}
+      pointerEvents="none"
     >
       {icon && <Image style={styles.icon} source={icon} />}
       <Text style={{ ...styles.label, ...labelAlign }}>{label}</Text>
