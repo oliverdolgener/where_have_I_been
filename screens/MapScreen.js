@@ -15,6 +15,7 @@ import iconLocation from '../assets/iconLocation.png';
 import iconSquare from '../assets/iconSquare.png';
 import iconSpeed from '../assets/iconSpeed.png';
 import iconAltitude from '../assets/iconAltitude.png';
+import iconClose from '../assets/iconClose.png';
 import mapStyle from '../assets/mapStyle.json';
 
 const styles = {
@@ -82,6 +83,11 @@ const styles = {
     width: 50,
     height: 50,
     tintColor: Colors.lightBlue80,
+  },
+  removeImage: {
+    width: 50,
+    height: 50,
+    tintColor: Colors.red80,
   },
 };
 
@@ -202,6 +208,8 @@ class MapScreen extends Component {
       holes,
       region,
       navigation,
+      friendId,
+      resetFriend,
     } = this.props;
 
     const {
@@ -260,10 +268,7 @@ class MapScreen extends Component {
             holes={holes}
           />
         </MapView>
-        <TouchableOpacity
-          style={styles.menuButton}
-          onPress={() => navigation.openDrawer()}
-        >
+        <TouchableOpacity style={styles.menuButton} onPress={() => navigation.openDrawer()}>
           <Image style={styles.menuImage} source={iconMenu} />
         </TouchableOpacity>
         <View style={styles.geocodeContainer} pointerEvents="none">
@@ -303,17 +308,25 @@ class MapScreen extends Component {
           gradient={0}
           pointerEvents="none"
         />
-        {!followLocation && (
+        {friendId ? (
           <View style={styles.locationButton}>
-            <TouchableOpacity
-              onPress={() => {
-                this.moveToLocation(currentLocation);
-                this.setState({ followLocation: true });
-              }}
-            >
-              <Image style={styles.locationImage} source={iconLocation} />
+            <TouchableOpacity onPress={() => resetFriend()}>
+              <Image style={styles.removeImage} source={iconClose} />
             </TouchableOpacity>
           </View>
+        ) : (
+          !followLocation && (
+            <View style={styles.locationButton}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.moveToLocation(currentLocation);
+                  this.setState({ followLocation: true });
+                }}
+              >
+                <Image style={styles.locationImage} source={iconLocation} />
+              </TouchableOpacity>
+            </View>
+          )
         )}
       </View>
     );
@@ -322,6 +335,7 @@ class MapScreen extends Component {
 
 const mapStateToProps = state => ({
   userId: state.user.get('userId'),
+  friendId: state.user.get('friendId'),
   region: state.user.get('region'),
   visitedLocations: state.user.get('visitedLocations'),
   holes: state.user.get('holes'),
@@ -335,6 +349,7 @@ const mapDispatchToProps = {
   setRegion: userActions.setRegion,
   setTilesToSave: userActions.setTilesToSave,
   saveTiles: userActions.saveTiles,
+  resetFriend: userActions.resetFriend,
 };
 
 export default connect(

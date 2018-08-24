@@ -15,6 +15,7 @@ export const types = {
   SIGNUP: 'USER/SIGNUP',
   GET_USER: 'USER/GET_USER',
   GET_FRIEND: 'USER/GET_FRIEND',
+  RESET_FRIEND: 'USER/RESET_FRIEND',
   RELOG_USER: 'USER/RELOG_USER',
   SET_EMAIL_ERROR: 'USER/SET_EMAIL_ERROR',
   SET_PASSWORD_ERROR: 'USER/SET_PASSWORD_ERROR',
@@ -82,6 +83,7 @@ export const actions = {
     type: types.GET_FRIEND,
     promise: getUser(friendId),
   }),
+  resetFriend: () => ({ type: types.RESET_FRIEND }),
   relogUser: userId => ({
     type: types.RELOG_USER,
     promise: getUser(userId),
@@ -197,6 +199,14 @@ export default (state = initialState, action = {}) => {
             .set('holes', holes);
         },
       });
+    case types.RESET_FRIEND: {
+      const visitedLocations = state.get('visitedLocations');
+      const holes = prepareHoles(visitedLocations, state.get('region'));
+      return state
+        .set('friendId', false)
+        .set('friendLocations', [])
+        .set('holes', holes);
+    }
     case types.RELOG_USER:
       return handle(state, action, {
         success: (prevState) => {
@@ -215,11 +225,14 @@ export default (state = initialState, action = {}) => {
       return state.set('passwordError', action.error);
     case types.SET_LOCATIONS: {
       const visitedLocations = prepareLocations(action.locations);
-      const holes = prepareHoles(visitedLocations, state.get('region'));
+      const locations = state.get('friendId') ? state.get('friendLocations') : visitedLocations;
+      const holes = prepareHoles(locations, state.get('region'));
       return state.set('visitedLocations', visitedLocations).set('holes', holes);
     }
     case types.SET_REGION: {
-      const locations = state.get('friendId') ? state.get('friendLocations') : state.get('visitedLocations');
+      const locations = state.get('friendId')
+        ? state.get('friendLocations')
+        : state.get('visitedLocations');
       const holes = prepareHoles(locations, action.region);
       return state.set('region', action.region).set('holes', holes);
     }

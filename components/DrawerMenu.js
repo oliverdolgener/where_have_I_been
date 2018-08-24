@@ -12,7 +12,6 @@ import iconWatercolor from '../assets/iconWatercolor.png';
 import iconFriendlist from '../assets/iconFriendlist.png';
 import iconCollapse from '../assets/iconCollapse.png';
 import iconExpand from '../assets/iconExpand.png';
-import iconRemove from '../assets/iconRemove.png';
 import iconWorld from '../assets/iconWorld.png';
 import iconSync from '../assets/iconSync.png';
 import iconLogout from '../assets/iconLogout.png';
