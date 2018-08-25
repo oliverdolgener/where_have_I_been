@@ -1,6 +1,7 @@
 import React from 'react';
 import { AsyncStorage, View, StyleSheet, Text } from 'react-native';
 import { connect } from 'react-redux';
+
 import { actions as userActions } from '../reducers/user';
 import * as Colors from '../constants/Colors';
 
@@ -28,11 +29,12 @@ class SplashScreen extends React.Component {
 
   getUserAsync = async () => {
     const {
-      relogUser, setMapType, setTilesToSave, navigation,
+      relogUser, setMapType, setTilesToSave, setTheme, navigation,
     } = this.props;
     const id = await AsyncStorage.getItem('id');
     const mapType = await AsyncStorage.getItem('mapType');
     const tilesToSave = await AsyncStorage.getItem('tilesToSave');
+    const theme = await AsyncStorage.getItem('theme');
     setTimeout(() => {
       if (id) {
         if (mapType) {
@@ -40,6 +42,9 @@ class SplashScreen extends React.Component {
         }
         if (tilesToSave) {
           setTilesToSave(JSON.parse(tilesToSave));
+        }
+        if (theme) {
+          setTheme(theme);
         }
         relogUser(id);
       } else {
@@ -64,6 +69,7 @@ const mapDispatchToProps = {
   relogUser: userActions.relogUser,
   setMapType: userActions.setMapType,
   setTilesToSave: userActions.setTilesToSave,
+  setTheme: userActions.setTheme,
 };
 
 export default connect(

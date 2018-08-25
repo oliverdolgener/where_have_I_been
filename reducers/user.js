@@ -24,6 +24,7 @@ export const types = {
   SET_MAPTYPE: 'USER/SET_MAPTYPE',
   SET_TILES_TO_SAVE: 'USER/SET_TILES_TO_SAVE',
   SAVE_TILES: 'USER/SAVE_TILES',
+  SET_THEME: 'USER/SET_THEME',
 };
 
 const setUserAsync = async (id) => {
@@ -40,6 +41,10 @@ const setMapTypeAsync = async (mapType) => {
 
 const setTilesToSaveAsync = async (tilesToSave) => {
   await AsyncStorage.setItem('tilesToSave', JSON.stringify(tilesToSave));
+};
+
+const setThemeAsync = async (theme) => {
+  await AsyncStorage.setItem('theme', theme);
 };
 
 const prepareLocations = (locations) => {
@@ -112,6 +117,7 @@ export const actions = {
       },
     },
   }),
+  setTheme: theme => ({ type: types.SET_THEME, theme }),
 };
 
 const initialState = Map({
@@ -131,6 +137,7 @@ const initialState = Map({
   passwordError: '',
   mapType: 'hybrid',
   tilesToSave: [],
+  theme: 'light',
 });
 
 export default (state = initialState, action = {}) => {
@@ -246,6 +253,9 @@ export default (state = initialState, action = {}) => {
       return handle(state, action, {
         success: prevState => prevState.set('tilesToSave', []),
       });
+    case types.SET_THEME:
+      setThemeAsync(action.theme);
+      return state.set('theme', action.theme);
     default:
       return state;
   }

@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { View, Image, Text, TouchableOpacity } from 'react-native';
+import { View, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, Permissions, MapView } from 'expo';
+
 import { actions as userActions } from '../reducers/user';
 import Coordinate from '../model/Coordinate';
+import ThemedText from '../components/ThemedText';
+import ThemedIcon from '../components/ThemedIcon';
 import InfoText from '../components/InfoText';
 import * as LevelUtils from '../utils/LevelUtils';
 import * as MathUtils from '../utils/MathUtils';
@@ -16,7 +19,8 @@ import iconSquare from '../assets/iconSquare.png';
 import iconSpeed from '../assets/iconSpeed.png';
 import iconAltitude from '../assets/iconAltitude.png';
 import iconClose from '../assets/iconClose.png';
-import mapStyle from '../assets/mapStyle.json';
+import mapStyleLight from '../assets/mapStyleLight.json';
+import mapStyleDark from '../assets/mapStyleDark.json';
 
 const styles = {
   container: {
@@ -210,6 +214,7 @@ class MapScreen extends Component {
       navigation,
       friendId,
       resetFriend,
+      theme,
     } = this.props;
 
     const {
@@ -229,11 +234,12 @@ class MapScreen extends Component {
           ref={(ref) => {
             this.map = ref;
           }}
+          key={`mapView-${theme}`}
           style={styles.container}
           provider="google"
           initialRegion={region}
           mapType={mapType === 'watercolor' ? 'none' : mapType}
-          customMapStyle={mapStyle}
+          customMapStyle={theme === 'dark' ? mapStyleDark : mapStyleLight}
           showsUserLocation
           showsMyLocationButton={false}
           showsPointsOfInterest
@@ -269,12 +275,12 @@ class MapScreen extends Component {
           />
         </MapView>
         <TouchableOpacity style={styles.menuButton} onPress={() => navigation.openDrawer()}>
-          <Image style={styles.menuImage} source={iconMenu} />
+          <ThemedIcon style={styles.menuImage} source={iconMenu} />
         </TouchableOpacity>
         <View style={styles.geocodeContainer} pointerEvents="none">
-          <Text style={styles.cityInfo}>{geocode.city}</Text>
-          <Text style={styles.regionInfo}>{geocode.region}</Text>
-          <Text style={styles.countryInfo}>{geocode.country}</Text>
+          <ThemedText style={styles.cityInfo}>{geocode.city}</ThemedText>
+          <ThemedText style={styles.regionInfo}>{geocode.region}</ThemedText>
+          <ThemedText style={styles.countryInfo}>{geocode.country}</ThemedText>
         </View>
         <InfoText
           style={styles.levelInfo}
@@ -290,13 +296,7 @@ class MapScreen extends Component {
           alignRight
           gradient={0}
         />
-        <InfoText
-          style={styles.speedInfo}
-          label={speed}
-          icon={iconSpeed}
-          alignRight
-          gradient={0}
-        />
+        <InfoText style={styles.speedInfo} label={speed} icon={iconSpeed} alignRight gradient={0} />
         <InfoText
           style={styles.altitudeInfo}
           label={altitude}
@@ -338,6 +338,7 @@ const mapStateToProps = state => ({
   isLoggedIn: state.user.get('isLoggedIn'),
   mapType: state.user.get('mapType'),
   tilesToSave: state.user.get('tilesToSave'),
+  theme: state.user.get('theme'),
 });
 
 const mapDispatchToProps = {

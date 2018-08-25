@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, Text } from 'react-native';
 import { LinearGradient } from 'expo';
+
 import * as Colors from '../constants/Colors';
 
 const styles = {

@@ -3,6 +3,7 @@ import {
   createDrawerNavigator,
   createSwitchNavigator,
 } from 'react-navigation';
+
 import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MapScreen from '../screens/MapScreen';

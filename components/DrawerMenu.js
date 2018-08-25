@@ -1,10 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, FlatList, Switch } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import Collapsible from 'react-native-collapsible';
 
 import { actions as userActions } from '../reducers/user';
+import ThemedText from '../components/ThemedText';
+import ThemedIcon from '../components/ThemedIcon';
 import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
 import iconSatellite from '../assets/iconSatellite.png';
@@ -19,7 +21,11 @@ import iconLogout from '../assets/iconLogout.png';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white90,
+  },
+  theme: {
+    position: 'absolute',
+    top: 30,
+    left: 5,
   },
   mapType: {
     position: 'absolute',
@@ -39,7 +45,6 @@ const styles = StyleSheet.create({
   menuIcon: {
     width: 30,
     height: 30,
-    tintColor: Colors.black,
   },
   menuLabel: {
     flex: 1,
@@ -63,6 +68,11 @@ class DrawerMenu extends React.Component {
       showCountries: false,
     };
   }
+
+  toggleTheme = () => {
+    const { theme, setTheme } = this.props;
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
 
   toggleMapType = () => {
     const { navigation, mapType, setMapType } = this.props;
@@ -125,8 +135,10 @@ class DrawerMenu extends React.Component {
   }
 
   render() {
-    const { mapType, tilesToSave } = this.props;
+    const { mapType, tilesToSave, theme } = this.props;
     const { showFriendlist, showCountries } = this.state;
+
+    const backgroundColor = theme === 'dark' ? Colors.black80 : Colors.white80;
 
     let mapTypeIcon;
     switch (mapType) {
@@ -146,13 +158,22 @@ class DrawerMenu extends React.Component {
 
     const testFriends = [
       {
-        id: '5ae9c419728f801904a9624e', username: '0llum', tiles: 10000, level: 21,
+        id: '5ae9c419728f801904a9624e',
+        username: '0llum',
+        tiles: 10000,
+        level: 21,
       },
       {
-        id: '5aeae9800a576c69ca1e023b', username: 'Liz', tiles: 36, level: 3,
+        id: '5aeae9800a576c69ca1e023b',
+        username: 'Liz',
+        tiles: 36,
+        level: 3,
       },
       {
-        id: '5b675aa93d4ee00f1f4e2adf', username: 'Ute', tiles: 4321, level: 16,
+        id: '5b675aa93d4ee00f1f4e2adf',
+        username: 'Ute',
+        tiles: 4321,
+        level: 16,
       },
     ];
 
@@ -163,15 +184,26 @@ class DrawerMenu extends React.Component {
     ];
 
     return (
-      <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor }]}
+        forceInset={{ top: 'always', horizontal: 'never' }}
+      >
+        <Switch
+          style={styles.theme}
+          value={theme === 'dark'}
+          onValueChange={() => this.toggleTheme()}
+        />
         <TouchableOpacity style={styles.mapType} onPress={() => this.toggleMapType()}>
-          <Image style={styles.menuIcon} source={mapTypeIcon} />
+          <ThemedIcon style={styles.menuIcon} source={mapTypeIcon} />
         </TouchableOpacity>
         <View style={styles.menuContainer}>
           <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleFriendlist()}>
-            <Image style={styles.menuIcon} source={iconFriendlist} />
-            <Text style={styles.menuLabel}>Friendlist</Text>
-            <Image style={styles.menuIcon} source={showFriendlist ? iconCollapse : iconExpand} />
+            <ThemedIcon style={styles.menuIcon} source={iconFriendlist} />
+            <ThemedText style={styles.menuLabel}>Friendlist</ThemedText>
+            <ThemedIcon
+              style={styles.menuIcon}
+              source={showFriendlist ? iconCollapse : iconExpand}
+            />
           </TouchableOpacity>
           <Collapsible collapsed={!showFriendlist} collapsedHeight={0}>
             <FlatList
@@ -179,16 +211,19 @@ class DrawerMenu extends React.Component {
               keyExtractor={item => item.id}
               renderItem={({ item }) => (
                 <TouchableOpacity style={styles.menuItem} onPress={() => this.showFriend(item.id)}>
-                  <Text style={styles.menuLabel}>{item.username}</Text>
-                  <Text style={styles.menuBadge}>{item.level}</Text>
+                  <ThemedText style={styles.menuLabel}>{item.username}</ThemedText>
+                  <ThemedText style={styles.menuBadge}>{item.level}</ThemedText>
                 </TouchableOpacity>
               )}
             />
           </Collapsible>
           <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountries()}>
-            <Image style={styles.menuIcon} source={iconWorld} />
-            <Text style={styles.menuLabel}>Countries</Text>
-            <Image style={styles.menuIcon} source={showCountries ? iconCollapse : iconExpand} />
+            <ThemedIcon style={styles.menuIcon} source={iconWorld} />
+            <ThemedText style={styles.menuLabel}>Countries</ThemedText>
+            <ThemedIcon
+              style={styles.menuIcon}
+              source={showCountries ? iconCollapse : iconExpand}
+            />
           </TouchableOpacity>
           <Collapsible collapsed={!showCountries} collapsedHeight={0}>
             <FlatList
@@ -196,19 +231,19 @@ class DrawerMenu extends React.Component {
               keyExtractor={item => item.id.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity style={styles.menuItem}>
-                  <Text style={styles.menuLabel}>{item.name}</Text>
+                  <ThemedText style={styles.menuLabel}>{item.name}</ThemedText>
                 </TouchableOpacity>
               )}
             />
           </Collapsible>
           <TouchableOpacity style={styles.menuItem} onPress={() => this.syncData()}>
-            <Image style={styles.menuIcon} source={iconSync} />
-            <Text style={styles.menuLabel}>Sync Data</Text>
-            <Text style={styles.menuBadge}>{tilesToSave.length}</Text>
+            <ThemedIcon style={styles.menuIcon} source={iconSync} />
+            <ThemedText style={styles.menuLabel}>Sync Data</ThemedText>
+            <ThemedText style={styles.menuBadge}>{tilesToSave.length}</ThemedText>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => this.logout()}>
-            <Image style={styles.menuIcon} source={iconLogout} />
-            <Text style={styles.menuLabel}>Logout</Text>
+            <ThemedIcon style={styles.menuIcon} source={iconLogout} />
+            <ThemedText style={styles.menuLabel}>Logout</ThemedText>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -220,6 +255,7 @@ const mapStateToProps = state => ({
   userId: state.user.get('userId'),
   mapType: state.user.get('mapType'),
   tilesToSave: state.user.get('tilesToSave'),
+  theme: state.user.get('theme'),
 });
 
 const mapDispatchToProps = {
@@ -228,6 +264,7 @@ const mapDispatchToProps = {
   logout: userActions.logout,
   setMapType: userActions.setMapType,
   saveTiles: userActions.saveTiles,
+  setTheme: userActions.setTheme,
 };
 
 export default connect(

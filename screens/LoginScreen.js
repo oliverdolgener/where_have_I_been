@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
+
 import { actions as userActions } from '../reducers/user';
 import * as Colors from '../constants/Colors';
 
