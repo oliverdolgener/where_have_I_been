@@ -70,7 +70,7 @@ const styles = {
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 20,
+    bottom: 10,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
