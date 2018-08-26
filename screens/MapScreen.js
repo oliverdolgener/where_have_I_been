@@ -5,8 +5,6 @@ import { Location, Permissions, MapView } from 'expo';
 
 import { actions as userActions } from '../reducers/user';
 import Coordinate from '../model/Coordinate';
-import ThemedText from '../components/ThemedText';
-import ThemedIcon from '../components/ThemedIcon';
 import InfoText from '../components/InfoText';
 import * as LevelUtils from '../utils/LevelUtils';
 import * as MathUtils from '../utils/MathUtils';
@@ -30,50 +28,43 @@ const styles = {
     position: 'absolute',
     top: 30,
     left: 10,
+    borderRadius: 5,
+    backgroundColor: Colors.white80,
   },
   menuImage: {
-    width: 50,
-    height: 50,
-    tintColor: Colors.white80,
+    width: 40,
+    height: 40,
+    tintColor: Colors.black80,
   },
   geocodeContainer: {
     position: 'absolute',
-    top: 40,
+    top: 30,
     left: 0,
     right: 0,
     alignItems: 'center',
   },
-  cityInfo: {
-    fontSize: 20,
-    color: Colors.white,
-  },
-  regionInfo: {
-    fontSize: 18,
-    color: Colors.white,
-  },
-  countryInfo: {
-    fontSize: 16,
-    color: Colors.white,
+  geocodeInfo: {
+    marginBottom: 10,
   },
   levelInfo: {
     position: 'absolute',
-    top: 40,
-    right: 20,
+    top: 30,
+    right: 10,
   },
   tileInfo: {
     position: 'absolute',
-    top: 80,
-    right: 20,
+    top: 70,
+    right: 10,
   },
   speedInfo: {
     position: 'absolute',
-    top: 120,
-    right: 20,
+    top: 110,
+    right: 10,
   },
   altitudeInfo: {
     position: 'absolute',
-    top: 160,
-    right: 20,
+    top: 150,
+    right: 10,
   },
   locationButton: {
     position: 'absolute',
@@ -275,12 +266,12 @@ class MapScreen extends Component {
           />
         </MapView>
         <TouchableOpacity style={styles.menuButton} onPress={() => navigation.openDrawer()}>
-          <ThemedIcon style={styles.menuImage} source={iconMenu} />
+          <Image style={styles.menuImage} source={iconMenu} />
         </TouchableOpacity>
         <View style={styles.geocodeContainer} pointerEvents="none">
-          <ThemedText style={styles.cityInfo}>{geocode.city}</ThemedText>
-          <ThemedText style={styles.regionInfo}>{geocode.region}</ThemedText>
-          <ThemedText style={styles.countryInfo}>{geocode.country}</ThemedText>
+          <InfoText style={styles.geocodeInfo} label={geocode.city} />
+          <InfoText style={styles.geocodeInfo} label={geocode.region} />
+          <InfoText style={styles.geocodeInfo} label={geocode.country} />
         </View>
         <InfoText
           style={styles.levelInfo}
@@ -294,16 +285,9 @@ class MapScreen extends Component {
           label={visitedLocations.length}
           icon={iconSquare}
           alignRight
-          gradient={0}
         />
-        <InfoText style={styles.speedInfo} label={speed} icon={iconSpeed} alignRight gradient={0} />
-        <InfoText
-          style={styles.altitudeInfo}
-          label={altitude}
-          icon={iconAltitude}
-          alignRight
-          gradient={0}
-        />
+        <InfoText style={styles.speedInfo} label={speed} icon={iconSpeed} alignRight />
+        <InfoText style={styles.altitudeInfo} label={altitude} icon={iconAltitude} alignRight />
         {friendId ? (
           <View style={styles.locationButton}>
             <TouchableOpacity onPress={() => resetFriend()}>

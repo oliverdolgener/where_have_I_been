@@ -6,10 +6,9 @@ import * as Colors from '../constants/Colors';
 
 const styles = {
   container: {
-    width: 70,
-    height: 30,
-    display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 5,
     borderRadius: 5,
     backgroundColor: Colors.white80,
@@ -17,10 +16,13 @@ const styles = {
   icon: {
     width: 20,
     height: 20,
+    marginRight: 5,
     tintColor: Colors.black,
   },
   label: {
-    flex: 1,
+    minWidth: 40,
+    minHeight: 20,
+    color: Colors.black,
   },
 };
 
@@ -29,7 +31,8 @@ const InfoText = (props) => {
     label, icon, style, alignRight, gradient,
   } = props;
 
-  const labelAlign = alignRight ? { textAlign: 'right' } : { textAlign: 'left' };
+  const location = gradient || 0;
+  const labelAlign = alignRight ? { textAlign: 'right' } : { textAlign: 'center' };
 
   return (
     <LinearGradient
@@ -37,10 +40,10 @@ const InfoText = (props) => {
       colors={[Colors.lightBlue80, 'transparent']}
       start={[0, 0]}
       end={[1, 0]}
-      locations={[gradient, gradient]}
+      locations={[location, location]}
       pointerEvents="none"
     >
-      {icon && <Image style={styles.icon} source={icon} />}
+      {icon && <Image style={{ ...styles.icon }} source={icon} />}
       <Text style={{ ...styles.label, ...labelAlign }}>{label}</Text>
     </LinearGradient>
   );
