@@ -131,3 +131,27 @@ export function getGridDistanceByRegion(region) {
 
   return zoom / 50;
 }
+
+export function isPointInPolygon(coordinate, polygon) {
+  // polygon[i+1] must be === polygon[0]
+  let crossings = 0;
+
+  for (let i = 0; i < polygon.length - 1; i++) {
+    if (
+      (polygon[i].latitude <= coordinate.latitude &&
+        polygon[i + 1].latitude > coordinate.latitude) ||
+      (polygon[i].latitude > coordinate.latitude && polygon[i + 1].latitude <= coordinate.latitude)
+    ) {
+      const intersect =
+        (coordinate.latitude - polygon[i].latitude) /
+        (polygon[i + 1].latitude - polygon[i].latitude);
+      if (
+        coordinate.longitude <
+        polygon[i].longitude + intersect * (polygon[i + 1].longitude - polygon[i].longitude)
+      ) {
+        crossings++;
+      }
+    }
+  }
+  return crossings % 2 !== 0;
+}
