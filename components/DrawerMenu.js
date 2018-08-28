@@ -16,25 +16,15 @@ import iconCollapse from '../assets/iconCollapse.png';
 import iconExpand from '../assets/iconExpand.png';
 import iconWorld from '../assets/iconWorld.png';
 import iconSync from '../assets/iconSync.png';
+import iconNight from '../assets/iconNight.png';
 import iconLogout from '../assets/iconLogout.png';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  theme: {
-    position: 'absolute',
-    top: 30,
-    left: 5,
-  },
-  mapType: {
-    position: 'absolute',
-    top: 30,
-    right: 5,
-  },
   menuContainer: {
     flex: 1,
-    marginTop: 60,
   },
   menuItem: {
     flexDirection: 'row',
@@ -143,16 +133,16 @@ class DrawerMenu extends React.Component {
     let mapTypeIcon;
     switch (mapType) {
       case 'hybrid':
-        mapTypeIcon = iconMap;
-        break;
-      case 'standard':
-        mapTypeIcon = iconWatercolor;
-        break;
-      case 'watercolor':
         mapTypeIcon = iconSatellite;
         break;
-      default:
+      case 'standard':
         mapTypeIcon = iconMap;
+        break;
+      case 'watercolor':
+        mapTypeIcon = iconWatercolor;
+        break;
+      default:
+        mapTypeIcon = iconSatellite;
         break;
     }
 
@@ -188,15 +178,12 @@ class DrawerMenu extends React.Component {
         style={[styles.container, { backgroundColor }]}
         forceInset={{ top: 'always', horizontal: 'never' }}
       >
-        <Switch
-          style={styles.theme}
-          value={theme === 'dark'}
-          onValueChange={() => this.toggleTheme()}
-        />
-        <TouchableOpacity style={styles.mapType} onPress={() => this.toggleMapType()}>
-          <ThemedIcon style={styles.menuIcon} source={mapTypeIcon} />
-        </TouchableOpacity>
         <View style={styles.menuContainer}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleMapType()}>
+            <ThemedIcon style={styles.menuIcon} source={iconMap} />
+            <ThemedText style={styles.menuLabel}>Map Type</ThemedText>
+            <ThemedIcon style={styles.menuIcon} source={mapTypeIcon} />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleFriendlist()}>
             <ThemedIcon style={styles.menuIcon} source={iconFriendlist} />
             <ThemedText style={styles.menuLabel}>Friendlist</ThemedText>
@@ -240,6 +227,11 @@ class DrawerMenu extends React.Component {
             <ThemedIcon style={styles.menuIcon} source={iconSync} />
             <ThemedText style={styles.menuLabel}>Sync Data</ThemedText>
             <ThemedText style={styles.menuBadge}>{tilesToSave.length}</ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleTheme()}>
+            <ThemedIcon style={styles.menuIcon} source={iconNight} />
+            <ThemedText style={styles.menuLabel}>Night Mode</ThemedText>
+            <Switch value={theme === 'dark'} onValueChange={() => this.toggleTheme()} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => this.logout()}>
             <ThemedIcon style={styles.menuIcon} source={iconLogout} />
