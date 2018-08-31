@@ -29,19 +29,23 @@ class SplashScreen extends React.Component {
 
   getUserAsync = async () => {
     const {
-      relogUser, setMapType, setTilesToSave, setTheme, navigation,
+      relogUser, setMapType, setTilesToSave, setLastTile, setTheme, navigation,
     } = this.props;
     const id = await AsyncStorage.getItem('id');
-    const mapType = await AsyncStorage.getItem('mapType');
     const tilesToSave = await AsyncStorage.getItem('tilesToSave');
+    const lastTile = await AsyncStorage.getItem('lastTile');
+    const mapType = await AsyncStorage.getItem('mapType');
     const theme = await AsyncStorage.getItem('theme');
     setTimeout(() => {
       if (id) {
-        if (mapType) {
-          setMapType(mapType);
-        }
         if (tilesToSave) {
           setTilesToSave(JSON.parse(tilesToSave));
+        }
+        if (lastTile) {
+          setLastTile(JSON.parse(lastTile));
+        }
+        if (mapType) {
+          setMapType(mapType);
         }
         if (theme) {
           setTheme(theme);
@@ -69,6 +73,7 @@ const mapDispatchToProps = {
   relogUser: userActions.relogUser,
   setMapType: userActions.setMapType,
   setTilesToSave: userActions.setTilesToSave,
+  setLastTile: userActions.setLastTile,
   setTheme: userActions.setTheme,
 };
 

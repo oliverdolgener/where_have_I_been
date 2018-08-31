@@ -25,6 +25,7 @@ export const types = {
   SET_TILES_TO_SAVE: 'USER/SET_TILES_TO_SAVE',
   SAVE_TILES: 'USER/SAVE_TILES',
   SET_THEME: 'USER/SET_THEME',
+  SET_LAST_TILE: 'USER/SET_LAST_TILE',
 };
 
 const setUserAsync = async (id) => {
@@ -35,12 +36,16 @@ const removeUserAsync = async () => {
   await AsyncStorage.removeItem('id');
 };
 
-const setMapTypeAsync = async (mapType) => {
-  await AsyncStorage.setItem('mapType', mapType);
-};
-
 const setTilesToSaveAsync = async (tilesToSave) => {
   await AsyncStorage.setItem('tilesToSave', JSON.stringify(tilesToSave));
+};
+
+const setLastTileAsync = async (tile) => {
+  await AsyncStorage.setItem('lastTile', JSON.stringify(tile));
+};
+
+const setMapTypeAsync = async (mapType) => {
+  await AsyncStorage.setItem('mapType', mapType);
 };
 
 const setThemeAsync = async (theme) => {
@@ -113,6 +118,7 @@ export const actions = {
     promise: saveTiles(userId, tilesToSave),
   }),
   setTheme: theme => ({ type: types.SET_THEME, theme }),
+  setLastTile: lastTile => ({ type: types.SET_LAST_TILE, lastTile }),
 };
 
 const initialState = Map({
@@ -133,6 +139,7 @@ const initialState = Map({
   mapType: 'hybrid',
   tilesToSave: [],
   theme: 'light',
+  lastTile: new Coordinate(52.558, 13.206504),
 });
 
 export default (state = initialState, action = {}) => {
@@ -257,6 +264,10 @@ export default (state = initialState, action = {}) => {
     case types.SET_THEME:
       setThemeAsync(action.theme);
       return state.set('theme', action.theme);
+    case types.SET_LAST_TILE: {
+      setLastTileAsync(action.lastTile);
+      return state.set('lastTile', action.lastTile);
+    }
     default:
       return state;
   }

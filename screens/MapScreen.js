@@ -91,8 +91,6 @@ class MapScreen extends Component {
     super(props);
     const currentLocation = new Coordinate(52.558, 13.206504);
 
-    this.lastTile = {};
-
     this.state = {
       currentLocation,
       followLocation: true,
@@ -106,11 +104,13 @@ class MapScreen extends Component {
     this.watchPositionAsync();
   }
 
-  onTileChange() {
+  onTileChange(tile) {
+    const { setLastTile } = this.props;
     const { currentLocation, followLocation } = this.state;
+    setLastTile(tile);
+    this.addLocation(tile);
     this.getGeolocationAsync(currentLocation);
-    this.addLocation(this.lastTile);
-    followLocation && this.moveToLocation(this.lastTile);
+    followLocation && this.moveToLocation(tile);
   }
 
   onRegionChangeComplete(region) {
@@ -149,14 +149,14 @@ class MapScreen extends Component {
         const currentLocation = new Coordinate(latitude, longitude);
 
         if (accuracy < 50) {
+          const { lastTile } = this.props;
           const roundedLocation = new Coordinate(
             currentLocation.getRoundedLatitude(),
             currentLocation.getRoundedLongitude(),
             timestamp,
           );
-          if (!Coordinate.isEqual(this.lastTile, roundedLocation)) {
-            this.lastTile = roundedLocation;
-            this.onTileChange();
+          if (!Coordinate.isEqual(lastTile, roundedLocation)) {
+            this.onTileChange(roundedLocation);
           }
         }
 
@@ -201,11 +201,11 @@ class MapScreen extends Component {
       mapType,
       visitedLocations,
       holes,
-      region,
       navigation,
       friendId,
       resetFriend,
       theme,
+      lastTile,
     } = this.props;
 
     const {
@@ -228,7 +228,12 @@ class MapScreen extends Component {
           key={`mapView-${theme}`}
           style={styles.container}
           provider="google"
-          initialRegion={region}
+          initialRegion={{
+            latitude: lastTile.latitude,
+            longitude: lastTile.longitude,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+          }}
           mapType={mapType === 'watercolor' ? 'none' : mapType}
           customMapStyle={theme === 'dark' ? mapStyleDark : mapStyleLight}
           showsUserLocation
@@ -323,6 +328,7 @@ const mapStateToProps = state => ({
   mapType: state.user.get('mapType'),
   tilesToSave: state.user.get('tilesToSave'),
   theme: state.user.get('theme'),
+  lastTile: state.user.get('lastTile'),
 });
 
 const mapDispatchToProps = {
