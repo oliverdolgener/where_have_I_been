@@ -337,6 +337,7 @@ const mapDispatchToProps = {
   setTilesToSave: userActions.setTilesToSave,
   saveTiles: userActions.saveTiles,
   resetFriend: userActions.resetFriend,
+  setLastTile: userActions.setLastTile,
 };
 
 export default connect(
