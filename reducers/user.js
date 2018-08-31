@@ -111,11 +111,6 @@ export const actions = {
   saveTiles: (userId, tilesToSave) => ({
     type: types.SAVE_TILES,
     promise: saveTiles(userId, tilesToSave),
-    meta: {
-      onSuccess: () => {
-        setTilesToSaveAsync([]);
-      },
-    },
   }),
   setTheme: theme => ({ type: types.SET_THEME, theme }),
 };
@@ -251,7 +246,13 @@ export default (state = initialState, action = {}) => {
       return state.set('tilesToSave', action.tilesToSave);
     case types.SAVE_TILES:
       return handle(state, action, {
-        success: prevState => prevState.set('tilesToSave', []),
+        success: (prevState) => {
+          const savedLocations = action.payload.data.locations;
+          const tilesToSave = state.get('tilesToSave');
+          const difference = tilesToSave.filter(x => !savedLocations.find(y => Coordinate.isEqual(y, x)));
+          setTilesToSaveAsync(difference);
+          return prevState.set('tilesToSave', difference);
+        },
       });
     case types.SET_THEME:
       setThemeAsync(action.theme);
