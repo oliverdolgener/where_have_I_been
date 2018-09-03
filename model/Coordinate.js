@@ -127,6 +127,25 @@ export default class Coordinate {
     return coherentTiles;
   }
 
+  static getDistance(pointA, pointB) {
+    const phi1 = MathUtils.toRadians(pointA.latitude);
+    const phi2 = MathUtils.toRadians(pointB.latitude);
+    const deltaPhi = MathUtils.toRadians(pointB.latitude - pointA.latitude);
+    const deltaLambda = MathUtils.toRadians(pointB.longitude - pointA.longitude);
+
+    const a =
+      Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
+      Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return Earth.EARTH_RADIUS * c;
+  }
+
+  getDistance(point) {
+    return Coordinate.getDistance(this, point);
+  }
+
   getRoundedLatitude() {
     return Coordinate.getRoundedLatitude(this.latitude);
   }

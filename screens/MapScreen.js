@@ -89,10 +89,9 @@ const styles = {
 class MapScreen extends Component {
   constructor(props) {
     super(props);
-    const currentLocation = new Coordinate(52.558, 13.206504);
 
     this.state = {
-      currentLocation,
+      currentLocation: new Coordinate(52.558, 13.206504),
       followLocation: true,
       speed: 0,
       altitude: 0,
@@ -146,7 +145,7 @@ class MapScreen extends Component {
           latitude, longitude, speed, altitude, accuracy,
         } = result.coords;
         const { timestamp } = result;
-        const currentLocation = new Coordinate(latitude, longitude);
+        const currentLocation = new Coordinate(latitude, longitude, timestamp / 1000);
 
         if (accuracy < 50) {
           const { lastTile } = this.props;
