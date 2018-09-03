@@ -53,7 +53,7 @@ const setThemeAsync = async (theme) => {
 };
 
 const prepareLocations = (locations) => {
-  const visitedLocations = locations.map(x => new Coordinate(x.latitude, x.longitude));
+  const visitedLocations = locations.map(x => new Coordinate(x.latitude, x.longitude, x.timestamp));
   return MathUtils.removeDuplicateLocations(visitedLocations);
 };
 

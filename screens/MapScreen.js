@@ -145,7 +145,7 @@ class MapScreen extends Component {
           latitude, longitude, speed, altitude, accuracy,
         } = result.coords;
         const { timestamp } = result;
-        const currentLocation = new Coordinate(latitude, longitude, timestamp / 1000);
+        const currentLocation = new Coordinate(latitude, longitude, timestamp);
 
         if (accuracy < 50) {
           const { lastTile } = this.props;
@@ -215,6 +215,8 @@ class MapScreen extends Component {
       this.positionListener.remove();
     }
 
+    // const neighbours = visitedLocations.map(x => Coordinate.getNeighbours(x, visitedLocations).length + 1);
+    // const score = neighbours.reduce((y, z) => y + z, 0);
     const level = LevelUtils.getLevelFromExp(visitedLocations.length);
     const gradient = LevelUtils.getPercentToNextLevel(visitedLocations.length);
 

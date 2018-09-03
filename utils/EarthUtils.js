@@ -153,5 +153,6 @@ export function isPointInPolygon(coordinate, polygon) {
       }
     }
   }
+
   return crossings % 2 !== 0;
 }
