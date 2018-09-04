@@ -64,18 +64,17 @@ export function getSquareCoordinates(location, gridDistance = Earth.GRID_DISTANC
   return getRectangleCoordinates(location, location, gridDistance);
 }
 
-export function getSliceCoordinates(locations, gridDistance = Earth.GRID_DISTANCE) {
-  if (locations.length === 1) {
-    return [getSquareCoordinates(locations[0], gridDistance)];
+export function getSliceCoordinates(coordinates, gridDistance = Earth.GRID_DISTANCE) {
+  if (coordinates.length === 1) {
+    return [getSquareCoordinates(coordinates[0], gridDistance)];
   }
 
   const slices = [];
-  locations = locations.map(x =>
+  const locations = MathUtils.removeDuplicateLocations(coordinates.map(x =>
     new Coordinate(
       Coordinate.getRoundedLatitude(x.latitude, gridDistance),
       Coordinate.getRoundedLongitude(x.longitude, x.latitude, gridDistance),
-    ));
-  locations = MathUtils.removeDuplicateLocations(locations);
+    )));
   locations.sort(SortUtils.byLatitudeDesc);
   let first = locations[0];
   let last = locations[0];
@@ -89,17 +88,9 @@ export function getSliceCoordinates(locations, gridDistance = Earth.GRID_DISTANC
       break;
     }
 
-    if (current.latitude === next.latitude) {
-      if (
-        next.longitude - current.longitude <
-        gridDistanceAtLatitude(current.latitude, gridDistance) + Earth.SLICE_OFFSET
-      ) {
-        last = next;
-      } else {
-        slices.push(getRectangleCoordinates(first, last, gridDistance));
-        first = next;
-        last = next;
-      }
+    if (current.latitude === next.latitude && next.longitude - current.longitude <
+      gridDistanceAtLatitude(current.latitude, gridDistance) + Earth.SLICE_OFFSET) {
+      last = next;
     } else {
       slices.push(getRectangleCoordinates(first, last, gridDistance));
       first = next;
