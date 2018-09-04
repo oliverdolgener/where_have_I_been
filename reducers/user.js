@@ -140,6 +140,7 @@ const initialState = Map({
   tilesToSave: [],
   theme: 'light',
   lastTile: new Coordinate(52.558, 13.206504),
+  isSaving: false,
 });
 
 export default (state = initialState, action = {}) => {
@@ -253,6 +254,7 @@ export default (state = initialState, action = {}) => {
       return state.set('tilesToSave', action.tilesToSave);
     case types.SAVE_TILES:
       return handle(state, action, {
+        start: prevState => prevState.set('isSaving', true),
         success: (prevState) => {
           const savedLocations = action.payload.data.locations;
           const tilesToSave = state.get('tilesToSave');
@@ -260,6 +262,7 @@ export default (state = initialState, action = {}) => {
           setTilesToSaveAsync(difference);
           return prevState.set('tilesToSave', difference);
         },
+        finish: prevState => prevState.set('isSaving', false),
       });
     case types.SET_THEME:
       setThemeAsync(action.theme);

@@ -176,6 +176,7 @@ class MapScreen extends Component {
       saveTiles,
       visitedLocations,
       setLocations,
+      isSaving,
     } = this.props;
 
     if (!MathUtils.containsLocation(location, visitedLocations)) {
@@ -184,7 +185,7 @@ class MapScreen extends Component {
       setTilesToSave(unsaved);
       setLocations(visited);
 
-      if (unsaved.length > 0) {
+      if (!isSaving) {
         saveTiles(userId, unsaved);
       }
     }
@@ -330,6 +331,7 @@ const mapStateToProps = state => ({
   tilesToSave: state.user.get('tilesToSave'),
   theme: state.user.get('theme'),
   lastTile: state.user.get('lastTile'),
+  isSaving: state.user.get('isSaving'),
 });
 
 const mapDispatchToProps = {

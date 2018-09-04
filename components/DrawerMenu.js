@@ -101,15 +101,15 @@ class DrawerMenu extends React.Component {
 
   syncData() {
     const {
-      userId, getUser, tilesToSave, saveTiles, navigation,
+      userId, getUser, tilesToSave, saveTiles, navigation, isSaving,
     } = this.props;
     navigation.closeDrawer();
-    if (tilesToSave.length > 0) {
+    if (!isSaving && tilesToSave.length > 0) {
       saveTiles(userId, tilesToSave);
+      setTimeout(() => {
+        getUser(userId);
+      }, 3000);
     }
-    setTimeout(() => {
-      getUser(userId);
-    }, 3000);
   }
 
   logout = async () => {
@@ -248,6 +248,7 @@ const mapStateToProps = state => ({
   mapType: state.user.get('mapType'),
   tilesToSave: state.user.get('tilesToSave'),
   theme: state.user.get('theme'),
+  isSaving: state.user.get('isSaving'),
 });
 
 const mapDispatchToProps = {
