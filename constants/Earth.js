@@ -12,23 +12,143 @@ export const FOG = [
     longitude: -179.99,
   },
   {
+    latitude: 89,
+    longitude: -150,
+  },
+  {
+    latitude: 89,
+    longitude: -130,
+  },
+  {
+    latitude: 89,
+    longitude: -110,
+  },
+  {
+    latitude: 89,
+    longitude: -90,
+  },
+  {
+    latitude: 89,
+    longitude: -70,
+  },
+  {
+    latitude: 89,
+    longitude: -50,
+  },
+  {
+    latitude: 89,
+    longitude: -30,
+  },
+  {
+    latitude: 89,
+    longitude: -10,
+  },
+  {
+    latitude: 89,
+    longitude: 10,
+  },
+  {
+    latitude: 89,
+    longitude: 30,
+  },
+  {
+    latitude: 89,
+    longitude: 50,
+  },
+  {
+    latitude: 89,
+    longitude: 70,
+  },
+  {
+    latitude: 89,
+    longitude: 90,
+  },
+  {
+    latitude: 89,
+    longitude: 110,
+  },
+  {
+    latitude: 89,
+    longitude: 130,
+  },
+  {
+    latitude: 89,
+    longitude: 150,
+  },
+  {
+    latitude: 89,
+    longitude: 179.99,
+  },
+  {
+    latitude: -89,
+    longitude: 179.99,
+  },
+  {
+    latitude: -89,
+    longitude: 150,
+  },
+  {
+    latitude: -89,
+    longitude: 130,
+  },
+  {
+    latitude: -89,
+    longitude: 110,
+  },
+  {
+    latitude: -89,
+    longitude: 90,
+  },
+  {
+    latitude: -89,
+    longitude: 70,
+  },
+  {
+    latitude: -89,
+    longitude: 50,
+  },
+  {
+    latitude: -89,
+    longitude: 30,
+  },
+  {
+    latitude: -89,
+    longitude: 10,
+  },
+  {
+    latitude: -89,
+    longitude: -10,
+  },
+  {
+    latitude: -89,
+    longitude: -30,
+  },
+  {
+    latitude: -89,
+    longitude: -50,
+  },
+  {
+    latitude: -89,
+    longitude: -70,
+  },
+  {
+    latitude: -89,
+    longitude: -90,
+  },
+  {
+    latitude: -89,
+    longitude: -110,
+  },
+  {
+    latitude: -89,
+    longitude: -130,
+  },
+  {
+    latitude: -89,
+    longitude: -150,
+  },
+  {
     latitude: -89,
     longitude: -179.99,
-  },
-  {
-    latitude: -89,
-    longitude: 0,
-  },
-  {
-    latitude: -89,
-    longitude: 179.99,
-  },
-  {
-    latitude: 89,
-    longitude: 179.99,
-  },
-  {
-    latitude: 89,
-    longitude: 0,
   },
 ];

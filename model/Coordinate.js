@@ -53,10 +53,11 @@ export default class Coordinate {
         }
       }
     });
+
     return neighbours;
   }
 
-  static breadFirstSearch(array, start) {
+  static breadthFirstSearch(array, start) {
     if (array.length < 1) {
       return [];
     }

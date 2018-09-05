@@ -88,8 +88,11 @@ export function getSliceCoordinates(coordinates, gridDistance = Earth.GRID_DISTA
       break;
     }
 
-    if (current.latitude === next.latitude && next.longitude - current.longitude <
-      gridDistanceAtLatitude(current.latitude, gridDistance) + Earth.SLICE_OFFSET) {
+    if (
+      current.latitude === next.latitude &&
+      next.longitude - current.longitude <
+        gridDistanceAtLatitude(current.latitude, gridDistance) + Earth.SLICE_OFFSET
+    ) {
       last = next;
     } else {
       slices.push(getRectangleCoordinates(first, last, gridDistance));
