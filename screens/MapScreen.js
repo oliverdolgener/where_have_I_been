@@ -97,6 +97,14 @@ class MapScreen extends Component {
       altitude: 0,
       geocode: {},
     };
+
+    console.time('neighbours');
+    const neighbours = props.visitedLocations.map(x => Coordinate.getNeighbours(x, props.visitedLocations).length);
+    console.timeEnd('neighbours');
+
+    console.time('reduce');
+    console.log(neighbours.reduce((y, z) => y + z, 0));
+    console.timeEnd('reduce');
   }
 
   componentDidMount() {
