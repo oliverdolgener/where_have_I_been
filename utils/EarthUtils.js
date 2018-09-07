@@ -1,6 +1,5 @@
 import * as Earth from '../constants/Earth';
 import * as MathUtils from '../utils/MathUtils';
-import * as SortUtils from '../utils/SortUtils';
 import Coordinate from '../model/Coordinate';
 
 export function circumferenceAtLatitude(latitude) {
@@ -65,39 +64,30 @@ export function getSquareCoordinates(location, gridDistance = Earth.GRID_DISTANC
 }
 
 export function getSliceCoordinates(coordinates, gridDistance = Earth.GRID_DISTANCE) {
-  if (coordinates.length === 1) {
-    return [getSquareCoordinates(coordinates[0], gridDistance)];
-  }
-
   const slices = [];
-  const locations = MathUtils.removeDuplicateLocations(coordinates.map(x =>
-    new Coordinate(
-      Coordinate.getRoundedLatitude(x.latitude, gridDistance),
-      Coordinate.getRoundedLongitude(x.longitude, x.latitude, gridDistance),
-    )));
-  locations.sort(SortUtils.byLatitudeDesc);
-  let first = locations[0];
-  let last = locations[0];
+  const array = MathUtils.gridToArray(coordinates);
+  const resizedLocations = MathUtils.removeDuplicateLocations(array.map(x => new Coordinate(Coordinate.getRoundedLatitude(x.latitude, gridDistance), Coordinate.getRoundedLongitude(x.longitude, x.latitude, gridDistance))));
+  const locations = MathUtils.arrayToGrid(resizedLocations);
 
   for (let i = 0; i < locations.length; i++) {
-    const current = locations[i];
-    const next = locations[i + 1];
+    const row = locations[i].locations;
+    let first = row[0];
+    let last = row[0];
+    for (let k = 0; k < row.length; k++) {
+      const current = row[k];
+      const next = row[k + 1];
 
-    if (!next) {
-      slices.push(getRectangleCoordinates(first, last, gridDistance));
-      break;
-    }
-
-    if (
-      current.latitude === next.latitude &&
-      next.longitude - current.longitude <
-        gridDistanceAtLatitude(current.latitude, gridDistance) + Earth.SLICE_OFFSET
-    ) {
-      last = next;
-    } else {
-      slices.push(getRectangleCoordinates(first, last, gridDistance));
-      first = next;
-      last = next;
+      if (next) {
+        if (next.longitude - current.longitude < gridDistanceAtLatitude(current.latitude, gridDistance) + Earth.SLICE_OFFSET) {
+          last = next;
+        } else {
+          slices.push(getRectangleCoordinates(first, last, gridDistance));
+          first = next;
+          last = next;
+        }
+      } else {
+        slices.push(getRectangleCoordinates(first, last, gridDistance));
+      }
     }
   }
 
@@ -149,4 +139,22 @@ export function isPointInPolygon(coordinate, polygon) {
   }
 
   return crossings % 2 !== 0;
+}
+
+export function isLatitudeInRegion(latitude, region, factor = 1) {
+  return (
+    latitude <= region.latitude + region.latitudeDelta / (2 / factor) &&
+    latitude >= region.latitude - region.latitudeDelta / (2 / factor)
+  );
+}
+
+export function isLongitudeInRegion(longitude, region, factor = 1) {
+  return (
+    longitude <= region.longitude + region.longitudeDelta / (2 / factor) &&
+    longitude >= region.longitude - region.longitudeDelta / (2 / factor)
+  );
+}
+
+export function isCoordinateInRegion(coordinate, region, factor = 1) {
+  return isLatitudeInRegion(coordinate.latitude, region, factor) && isLongitudeInRegion(coordinate.longitude, region, factor);
 }

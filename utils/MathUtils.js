@@ -1,3 +1,4 @@
+import * as EarthUtils from '../utils/EarthUtils';
 import * as SortUtils from '../utils/SortUtils';
 
 export function toRadians(degrees) {
@@ -117,4 +118,67 @@ export function removeBothDuplicateLocations(array) {
   unique.push(array[array.length - 1]);
 
   return unique;
+}
+
+export function arrayToGrid(locations) {
+  if (locations.length < 1) {
+    return [];
+  }
+
+  const preparedLocations = [];
+  let row = {
+    latitude: locations[0].latitude,
+    locations: [locations[0]],
+  };
+
+  for (let i = 0; i < locations.length; i++) {
+    const current = locations[i];
+    const next = locations[i + 1];
+
+    if (!next) {
+      preparedLocations.push(row);
+      break;
+    }
+
+    if (current.latitude === next.latitude) {
+      row.locations.push(next);
+    } else {
+      preparedLocations.push(row);
+      row = {
+        latitude: next.latitude,
+        locations: [next],
+      };
+    }
+  }
+
+  return preparedLocations;
+}
+
+export function gridToArray(locations) {
+  const array = locations.map(x => x.locations);
+  return [].concat(...array);
+}
+
+export function filterVisibleLocations(locations, region) {
+  const visibleLocations = [];
+  locations.forEach((x) => {
+    if (EarthUtils.isLatitudeInRegion(x.latitude, region, 2)) {
+      const row = {
+        latitude: x.latitude,
+        locations: [],
+      };
+
+      x.locations.forEach((y) => {
+        if (EarthUtils.isLongitudeInRegion(y.longitude, region, 2)) {
+          row.locations.push(y);
+        }
+      });
+
+      if (row.locations.length > 0) {
+        visibleLocations.push(row);
+      }
+    }
+  });
+
+  return visibleLocations;
 }

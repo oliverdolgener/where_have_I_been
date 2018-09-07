@@ -98,13 +98,13 @@ class MapScreen extends Component {
       geocode: {},
     };
 
-    console.time('neighbours');
-    const neighbours = props.visitedLocations.map(x => Coordinate.getNeighbours(x, props.visitedLocations).length);
-    console.timeEnd('neighbours');
+    // console.time('neighbours');
+    // const neighbours = props.visitedLocations.map(x => Coordinate.getNeighbours(x, props.visitedLocations).length);
+    // console.timeEnd('neighbours');
 
-    console.time('reduce');
-    console.log(neighbours.reduce((y, z) => y + z, 0));
-    console.timeEnd('reduce');
+    // console.time('reduce');
+    // console.log(neighbours.reduce((y, z) => y + z, 0));
+    // console.timeEnd('reduce');
   }
 
   componentDidMount() {
@@ -187,9 +187,11 @@ class MapScreen extends Component {
       isSaving,
     } = this.props;
 
-    if (!MathUtils.containsLocation(location, visitedLocations)) {
+    const locations = MathUtils.gridToArray(visitedLocations);
+
+    if (!MathUtils.containsLocation(location, locations)) {
       const unsaved = [...tilesToSave, location];
-      const visited = [...visitedLocations, location];
+      const visited = [...locations, location];
       setTilesToSave(unsaved);
       setLocations(visited);
 
@@ -224,10 +226,12 @@ class MapScreen extends Component {
       this.positionListener.remove();
     }
 
+    const locations = MathUtils.gridToArray(visitedLocations);
+
     // const neighbours = visitedLocations.map(x => Coordinate.getNeighbours(x, visitedLocations).length + 1);
     // const score = neighbours.reduce((y, z) => y + z, 0);
-    const level = LevelUtils.getLevelFromExp(visitedLocations.length);
-    const gradient = LevelUtils.getPercentToNextLevel(visitedLocations.length);
+    const level = LevelUtils.getLevelFromExp(locations.length);
+    const gradient = LevelUtils.getPercentToNextLevel(locations.length);
 
     return (
       <View style={styles.container}>
@@ -297,7 +301,7 @@ class MapScreen extends Component {
         />
         <InfoText
           style={styles.tileInfo}
-          label={visitedLocations.length}
+          label={locations.length}
           icon={iconSquare}
           alignRight
         />

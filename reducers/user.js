@@ -54,11 +54,12 @@ const setThemeAsync = async (theme) => {
 
 const prepareLocations = (locations) => {
   const visitedLocations = locations.map(x => new Coordinate(x.latitude, x.longitude, x.timestamp));
-  return MathUtils.removeDuplicateLocations(visitedLocations);
+  const uniques = MathUtils.removeDuplicateLocations(visitedLocations);
+  return MathUtils.arrayToGrid(uniques);
 };
 
 const prepareHoles = (locations, region) => {
-  const visibleLocations = locations.filter(x => x.isInRegion(region, 2));
+  const visibleLocations = MathUtils.filterVisibleLocations(locations, region);
   const gridDistance = EarthUtils.getGridDistanceByRegion(region);
   return EarthUtils.getSliceCoordinates(visibleLocations, gridDistance);
 };
