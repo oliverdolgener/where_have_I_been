@@ -39,24 +39,8 @@ export default class Coordinate {
   }
 
   static getNeighbours(coordinate, array, gridDistance = Earth.GRID_DISTANCE) {
-    const neighbours = [];
-    array.forEach((x) => {
-      if ((x.latitude - coordinate.latitude) ** 2 / gridDistance ** 2 > Earth.NEIGHBOUR_BOUNDARY + Earth.NEIGHBOUR_OFFSET_LAT) {
-        return;
-      }
-
-      if ((x.longitude - coordinate.longitude) ** 2 / EarthUtils.gridDistanceAtLatitude(coordinate.latitude) ** 2 > Earth.NEIGHBOUR_BOUNDARY + Earth.NEIGHBOUR_OFFSET_LONG) {
-        return;
-      }
-
-      if (Coordinate.isEqual(x, coordinate)) {
-        return;
-      }
-
-      neighbours.push(x);
-    });
-
-    return neighbours;
+    const neighbouringRows = array.filter(x => x.latitude === coordinate.latitude || x.latitude === coordinate.latitude + gridDistance || x.latitude === coordinate.latitude - gridDistance);
+    return MathUtils.gridToArray(neighbouringRows).filter(x => (x.longitude - coordinate.longitude) ** 2 / EarthUtils.gridDistanceAtLatitude(coordinate.latitude) ** 2 <= Earth.NEIGHBOUR_BOUNDARY + Earth.NEIGHBOUR_OFFSET_LONG && !Coordinate.isEqual(x, coordinate));
   }
 
   static breadthFirstSearch(array, start) {

@@ -97,14 +97,6 @@ class MapScreen extends Component {
       altitude: 0,
       geocode: {},
     };
-
-    // console.time('neighbours');
-    // const neighbours = props.visitedLocations.map(x => Coordinate.getNeighbours(x, props.visitedLocations).length);
-    // console.timeEnd('neighbours');
-
-    // console.time('reduce');
-    // console.log(neighbours.reduce((y, z) => y + z, 0));
-    // console.timeEnd('reduce');
   }
 
   componentDidMount() {
@@ -228,7 +220,7 @@ class MapScreen extends Component {
 
     const locations = MathUtils.gridToArray(visitedLocations);
 
-    // const neighbours = visitedLocations.map(x => Coordinate.getNeighbours(x, visitedLocations).length + 1);
+    // const neighbours = MathUtils.gridToArray(props.visitedLocations).map(x => Coordinate.getNeighbours(x, props.visitedLocations).length + 1);
     // const score = neighbours.reduce((y, z) => y + z, 0);
     const level = LevelUtils.getLevelFromExp(locations.length);
     const gradient = LevelUtils.getPercentToNextLevel(locations.length);
