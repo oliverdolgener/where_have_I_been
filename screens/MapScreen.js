@@ -91,7 +91,7 @@ class MapScreen extends Component {
     super(props);
 
     const neighbours = MathUtils.gridToArray(props.visitedLocations).map(x => Coordinate.getNeighbours(x, props.visitedLocations).length + 1);
-    const level = LevelUtils.getLevelFromExp(neighbours.reduce((y, z) => y + z, 0));
+    const xp = neighbours.reduce((y, z) => y + z, 0);
 
     this.state = {
       currentLocation: new Coordinate(52.558, 13.206504),
@@ -99,7 +99,7 @@ class MapScreen extends Component {
       speed: 0,
       altitude: 0,
       geocode: {},
-      level,
+      xp,
     };
   }
 
@@ -189,15 +189,16 @@ class MapScreen extends Component {
 
     if (!MathUtils.containsLocation(location, locations)) {
       unsaved.push(location);
-      const visited = [...locations, location];
+      const visitedArray = [...locations, location];
+      const visitedGrid = MathUtils.arrayToGrid(visitedArray);
       setTilesToSave(unsaved);
-      setLocations(visited);
+      setLocations(visitedArray);
 
-      const neighbours = MathUtils.gridToArray(visited).map(x => Coordinate.getNeighbours(x, visited).length + 1);
-      const level = LevelUtils.getLevelFromExp(neighbours.reduce((y, z) => y + z, 0));
+      const neighbours = visitedArray.map(x => Coordinate.getNeighbours(x, visitedGrid).length + 1);
+      const xp = neighbours.reduce((y, z) => y + z, 0);
 
       this.setState({
-        level,
+        xp,
       });
     }
 
@@ -224,7 +225,7 @@ class MapScreen extends Component {
     } = this.props;
 
     const {
-      currentLocation, followLocation, speed, altitude, geocode, level,
+      currentLocation, followLocation, speed, altitude, geocode, xp,
     } = this.state;
 
     if (!isLoggedIn && this.positionListener) {
@@ -232,7 +233,8 @@ class MapScreen extends Component {
     }
 
     const locations = MathUtils.gridToArray(visitedLocations);
-    const gradient = LevelUtils.getPercentToNextLevel(level);
+    const level = LevelUtils.getLevelFromExp(xp);
+    const gradient = LevelUtils.getPercentToNextLevel(xp);
 
     return (
       <View style={styles.container}>
