@@ -34,15 +34,6 @@ const setUserAsync = async (id) => {
 
 const removeUserAsync = async () => {
   await AsyncStorage.removeItem('id');
-  await AsyncStorage.removeItem('locations');
-  await AsyncStorage.removeItem('tilesToSave');
-  await AsyncStorage.removeItem('lastTile');
-  await AsyncStorage.removeItem('mapType');
-  await AsyncStorage.removeItem('theme');
-};
-
-const setLocationsAsync = async (locations) => {
-  await AsyncStorage.setItem('locations', JSON.stringify(locations));
 };
 
 const setTilesToSaveAsync = async (tilesToSave) => {
@@ -104,7 +95,19 @@ export const actions = {
     promise: getUser(friendId),
   }),
   resetFriend: () => ({ type: types.RESET_FRIEND }),
-  relogUser: () => ({ type: types.RELOG_USER }),
+  relogUser: userId => ({
+    type: types.RELOG_USER,
+    promise: getUser(userId),
+    meta: {
+      onSuccess: (result) => {
+        setUserAsync(result.data._id);
+        navigator.dispatch(NavigationActions.navigate({ routeName: 'Map' }));
+      },
+      onFailure: () => {
+        navigator.dispatch(NavigationActions.navigate({ routeName: 'Login' }));
+      },
+    },
+  }),
   setEmailError: error => ({ type: types.SET_EMAIL_ERROR, error }),
   setPasswordError: error => ({ type: types.SET_PASSWORD_ERROR, error }),
   setLocations: locations => ({ type: types.SET_LOCATIONS, locations }),
@@ -149,7 +152,6 @@ export default (state = initialState, action = {}) => {
         success: (prevState) => {
           const visitedLocations = prepareLocations(payload.data.locations);
           const holes = prepareHoles(visitedLocations, state.get('region'));
-          setLocationsAsync(payload.data.locations);
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data._id)
@@ -185,17 +187,11 @@ export default (state = initialState, action = {}) => {
             .set('emailError', 'Email address already in use. Try to login instead.')
             .set('passwordError', ''),
       });
-    case types.RELOG_USER: {
-      const visitedLocations = state.get('visitedLocations');
-      const holes = prepareHoles(visitedLocations, state.get('region'));
-      return state.set('isLoggedIn', true).set('holes', holes);
-    }
     case types.GET_USER:
       return handle(state, action, {
         success: (prevState) => {
           const visitedLocations = prepareLocations(payload.data.locations);
           const holes = prepareHoles(visitedLocations, state.get('region'));
-          setLocationsAsync(payload.data.locations);
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data._id)
@@ -222,6 +218,18 @@ export default (state = initialState, action = {}) => {
         .set('friendLocations', [])
         .set('holes', holes);
     }
+    case types.RELOG_USER:
+      return handle(state, action, {
+        success: (prevState) => {
+          const visitedLocations = prepareLocations(payload.data.locations);
+          const holes = prepareHoles(visitedLocations, state.get('region'));
+          return prevState
+            .set('isLoggedIn', true)
+            .set('userId', payload.data._id)
+            .set('visitedLocations', visitedLocations)
+            .set('holes', holes);
+        },
+      });
     case types.SET_EMAIL_ERROR:
       return state.set('emailError', action.error);
     case types.SET_PASSWORD_ERROR:
@@ -230,7 +238,6 @@ export default (state = initialState, action = {}) => {
       const visitedLocations = prepareLocations(action.locations);
       const locations = state.get('friendId') ? state.get('friendLocations') : visitedLocations;
       const holes = prepareHoles(locations, state.get('region'));
-      setLocationsAsync(action.locations);
       return state.set('visitedLocations', visitedLocations).set('holes', holes);
     }
     case types.SET_REGION: {
