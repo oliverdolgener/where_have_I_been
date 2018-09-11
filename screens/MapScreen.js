@@ -90,12 +90,16 @@ class MapScreen extends Component {
   constructor(props) {
     super(props);
 
+    const neighbours = MathUtils.gridToArray(props.visitedLocations).map(x => Coordinate.getNeighbours(x, props.visitedLocations).length + 1);
+    const level = LevelUtils.getLevelFromExp(neighbours.reduce((y, z) => y + z, 0));
+
     this.state = {
       currentLocation: new Coordinate(52.558, 13.206504),
       followLocation: true,
       speed: 0,
       altitude: 0,
       geocode: {},
+      level,
     };
   }
 
@@ -181,15 +185,24 @@ class MapScreen extends Component {
 
     const locations = MathUtils.gridToArray(visitedLocations);
 
+    const unsaved = [...tilesToSave];
+
     if (!MathUtils.containsLocation(location, locations)) {
-      const unsaved = [...tilesToSave, location];
+      unsaved.push(location);
       const visited = [...locations, location];
       setTilesToSave(unsaved);
       setLocations(visited);
 
-      if (!isSaving) {
-        saveTiles(userId, unsaved);
-      }
+      const neighbours = MathUtils.gridToArray(visited).map(x => Coordinate.getNeighbours(x, visited).length + 1);
+      const level = LevelUtils.getLevelFromExp(neighbours.reduce((y, z) => y + z, 0));
+
+      this.setState({
+        level,
+      });
+    }
+
+    if (!isSaving) {
+      saveTiles(userId, unsaved);
     }
   }
 
@@ -211,7 +224,7 @@ class MapScreen extends Component {
     } = this.props;
 
     const {
-      currentLocation, followLocation, speed, altitude, geocode,
+      currentLocation, followLocation, speed, altitude, geocode, level,
     } = this.state;
 
     if (!isLoggedIn && this.positionListener) {
@@ -219,11 +232,7 @@ class MapScreen extends Component {
     }
 
     const locations = MathUtils.gridToArray(visitedLocations);
-
-    // const neighbours = MathUtils.gridToArray(props.visitedLocations).map(x => Coordinate.getNeighbours(x, props.visitedLocations).length + 1);
-    // const score = neighbours.reduce((y, z) => y + z, 0);
-    const level = LevelUtils.getLevelFromExp(locations.length);
-    const gradient = LevelUtils.getPercentToNextLevel(locations.length);
+    const gradient = LevelUtils.getPercentToNextLevel(level);
 
     return (
       <View style={styles.container}>
@@ -291,12 +300,7 @@ class MapScreen extends Component {
           alignRight
           gradient={gradient}
         />
-        <InfoText
-          style={styles.tileInfo}
-          label={locations.length}
-          icon={iconSquare}
-          alignRight
-        />
+        <InfoText style={styles.tileInfo} label={locations.length} icon={iconSquare} alignRight />
         <InfoText style={styles.speedInfo} label={speed} icon={iconSpeed} alignRight />
         <InfoText style={styles.altitudeInfo} label={altitude} icon={iconAltitude} alignRight />
         {friendId ? (
