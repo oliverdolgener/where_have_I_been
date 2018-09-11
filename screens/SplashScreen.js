@@ -29,31 +29,42 @@ class SplashScreen extends React.Component {
 
   getUserAsync = async () => {
     const {
-      relogUser, setMapType, setTilesToSave, setLastTile, setTheme, navigation,
+      relogUser, getUser, setMapType, setTilesToSave, setLastTile, setTheme, navigation, setLocations,
     } = this.props;
     const id = await AsyncStorage.getItem('id');
+    const locations = await AsyncStorage.getItem('locations');
     const tilesToSave = await AsyncStorage.getItem('tilesToSave');
     const lastTile = await AsyncStorage.getItem('lastTile');
     const mapType = await AsyncStorage.getItem('mapType');
     const theme = await AsyncStorage.getItem('theme');
+
+    if (!id) {
+      navigation.navigate('Login');
+      return;
+    }
+
+    if (locations) {
+      setLocations(JSON.parse(locations));
+    }
+
+    if (tilesToSave) {
+      setTilesToSave(JSON.parse(tilesToSave));
+    }
+    if (lastTile) {
+      setLastTile(JSON.parse(lastTile));
+    }
+    if (mapType) {
+      setMapType(mapType);
+    }
+    if (theme) {
+      setTheme(theme);
+    }
+
+    relogUser();
+    getUser(id);
+
     setTimeout(() => {
-      if (id) {
-        if (tilesToSave) {
-          setTilesToSave(JSON.parse(tilesToSave));
-        }
-        if (lastTile) {
-          setLastTile(JSON.parse(lastTile));
-        }
-        if (mapType) {
-          setMapType(mapType);
-        }
-        if (theme) {
-          setTheme(theme);
-        }
-        relogUser(id);
-      } else {
-        navigation.navigate('Login');
-      }
+      navigation.navigate('Map');
     }, 3000);
   };
 
@@ -71,10 +82,12 @@ const mapStateToProps = state => ({});
 
 const mapDispatchToProps = {
   relogUser: userActions.relogUser,
+  getUser: userActions.getUser,
   setMapType: userActions.setMapType,
   setTilesToSave: userActions.setTilesToSave,
   setLastTile: userActions.setLastTile,
   setTheme: userActions.setTheme,
+  setLocations: userActions.setLocations,
 };
 
 export default connect(
