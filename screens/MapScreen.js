@@ -91,7 +91,7 @@ class MapScreen extends Component {
     super(props);
 
     const neighbours = MathUtils.gridToArray(props.visitedLocations).map(x => Coordinate.getNeighbours(x, props.visitedLocations).length + 1);
-    const xp = neighbours.reduce((y, z) => y + z, 0);
+    const level = LevelUtils.getLevelFromExp(neighbours.reduce((y, z) => y + z, 0));
 
     this.state = {
       currentLocation: new Coordinate(52.558, 13.206504),
@@ -99,7 +99,7 @@ class MapScreen extends Component {
       speed: 0,
       altitude: 0,
       geocode: {},
-      xp,
+      level,
     };
   }
 
@@ -189,16 +189,15 @@ class MapScreen extends Component {
 
     if (!MathUtils.containsLocation(location, locations)) {
       unsaved.push(location);
-      const visitedArray = [...locations, location];
-      const visitedGrid = MathUtils.arrayToGrid(visitedArray);
+      const visited = [...locations, location];
       setTilesToSave(unsaved);
-      setLocations(visitedArray);
+      setLocations(visited);
 
-      const neighbours = visitedArray.map(x => Coordinate.getNeighbours(x, visitedGrid).length + 1);
-      const xp = neighbours.reduce((y, z) => y + z, 0);
+      const neighbours = MathUtils.gridToArray(visited).map(x => Coordinate.getNeighbours(x, visited).length + 1);
+      const level = LevelUtils.getLevelFromExp(neighbours.reduce((y, z) => y + z, 0));
 
       this.setState({
-        xp,
+        level,
       });
     }
 
@@ -225,7 +224,7 @@ class MapScreen extends Component {
     } = this.props;
 
     const {
-      currentLocation, followLocation, speed, altitude, geocode, xp,
+      currentLocation, followLocation, speed, altitude, geocode, level,
     } = this.state;
 
     if (!isLoggedIn && this.positionListener) {
@@ -233,8 +232,7 @@ class MapScreen extends Component {
     }
 
     const locations = MathUtils.gridToArray(visitedLocations);
-    const level = LevelUtils.getLevelFromExp(xp);
-    const gradient = LevelUtils.getPercentToNextLevel(xp);
+    const gradient = LevelUtils.getPercentToNextLevel(level);
 
     return (
       <View style={styles.container}>
