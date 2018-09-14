@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, TouchableOpacity } from 'react-native';
+import { Platform, View, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, Permissions, MapView } from 'expo';
 
@@ -91,12 +91,14 @@ class MapScreen extends Component {
     super(props);
 
     this.state = {
-      currentLocation: new Coordinate(52.558, 13.206504),
+      currentLocation: new Coordinate(),
       followLocation: true,
       speed: 0,
       altitude: 0,
       geocode: {},
     };
+
+    this.getGeolocationAsync(props.lastTile);
   }
 
   componentDidMount() {
@@ -105,11 +107,10 @@ class MapScreen extends Component {
 
   onTileChange(tile) {
     const { setLastTile } = this.props;
-    const { currentLocation, followLocation } = this.state;
+    const { currentLocation } = this.state;
     setLastTile(tile);
     this.addLocation(tile);
     this.getGeolocationAsync(currentLocation);
-    followLocation && this.moveToLocation(tile);
   }
 
   onRegionChangeComplete(region) {
@@ -118,7 +119,7 @@ class MapScreen extends Component {
     const { currentLocation } = this.state;
     setRegion(region);
 
-    if (!currentLocation.isInRegion(region)) {
+    if (Platform.OS === 'ios' && !currentLocation.isInRegion(region)) {
       this.setState({
         followLocation: false,
       });
@@ -158,6 +159,7 @@ class MapScreen extends Component {
           if (!Coordinate.isEqual(lastTile, roundedLocation)) {
             this.onTileChange(roundedLocation);
           }
+          this.state.followLocation && this.moveToLocation(currentLocation);
         }
 
         this.setState({
@@ -262,6 +264,7 @@ class MapScreen extends Component {
           toolbarEnabled={false}
           loadingEnabled
           onRegionChangeComplete={newRegion => this.onRegionChangeComplete(newRegion)}
+          onPanDrag={() => this.setState({ followLocation: false })}
         >
           {mapType === 'watercolor' && (
             <MapView.UrlTile
