@@ -39,7 +39,10 @@ export default class Coordinate {
   }
 
   static getNeighbours(coordinate, array, gridDistance = Earth.GRID_DISTANCE) {
-    const neighbouringRows = array.filter(x => x.latitude === coordinate.latitude || x.latitude === coordinate.latitude + gridDistance || x.latitude === coordinate.latitude - gridDistance);
+    const sameRow = coordinate.latitude;
+    const rowAbove = (coordinate.latitude * 1000 + gridDistance * 1000) / 1000;
+    const rowBelow = (coordinate.latitude * 1000 - gridDistance * 1000) / 1000;
+    const neighbouringRows = array.filter(x => x.latitude === sameRow || x.latitude === rowAbove || x.latitude === rowBelow);
     return MathUtils.gridToArray(neighbouringRows).filter(x => (x.longitude - coordinate.longitude) ** 2 / EarthUtils.gridDistanceAtLatitude(coordinate.latitude) ** 2 <= Earth.NEIGHBOUR_BOUNDARY + Earth.NEIGHBOUR_OFFSET_LONG && !Coordinate.isEqual(x, coordinate));
   }
 

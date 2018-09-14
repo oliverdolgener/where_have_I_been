@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Platform, View, Image, TouchableOpacity } from 'react-native';
+import { Platform, View, Text, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, Permissions, MapView } from 'expo';
 
@@ -99,6 +99,8 @@ class MapScreen extends Component {
     };
 
     this.getGeolocationAsync(props.lastTile);
+    this.markers = [];
+    this.fontSize = 20;
   }
 
   componentDidMount() {
@@ -124,6 +126,15 @@ class MapScreen extends Component {
         followLocation: false,
       });
     }
+
+    const visibleGrid = MathUtils.filterVisibleLocations(this.props.visitedLocations, region);
+    const visibleArray = MathUtils.gridToArray(visibleGrid);
+
+    this.markers = visibleArray.map(x => ({
+      ...x,
+      neighbours: Coordinate.getNeighbours(x, visibleGrid),
+    }));
+    this.fontSize = 0.2 / region.longitudeDelta;
   }
 
   getGeolocationAsync = async (location) => {
@@ -279,6 +290,13 @@ class MapScreen extends Component {
             coordinates={Earth.FOG}
             holes={holes}
           />
+          {this.markers.map(x => (
+            <MapView.Marker coordinate={x} key={x.longitude} anchor={{ x: 0.5, y: 0.5 }}>
+              <Text style={{ fontSize: this.fontSize }}>
+                {x.neighbours.length + 1}
+              </Text>
+            </MapView.Marker>
+          ))}
         </MapView>
         <TouchableOpacity style={styles.menuButton} onPress={() => navigation.openDrawer()}>
           <Image style={styles.menuImage} source={iconMenu} />
