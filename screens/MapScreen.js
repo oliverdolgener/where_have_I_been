@@ -113,6 +113,7 @@ class MapScreen extends Component {
   }
 
   onRegionChangeComplete(region) {
+    region.longitudeDelta = region.longitudeDelta < 0 ? region.longitudeDelta + 360 : region.longitudeDelta;
     const { setRegion } = this.props;
     const { currentLocation } = this.state;
     setRegion(region);
