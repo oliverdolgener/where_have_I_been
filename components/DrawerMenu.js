@@ -18,6 +18,7 @@ import iconWorld from '../assets/iconWorld.png';
 import iconSync from '../assets/iconSync.png';
 import iconNight from '../assets/iconNight.png';
 import iconLogout from '../assets/iconLogout.png';
+import iconPowerSaver from '../assets/iconPowerSaver.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -62,6 +63,11 @@ class DrawerMenu extends React.Component {
   toggleTheme = () => {
     const { theme, setTheme } = this.props;
     setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  togglePowerSaver = () => {
+    const { powerSaver, setPowerSaver } = this.props;
+    setPowerSaver(powerSaver === 'on' ? 'off' : 'on');
   };
 
   toggleMapType = () => {
@@ -125,7 +131,9 @@ class DrawerMenu extends React.Component {
   }
 
   render() {
-    const { mapType, tilesToSave, theme } = this.props;
+    const {
+      mapType, tilesToSave, theme, powerSaver,
+    } = this.props;
     const { showFriendlist, showCountries } = this.state;
 
     const backgroundColor = theme === 'dark' ? Colors.black80 : Colors.white80;
@@ -233,6 +241,11 @@ class DrawerMenu extends React.Component {
             <ThemedText style={styles.menuLabel}>Night Mode</ThemedText>
             <Switch value={theme === 'dark'} onValueChange={() => this.toggleTheme()} />
           </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => this.togglePowerSaver()}>
+            <ThemedIcon style={styles.menuIcon} source={iconPowerSaver} />
+            <ThemedText style={styles.menuLabel}>Power Saver</ThemedText>
+            <Switch value={powerSaver === 'on'} onValueChange={() => this.togglePowerSaver()} />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => this.logout()}>
             <ThemedIcon style={styles.menuIcon} source={iconLogout} />
             <ThemedText style={styles.menuLabel}>Logout</ThemedText>
@@ -249,6 +262,7 @@ const mapStateToProps = state => ({
   tilesToSave: state.user.get('tilesToSave'),
   theme: state.user.get('theme'),
   isSaving: state.user.get('isSaving'),
+  powerSaver: state.user.get('powerSaver'),
 });
 
 const mapDispatchToProps = {
@@ -258,6 +272,7 @@ const mapDispatchToProps = {
   setMapType: userActions.setMapType,
   saveTiles: userActions.saveTiles,
   setTheme: userActions.setTheme,
+  setPowerSaver: userActions.setPowerSaver,
 };
 
 export default connect(

@@ -25,6 +25,7 @@ export const types = {
   SET_TILES_TO_SAVE: 'USER/SET_TILES_TO_SAVE',
   SAVE_TILES: 'USER/SAVE_TILES',
   SET_THEME: 'USER/SET_THEME',
+  SET_POWER_SAVER: 'USER/SET_POWER_SAVER',
   SET_LAST_TILE: 'USER/SET_LAST_TILE',
 };
 
@@ -50,6 +51,10 @@ const setMapTypeAsync = async (mapType) => {
 
 const setThemeAsync = async (theme) => {
   await AsyncStorage.setItem('theme', theme);
+};
+
+const setPowerSaverAsync = async (powerSaver) => {
+  await AsyncStorage.setItem('powerSaver', powerSaver);
 };
 
 const prepareLocations = (locations) => {
@@ -119,6 +124,7 @@ export const actions = {
     promise: saveTiles(userId, tilesToSave),
   }),
   setTheme: theme => ({ type: types.SET_THEME, theme }),
+  setPowerSaver: powerSaver => ({ type: types.SET_POWER_SAVER, powerSaver }),
   setLastTile: lastTile => ({ type: types.SET_LAST_TILE, lastTile }),
 };
 
@@ -142,6 +148,7 @@ const initialState = Map({
   theme: 'light',
   lastTile: new Coordinate(52.558, 13.206504),
   isSaving: false,
+  powerSaver: 'off',
 });
 
 export default (state = initialState, action = {}) => {
@@ -268,6 +275,9 @@ export default (state = initialState, action = {}) => {
     case types.SET_THEME:
       setThemeAsync(action.theme);
       return state.set('theme', action.theme);
+    case types.SET_POWER_SAVER:
+      setPowerSaverAsync(action.powerSaver);
+      return state.set('powerSaver', action.powerSaver);
     case types.SET_LAST_TILE: {
       setLastTileAsync(action.lastTile);
       return state.set('lastTile', action.lastTile);

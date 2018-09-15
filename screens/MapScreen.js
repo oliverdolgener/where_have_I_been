@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
+import { DangerZone } from 'expo';
 
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
@@ -20,6 +21,14 @@ import iconClose from '../assets/iconClose.png';
 const styles = {
   container: {
     flex: 1,
+  },
+  batterySaver: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: Colors.black,
   },
   menuButton: {
     position: 'absolute',
@@ -84,6 +93,39 @@ const styles = {
 };
 
 class MapScreen extends Component {
+  constructor() {
+    super();
+    this.state = {
+      showBatterySaver: false,
+    };
+  }
+
+  componentDidMount() {
+    this.motionListener = DangerZone.DeviceMotion.addListener(result =>
+      this.handleMotionEvent(result));
+  }
+
+  componentWillUnmount() {
+    this.motionListener.remove();
+  }
+
+  handleMotionEvent(result) {
+    const { powerSaver } = this.props;
+    if (powerSaver === 'off') {
+      return;
+    }
+
+    if (result.rotation && result.rotation.beta < -1) {
+      this.setState({
+        showBatterySaver: true,
+      });
+    } else if (result.rotation && result.rotation.beta > 1) {
+      this.setState({
+        showBatterySaver: false,
+      });
+    }
+  }
+
   render() {
     const {
       visitedLocations,
@@ -94,7 +136,10 @@ class MapScreen extends Component {
       geocode,
       followLocation,
       setFollowLocation,
+      powerSaver,
     } = this.props;
+
+    const { showBatterySaver } = this.state;
 
     const locations = MathUtils.gridToArray(visitedLocations);
 
@@ -153,6 +198,7 @@ class MapScreen extends Component {
             </View>
           )
         )}
+        {powerSaver === 'on' && showBatterySaver && <View style={styles.batterySaver} />}
       </View>
     );
   }
@@ -161,6 +207,7 @@ class MapScreen extends Component {
 const mapStateToProps = state => ({
   friendId: state.user.get('friendId'),
   visitedLocations: state.user.get('visitedLocations'),
+  powerSaver: state.user.get('powerSaver'),
   geolocation: state.map.get('geolocation'),
   geocode: state.map.get('geocode'),
   followLocation: state.map.get('followLocation'),

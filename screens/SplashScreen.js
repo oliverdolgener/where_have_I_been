@@ -29,13 +29,22 @@ class SplashScreen extends React.Component {
 
   getUserAsync = async () => {
     const {
-      relogUser, setMapType, setTilesToSave, setLastTile, setTheme, navigation,
+      relogUser,
+      setMapType,
+      setTilesToSave,
+      setLastTile,
+      setTheme,
+      setPowerSaver,
+      navigation,
     } = this.props;
+
     const id = await AsyncStorage.getItem('id');
     const tilesToSave = await AsyncStorage.getItem('tilesToSave');
     const lastTile = await AsyncStorage.getItem('lastTile');
     const mapType = await AsyncStorage.getItem('mapType');
     const theme = await AsyncStorage.getItem('theme');
+    const powerSaver = await AsyncStorage.getItem('powerSaver');
+
     setTimeout(() => {
       if (id) {
         if (tilesToSave) {
@@ -49,6 +58,9 @@ class SplashScreen extends React.Component {
         }
         if (theme) {
           setTheme(theme);
+        }
+        if (powerSaver) {
+          setPowerSaver(powerSaver);
         }
         relogUser(id);
       } else {
@@ -75,6 +87,7 @@ const mapDispatchToProps = {
   setTilesToSave: userActions.setTilesToSave,
   setLastTile: userActions.setLastTile,
   setTheme: userActions.setTheme,
+  setPowerSaver: userActions.setPowerSaver,
 };
 
 export default connect(

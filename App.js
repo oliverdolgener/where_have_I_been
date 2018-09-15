@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { middleware as reduxPackMiddleware } from 'redux-pack';
-import { KeepAwake, Brightness } from 'expo';
+import { KeepAwake } from 'expo';
 import UserReducer from './reducers/user';
 import MapReducer from './reducers/map';
 import AppNavigation from './navigation/AppNavigation';
@@ -29,19 +29,6 @@ class App extends Component {
     navigator = this.navigator;
     KeepAwake.activate();
   }
-
-  handleMotionEvent(result) {
-    if (result.rotation && result.rotation.beta < -0.75) {
-      Brightness.setBrightnessAsync(0);
-    } else if (result.rotation && result.rotation.beta > 0.75) {
-      this.resetBrightnessAsync();
-    }
-  }
-
-  resetBrightnessAsync = async () => {
-    const systemBrightness = await Brightness.getSystemBrightnessAsync();
-    Brightness.setBrightnessAsync(systemBrightness);
-  };
 
   render() {
     return (
