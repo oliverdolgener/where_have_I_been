@@ -22,7 +22,7 @@ class Map extends Component {
   componentDidMount() {
     const { lastTile, onRef } = this.props;
     this.watchPositionAsync();
-    this.getGeolocationAsync(lastTile);
+    this.getGeocodeAsync(lastTile);
     onRef(this);
   }
 
@@ -30,7 +30,7 @@ class Map extends Component {
     const { setLastTile, geolocation } = this.props;
     setLastTile(tile);
     this.addLocation(tile);
-    this.getGeolocationAsync(geolocation.location);
+    this.getGeocodeAsync(geolocation.location);
   }
 
   onRegionChangeComplete(region) {
@@ -45,7 +45,7 @@ class Map extends Component {
     }
   }
 
-  getGeolocationAsync = async (location) => {
+  getGeocodeAsync = async (location) => {
     const { setGeocode } = this.props;
     await Permissions.askAsync(Permissions.LOCATION);
     const geocode = await Location.reverseGeocodeAsync(location);
@@ -122,7 +122,7 @@ class Map extends Component {
 
   moveToCurrentLocation() {
     const { geolocation } = this.props;
-    this.moveToLocation(new Coordinate(geolocation.latitude, geolocation.longitude));
+    this.moveToLocation(geolocation.location);
   }
 
   render() {
