@@ -61,12 +61,14 @@ class DrawerMenu extends React.Component {
   }
 
   toggleTheme = () => {
-    const { theme, setTheme } = this.props;
+    const { theme, setTheme, navigation } = this.props;
+    navigation.closeDrawer();
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   togglePowerSaver = () => {
-    const { powerSaver, setPowerSaver } = this.props;
+    const { powerSaver, setPowerSaver, navigation } = this.props;
+    navigation.closeDrawer();
     setPowerSaver(powerSaver === 'on' ? 'off' : 'on');
   };
 
@@ -107,9 +109,8 @@ class DrawerMenu extends React.Component {
 
   syncData() {
     const {
-      userId, getUser, tilesToSave, saveTiles, navigation, isSaving,
+      userId, getUser, tilesToSave, saveTiles, isSaving,
     } = this.props;
-    navigation.closeDrawer();
     if (!isSaving && tilesToSave.length > 0) {
       saveTiles(userId, tilesToSave);
       setTimeout(() => {

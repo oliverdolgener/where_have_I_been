@@ -66,7 +66,11 @@ export function getSquareCoordinates(location, gridDistance = Earth.GRID_DISTANC
 export function getSliceCoordinates(coordinates, gridDistance = Earth.GRID_DISTANCE) {
   const slices = [];
   const array = MathUtils.gridToArray(coordinates);
-  const resizedLocations = MathUtils.removeDuplicateLocations(array.map(x => new Coordinate(Coordinate.getRoundedLatitude(x.latitude, gridDistance), Coordinate.getRoundedLongitude(x.longitude, x.latitude, gridDistance))));
+  const resizedLocations = MathUtils.removeDuplicateLocations(array.map(x =>
+    new Coordinate(
+      Coordinate.getRoundedLatitude(x.latitude, gridDistance),
+      Coordinate.getRoundedLongitude(x.longitude, x.latitude, gridDistance),
+    )));
   const locations = MathUtils.arrayToGrid(resizedLocations);
 
   for (let i = 0; i < locations.length; i++) {
@@ -78,7 +82,10 @@ export function getSliceCoordinates(coordinates, gridDistance = Earth.GRID_DISTA
       const next = row[k + 1];
 
       if (next) {
-        if (next.longitude - current.longitude < gridDistanceAtLatitude(current.latitude, gridDistance) + Earth.SLICE_OFFSET) {
+        if (
+          next.longitude - current.longitude <
+          gridDistanceAtLatitude(current.latitude, gridDistance) + Earth.SLICE_OFFSET
+        ) {
           last = next;
         } else {
           slices.push(getRectangleCoordinates(first, last, gridDistance));
@@ -142,19 +149,33 @@ export function isPointInPolygon(coordinate, polygon) {
 }
 
 export function isLatitudeInRegion(latitude, region, factor = 1) {
-  return (
-    latitude <= region.latitude + region.latitudeDelta / (2 / factor) &&
-    latitude >= region.latitude - region.latitudeDelta / (2 / factor)
-  );
+  const borderTop = region.latitude + region.latitudeDelta / (2 / factor);
+  const borderTopBottom = region.latitude - region.latitudeDelta / (2 / factor);
+  return latitude <= borderTop && latitude >= borderTopBottom;
 }
 
 export function isLongitudeInRegion(longitude, region, factor = 1) {
-  return (
-    longitude <= region.longitude + region.longitudeDelta / (2 / factor) &&
-    longitude >= region.longitude - region.longitudeDelta / (2 / factor)
-  );
+  const borderRight = region.longitude + region.longitudeDelta / (2 / factor);
+  const borderLeft = region.longitude - region.longitudeDelta / (2 / factor);
+
+  if (borderRight > 180) {
+    const isInLeftHalf = longitude >= borderLeft && longitude <= 180;
+    const isInRightHalf = longitude <= borderRight - 360 && longitude >= -180;
+    return isInLeftHalf || isInRightHalf;
+  }
+
+  if (borderLeft < -180) {
+    const isInLeftHalf = longitude >= borderLeft + 360 && longitude <= 180;
+    const isInRightHalf = longitude <= borderRight && longitude >= -180;
+    return isInLeftHalf || isInRightHalf;
+  }
+
+  return longitude <= borderRight && longitude >= borderLeft;
 }
 
 export function isCoordinateInRegion(coordinate, region, factor = 1) {
-  return isLatitudeInRegion(coordinate.latitude, region, factor) && isLongitudeInRegion(coordinate.longitude, region, factor);
+  return (
+    isLatitudeInRegion(coordinate.latitude, region, factor) &&
+    isLongitudeInRegion(coordinate.longitude, region, factor)
+  );
 }

@@ -7,6 +7,7 @@ import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import Coordinate from '../model/Coordinate';
 import * as MathUtils from '../utils/MathUtils';
+import * as EarthUtils from '../utils/EarthUtils';
 import * as Earth from '../constants/Earth';
 import * as Colors from '../constants/Colors';
 import mapStyleLight from '../assets/mapStyleLight.json';
@@ -40,7 +41,7 @@ class Map extends Component {
       region.longitudeDelta < 0 ? region.longitudeDelta + 360 : region.longitudeDelta;
     setRegion(region);
 
-    if (Platform.OS === 'ios' && !geolocation.location.isInRegion(region)) {
+    if (Platform.OS === 'ios' && !EarthUtils.isCoordinateInRegion(geolocation.location(region))) {
       setFollowLocation(false);
     }
   }

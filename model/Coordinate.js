@@ -29,18 +29,16 @@ export default class Coordinate {
     );
   }
 
-  static isCoordinateInRegion(coordinate, region, factor = 1) {
-    return (
-      coordinate.latitude <= region.latitude + region.latitudeDelta / (2 / factor) &&
-      coordinate.latitude >= region.latitude - region.latitudeDelta / (2 / factor) &&
-      coordinate.longitude <= region.longitude + region.longitudeDelta / (2 / factor) &&
-      coordinate.longitude >= region.longitude - region.longitudeDelta / (2 / factor)
-    );
-  }
-
   static getNeighbours(coordinate, array, gridDistance = Earth.GRID_DISTANCE) {
-    const neighbouringRows = array.filter(x => x.latitude === coordinate.latitude || x.latitude === coordinate.latitude + gridDistance || x.latitude === coordinate.latitude - gridDistance);
-    return MathUtils.gridToArray(neighbouringRows).filter(x => (x.longitude - coordinate.longitude) ** 2 / EarthUtils.gridDistanceAtLatitude(coordinate.latitude) ** 2 <= Earth.NEIGHBOUR_BOUNDARY + Earth.NEIGHBOUR_OFFSET_LONG && !Coordinate.isEqual(x, coordinate));
+    const neighbouringRows = array.filter(x =>
+      x.latitude === coordinate.latitude ||
+        x.latitude === coordinate.latitude + gridDistance ||
+        x.latitude === coordinate.latitude - gridDistance);
+    return MathUtils.gridToArray(neighbouringRows).filter(x =>
+      (x.longitude - coordinate.longitude) ** 2 /
+          EarthUtils.gridDistanceAtLatitude(coordinate.latitude) ** 2 <=
+          Earth.NEIGHBOUR_BOUNDARY + Earth.NEIGHBOUR_OFFSET_LONG &&
+        !Coordinate.isEqual(x, coordinate));
   }
 
   static breadthFirstSearch(array, start) {
@@ -139,11 +137,6 @@ export default class Coordinate {
 
   getRoundedLongitude() {
     return Coordinate.getRoundedLongitude(this.longitude, this.latitude);
-  }
-
-  isInRegion(region, factor = 1) {
-    const coordinate = new Coordinate(this.latitude, this.longitude, this.timestamp);
-    return Coordinate.isCoordinateInRegion(coordinate, region, factor);
   }
 
   getCorners(gridDistance = Earth.GRID_DISTANCE) {
