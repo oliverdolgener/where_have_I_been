@@ -158,11 +158,13 @@ class MapScreen extends Component {
         <TouchableOpacity style={styles.menuButton} onPress={() => navigation.openDrawer()}>
           <Image style={styles.menuImage} source={iconMenu} />
         </TouchableOpacity>
-        <View style={styles.geocodeContainer} pointerEvents="none">
-          <InfoText style={styles.geocodeInfo} label={geocode.city} />
-          <InfoText style={styles.geocodeInfo} label={geocode.region} />
-          <InfoText style={styles.geocodeInfo} label={geocode.country} />
-        </View>
+        {geocode && (
+          <View style={styles.geocodeContainer} pointerEvents="none">
+            <InfoText style={styles.geocodeInfo} label={geocode.city} />
+            <InfoText style={styles.geocodeInfo} label={geocode.region} />
+            <InfoText style={styles.geocodeInfo} label={geocode.country} />
+          </View>
+        )}
         <InfoText
           style={styles.levelInfo}
           label={level}
