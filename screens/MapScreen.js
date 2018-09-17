@@ -143,7 +143,7 @@ class MapScreen extends Component {
 
     const locations = MathUtils.gridToArray(visitedLocations);
 
-    // const neighbours = MathUtils.gridToArray(props.visitedLocations).map(x => Coordinate.getNeighbours(x, props.visitedLocations).length + 1);
+    // const neighbours = MathUtils.gridToArray(visitedLocations).map(x => Coordinate.getNeighbours(x, visitedLocations).length + 1);
     // const score = neighbours.reduce((y, z) => y + z, 0);
     const level = LevelUtils.getLevelFromExp(locations.length);
     const gradient = LevelUtils.getPercentToNextLevel(locations.length);

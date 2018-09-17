@@ -37,6 +37,14 @@ export function containsLocation(location, array) {
   return array.find(x => isEqual(x, location));
 }
 
+export function isLocationInGrid(location, grid) {
+  const row = grid.find(x => x.latitude === location.latitude);
+  if (row) {
+    return row.locations.find(x => x.longitude === location.longitude);
+  }
+  return false;
+}
+
 export function containsDuplicateLocations(array) {
   if (array < 2) {
     return false;
@@ -120,30 +128,36 @@ export function removeBothDuplicateLocations(array) {
   return unique;
 }
 
-export function arrayToGrid(locations) {
-  if (locations.length < 1) {
+export function arrayToGrid(array) {
+  if (array.length < 1) {
     return [];
   }
 
-  const preparedLocations = [];
+  array.sort(SortUtils.byLatitudeDesc);
+
+  const grid = [];
+
   let row = {
-    latitude: locations[0].latitude,
-    locations: [locations[0]],
+    latitude: array[0].latitude,
+    locations: [array[0]],
   };
 
-  for (let i = 0; i < locations.length; i++) {
-    const current = locations[i];
-    const next = locations[i + 1];
+  for (let i = 0; i < array.length; i++) {
+    const current = array[i];
+    const next = array[i + 1];
 
     if (!next) {
-      preparedLocations.push(row);
+      grid.push(row);
       break;
     }
 
     if (current.latitude === next.latitude) {
+      if (current.longitude === next.longitude) {
+        break;
+      }
       row.locations.push(next);
     } else {
-      preparedLocations.push(row);
+      grid.push(row);
       row = {
         latitude: next.latitude,
         locations: [next],
@@ -151,7 +165,7 @@ export function arrayToGrid(locations) {
     }
   }
 
-  return preparedLocations;
+  return grid;
 }
 
 export function gridToArray(locations) {

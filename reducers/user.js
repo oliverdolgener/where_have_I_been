@@ -58,9 +58,10 @@ const setPowerSaverAsync = async (powerSaver) => {
 };
 
 const prepareLocations = (locations) => {
-  const visitedLocations = locations.map(x => new Coordinate(x.latitude, x.longitude, x.timestamp));
-  const uniques = MathUtils.removeDuplicateLocations(visitedLocations);
-  return MathUtils.arrayToGrid(uniques);
+  // const visitedLocations = locations.map(x => new Coordinate(x.latitude, x.longitude, x.timestamp));
+  // const uniques = MathUtils.removeDuplicateLocations(locations);
+  const grid = MathUtils.arrayToGrid(locations);
+  return grid;
 };
 
 const prepareHoles = (locations, region) => {
