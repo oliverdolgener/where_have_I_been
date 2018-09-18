@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, FlatList, Switch } from 'react-native';
+import { StyleSheet, Animated, View, TouchableOpacity, FlatList, Switch } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import Collapsible from 'react-native-collapsible';
@@ -57,7 +57,36 @@ class DrawerMenu extends React.Component {
     this.state = {
       showFriendlist: false,
       showCountries: false,
+      isSpinning: false,
+      spinValue: new Animated.Value(0),
     };
+  }
+
+  componentDidUpdate() {
+    const { isSaving } = this.props;
+    const { isSpinning } = this.state;
+    if (isSaving && !isSpinning) {
+      this.spin();
+    }
+  }
+
+  spin() {
+    this.setState({ isSpinning: true });
+    this.state.spinValue.setValue(0);
+    Animated.timing(
+      this.state.spinValue,
+      {
+        toValue: 1,
+        duration: 2000,
+        useNativeDriver: true,
+      },
+    ).start(() => {
+      if (this.props.isSaving) {
+        this.spin();
+      } else {
+        this.setState({ isSpinning: false });
+      }
+    });
   }
 
   toggleTheme = () => {
@@ -132,7 +161,12 @@ class DrawerMenu extends React.Component {
     const {
       mapType, tilesToSave, theme, powerSaver,
     } = this.props;
-    const { showFriendlist, showCountries } = this.state;
+    const { showFriendlist, showCountries, spinValue } = this.state;
+
+    const spin = spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['360deg', '0deg'],
+    });
 
     const backgroundColor = theme === 'dark' ? Colors.black80 : Colors.white80;
 
@@ -230,7 +264,9 @@ class DrawerMenu extends React.Component {
             />
           </Collapsible>
           <TouchableOpacity style={styles.menuItem} onPress={() => this.syncData()}>
-            <ThemedIcon style={styles.menuIcon} source={iconSync} />
+            <Animated.View style={{ transform: [{ rotate: spin }] }}>
+              <ThemedIcon style={styles.menuIcon} source={iconSync} />
+            </Animated.View>
             <ThemedText style={styles.menuLabel}>Sync Data</ThemedText>
             <ThemedText style={styles.menuBadge}>{tilesToSave.length}</ThemedText>
           </TouchableOpacity>
