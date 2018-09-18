@@ -28,10 +28,11 @@ class Map extends Component {
   }
 
   onTileChange(tile) {
-    const { setLastTile, geolocation } = this.props;
+    const { setLastTile, geolocation, followLocation } = this.props;
     setLastTile(tile);
     this.addLocation(tile);
     this.getGeocodeAsync(geolocation.location);
+    followLocation && this.moveToLocation(tile);
   }
 
   onRegionChangeComplete(region) {
@@ -58,7 +59,7 @@ class Map extends Component {
     this.positionListener = await Location.watchPositionAsync(
       { enableHighAccuracy: true, timeInterval: 0, distanceInterval: 0 },
       (result) => {
-        const { setGeolocation, followLocation } = this.props;
+        const { setGeolocation } = this.props;
         const {
           latitude, longitude, speed, altitude, accuracy,
         } = result.coords;
@@ -85,8 +86,6 @@ class Map extends Component {
           if (!Coordinate.isEqual(lastTile, roundedLocation)) {
             this.onTileChange(roundedLocation);
           }
-
-          followLocation && this.moveToLocation(location);
         }
       },
     );
