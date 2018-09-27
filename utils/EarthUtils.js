@@ -7,7 +7,7 @@ export function circumferenceAtLatitude(latitude) {
 }
 
 export function pointsAtLatitude(latitude, gridDistance = Earth.GRID_DISTANCE) {
-  return (360 / gridDistance) * Math.cos(MathUtils.toRadians(latitude));
+  return Math.round((360 / gridDistance) * Math.cos(MathUtils.toRadians(latitude)));
 }
 
 export function gridDistanceAtLatitude(latitude, gridDistance = Earth.GRID_DISTANCE) {
