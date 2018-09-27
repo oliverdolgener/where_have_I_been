@@ -42,7 +42,7 @@ class Map extends Component {
       region.longitudeDelta < 0 ? region.longitudeDelta + 360 : region.longitudeDelta;
     setRegion(region);
 
-    if (Platform.OS === 'ios' && !EarthUtils.isCoordinateInRegion(geolocation.location(region))) {
+    if (Platform.OS === 'ios' && !EarthUtils.isCoordinateInRegion(geolocation.location, region)) {
       setFollowLocation(false);
     }
   }
