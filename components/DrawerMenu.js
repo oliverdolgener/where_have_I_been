@@ -205,6 +205,12 @@ class DrawerMenu extends React.Component {
         tiles: 4321,
         level: 16,
       },
+      {
+        id: '5bacba663f3da706847d0fb1',
+        username: 'Aryo',
+        tiles: 100,
+        level: 4,
+      },
     ];
 
     const testCountries = [
