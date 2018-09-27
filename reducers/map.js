@@ -13,7 +13,12 @@ export const actions = {
 };
 
 const initialState = Map({
-  geolocation: {},
+  geolocation: {
+    location: {
+      latitude: 52.558,
+      longitude: 13.206504,
+    },
+  },
   geocode: {},
   followLocation: true,
 });
