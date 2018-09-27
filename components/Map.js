@@ -121,7 +121,7 @@ class Map extends Component {
 
   moveToCurrentLocation() {
     const { geolocation } = this.props;
-    this.moveToLocation(geolocation.location);
+    geolocation && this.moveToLocation(geolocation.location);
   }
 
   render() {
