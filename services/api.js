@@ -19,7 +19,7 @@ const fetchJson = (url, options) =>
 
 export const getUser = (userId) => {
   const url = new URI(API_URL);
-  url.segment(ENDPOINT_LOCATION).segment(userId);
+  url.segment(ENDPOINT_LOCATION).segment(userId.toString());
   return fetchJson(url.href());
 };
 
@@ -55,7 +55,7 @@ export const signup = (email, password) => {
 
 export const saveTiles = (userId, tilesToSave) => {
   const url = new URI(API_URL);
-  url.segment(ENDPOINT_LOCATION).segment(userId);
+  url.segment(ENDPOINT_LOCATION).segment(userId.toString());
   const body = JSON.stringify({
     locations: tilesToSave,
   });

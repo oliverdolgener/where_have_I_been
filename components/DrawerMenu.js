@@ -73,14 +73,11 @@ class DrawerMenu extends React.Component {
   spin() {
     this.setState({ isSpinning: true });
     this.state.spinValue.setValue(0);
-    Animated.timing(
-      this.state.spinValue,
-      {
-        toValue: 1,
-        duration: 2000,
-        useNativeDriver: true,
-      },
-    ).start(() => {
+    Animated.timing(this.state.spinValue, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: true,
+    }).start(() => {
       if (this.props.isSaving) {
         this.spin();
       } else {
@@ -188,25 +185,25 @@ class DrawerMenu extends React.Component {
 
     const testFriends = [
       {
-        id: '5ae9c419728f801904a9624e',
+        id: 0,
         username: '0llum',
         tiles: 10000,
         level: 21,
       },
       {
-        id: '5aeae9800a576c69ca1e023b',
+        id: 2,
         username: 'Liz',
         tiles: 36,
         level: 3,
       },
       {
-        id: '5b675aa93d4ee00f1f4e2adf',
+        id: 1,
         username: 'Ute',
         tiles: 4321,
         level: 16,
       },
       {
-        id: '5bacba663f3da706847d0fb1',
+        id: 3,
         username: 'Aryo',
         tiles: 100,
         level: 4,
