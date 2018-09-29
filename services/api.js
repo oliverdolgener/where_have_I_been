@@ -2,8 +2,9 @@ import URI from 'urijs';
 
 const API_URL = 'https://api.0llum.de/';
 
-const ENDPOINT_USERS = 'users';
+const ENDPOINT_USER = 'user';
 const ENDPOINT_LOGIN = 'login';
+const ENDPOINT_LOCATION = 'location';
 
 const headers = {
   Accept: 'application/json',
@@ -18,13 +19,13 @@ const fetchJson = (url, options) =>
 
 export const getUser = (userId) => {
   const url = new URI(API_URL);
-  url.segment(ENDPOINT_USERS).segment(userId);
+  url.segment(ENDPOINT_LOCATION).segment(userId);
   return fetchJson(url.href());
 };
 
 export const login = (email, password) => {
   const url = new URI(API_URL);
-  url.segment(ENDPOINT_USERS).segment(ENDPOINT_LOGIN);
+  url.segment(ENDPOINT_LOGIN);
   const body = JSON.stringify({
     email,
     password,
@@ -39,7 +40,7 @@ export const login = (email, password) => {
 
 export const signup = (email, password) => {
   const url = new URI(API_URL);
-  url.segment(ENDPOINT_USERS);
+  url.segment(ENDPOINT_USER);
   const body = JSON.stringify({
     email,
     password,
@@ -54,12 +55,12 @@ export const signup = (email, password) => {
 
 export const saveTiles = (userId, tilesToSave) => {
   const url = new URI(API_URL);
-  url.segment(ENDPOINT_USERS).segment(userId);
+  url.segment(ENDPOINT_LOCATION).segment(userId);
   const body = JSON.stringify({
     locations: tilesToSave,
   });
   const options = {
-    method: 'PATCH',
+    method: 'POST',
     headers,
     body,
   };

@@ -30,7 +30,7 @@ export const types = {
 };
 
 const setUserAsync = async (id) => {
-  await AsyncStorage.setItem('id', id);
+  await AsyncStorage.setItem('id', id.toString());
 };
 
 const removeUserAsync = async () => {
@@ -76,7 +76,7 @@ export const actions = {
     promise: login(email, password),
     meta: {
       onSuccess: (result) => {
-        setUserAsync(result.data._id);
+        setUserAsync(result.data.id);
         navigator.dispatch(NavigationActions.navigate({ routeName: 'Map' }));
       },
     },
@@ -87,7 +87,7 @@ export const actions = {
     promise: signup(email, password),
     meta: {
       onSuccess: (result) => {
-        setUserAsync(result.data._id);
+        setUserAsync(result.data.id);
         navigator.dispatch(NavigationActions.navigate({ routeName: 'Map' }));
       },
     },
@@ -105,8 +105,8 @@ export const actions = {
     type: types.RELOG_USER,
     promise: getUser(userId),
     meta: {
-      onSuccess: (result) => {
-        setUserAsync(result.data._id);
+      onSuccess: () => {
+        setUserAsync(userId);
         navigator.dispatch(NavigationActions.navigate({ routeName: 'Map' }));
       },
       onFailure: () => {
@@ -162,7 +162,7 @@ export default (state = initialState, action = {}) => {
           const holes = prepareHoles(visitedLocations, state.get('region'));
           return prevState
             .set('isLoggedIn', true)
-            .set('userId', payload.data._id)
+            .set('userId', payload.data.id)
             .set('visitedLocations', visitedLocations)
             .set('holes', holes)
             .set('emailError', '')
@@ -185,7 +185,7 @@ export default (state = initialState, action = {}) => {
         success: prevState =>
           prevState
             .set('isLoggedIn', true)
-            .set('userId', payload.data._id)
+            .set('userId', payload.data.id)
             .set('visitedLocations', [])
             .set('holes', [])
             .set('emailError', '')
@@ -202,7 +202,7 @@ export default (state = initialState, action = {}) => {
           const holes = prepareHoles(visitedLocations, state.get('region'));
           return prevState
             .set('isLoggedIn', true)
-            .set('userId', payload.data._id)
+            .set('userId', payload.data.id)
             .set('visitedLocations', visitedLocations)
             .set('holes', holes);
         },
@@ -213,7 +213,7 @@ export default (state = initialState, action = {}) => {
           const friendLocations = prepareLocations(payload.data.locations);
           const holes = prepareHoles(friendLocations, state.get('region'));
           return prevState
-            .set('friendId', payload.data._id)
+            .set('friendId', payload.data.id)
             .set('friendLocations', friendLocations)
             .set('holes', holes);
         },
@@ -233,7 +233,7 @@ export default (state = initialState, action = {}) => {
           const holes = prepareHoles(visitedLocations, state.get('region'));
           return prevState
             .set('isLoggedIn', true)
-            .set('userId', payload.data._id)
+            .set('userId', payload.data.id)
             .set('visitedLocations', visitedLocations)
             .set('holes', holes);
         },
@@ -265,7 +265,7 @@ export default (state = initialState, action = {}) => {
       return handle(state, action, {
         start: prevState => prevState.set('isSaving', true),
         success: (prevState) => {
-          const savedLocations = action.payload.data.locations;
+          const savedLocations = action.payload.data;
           const tilesToSave = state.get('tilesToSave');
           const difference = tilesToSave.filter(x => !savedLocations.find(y => Coordinate.isEqual(y, x)));
           setTilesToSaveAsync(difference);
