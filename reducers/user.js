@@ -122,7 +122,7 @@ export const actions = {
   setTilesToSave: tilesToSave => ({ type: types.SET_TILES_TO_SAVE, tilesToSave }),
   saveTiles: (userId, tilesToSave) => ({
     type: types.SAVE_TILES,
-    promise: saveTiles(userId, tilesToSave),
+    promise: saveTiles(userId.toString(), tilesToSave),
   }),
   setTheme: theme => ({ type: types.SET_THEME, theme }),
   setPowerSaver: powerSaver => ({ type: types.SET_POWER_SAVER, powerSaver }),
