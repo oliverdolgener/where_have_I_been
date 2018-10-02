@@ -7,7 +7,7 @@ import Coordinate from '../model/Coordinate';
 import * as MathUtils from '../utils/MathUtils';
 import * as EarthUtils from '../utils/EarthUtils';
 import * as LevelUtils from '../utils/LevelUtils';
-import { getUser, login, signup, saveTiles, getFriends } from '../services/api';
+import { getUser, login, signup, saveTiles, getFriends, addFriend } from '../services/api';
 import { navigator } from '../App';
 
 export const types = {
@@ -16,6 +16,7 @@ export const types = {
   SIGNUP: 'USER/SIGNUP',
   GET_USER: 'USER/GET_USER',
   GET_FRIENDS: 'USER/GET_FRIENDS',
+  ADD_FRIEND: 'USER/ADD_FRIEND',
   GET_FRIEND: 'USER/GET_FRIEND',
   RESET_FRIEND: 'USER/RESET_FRIEND',
   RELOG_USER: 'USER/RELOG_USER',
@@ -101,6 +102,10 @@ export const actions = {
   getFriends: userId => ({
     type: types.GET_FRIENDS,
     promise: getFriends(userId),
+  }),
+  addFriend: friendName => ({
+    type: types.ADD_FRIEND,
+    promise: addFriend(friendName),
   }),
   getFriend: friendId => ({
     type: types.GET_FRIEND,
@@ -224,6 +229,11 @@ export default (state = initialState, action = {}) => {
           }));
           return prevState.set('friends', friends);
         },
+      });
+    case types.ADD_FRIEND:
+      return handle(state, action, {
+        failure: prevState => prevState.set('friendError', 'User not found'),
+        success: prevState => prevState.set('friendError', ''),
       });
     case types.GET_FRIEND:
       return handle(state, action, {

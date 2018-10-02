@@ -73,3 +73,17 @@ export const getFriends = (userId) => {
   url.segment(ENDPOINT_FRIEND).segment(userId.toString());
   return fetchJson(url.href());
 };
+
+export const addFriend = (userId, friendName) => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_FRIEND).segment(userId.toString());
+  const body = JSON.stringify({
+    friendName,
+  });
+  const options = {
+    method: 'POST',
+    headers,
+    body,
+  };
+  return fetchJson(url.href(), options);
+};
