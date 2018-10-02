@@ -62,6 +62,11 @@ class DrawerMenu extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const { userId, getFriends } = this.props;
+    getFriends(userId);
+  }
+
   componentDidUpdate() {
     const { isSaving } = this.props;
     const { isSpinning } = this.state;
@@ -156,7 +161,7 @@ class DrawerMenu extends React.Component {
 
   render() {
     const {
-      mapType, tilesToSave, theme, powerSaver,
+      friends, mapType, tilesToSave, theme, powerSaver,
     } = this.props;
     const { showFriendlist, showCountries, spinValue } = this.state;
 
@@ -182,33 +187,6 @@ class DrawerMenu extends React.Component {
         mapTypeIcon = iconSatellite;
         break;
     }
-
-    const testFriends = [
-      {
-        id: 0,
-        username: '0llum',
-        tiles: 10000,
-        level: 21,
-      },
-      {
-        id: 2,
-        username: 'Liz',
-        tiles: 36,
-        level: 3,
-      },
-      {
-        id: 1,
-        username: 'Ute',
-        tiles: 4321,
-        level: 16,
-      },
-      {
-        id: 3,
-        username: 'Aryo',
-        tiles: 100,
-        level: 4,
-      },
-    ];
 
     const testCountries = [
       { id: 0, name: 'Germany' },
@@ -237,7 +215,7 @@ class DrawerMenu extends React.Component {
           </TouchableOpacity>
           <Collapsible collapsed={!showFriendlist} collapsedHeight={0}>
             <FlatList
-              data={testFriends}
+              data={friends}
               keyExtractor={item => item.id}
               renderItem={({ item }) => (
                 <TouchableOpacity style={styles.menuItem} onPress={() => this.showFriend(item.id)}>
@@ -295,6 +273,7 @@ class DrawerMenu extends React.Component {
 
 const mapStateToProps = state => ({
   userId: state.user.get('userId'),
+  friends: state.user.get('friends'),
   mapType: state.user.get('mapType'),
   tilesToSave: state.user.get('tilesToSave'),
   theme: state.user.get('theme'),
@@ -303,6 +282,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  getFriends: userActions.getFriends,
   getFriend: userActions.getFriend,
   logout: userActions.logout,
   setMapType: userActions.setMapType,

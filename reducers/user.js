@@ -6,7 +6,8 @@ import { AsyncStorage } from 'react-native';
 import Coordinate from '../model/Coordinate';
 import * as MathUtils from '../utils/MathUtils';
 import * as EarthUtils from '../utils/EarthUtils';
-import { getUser, login, signup, saveTiles } from '../services/api';
+import * as LevelUtils from '../utils/LevelUtils';
+import { getUser, login, signup, saveTiles, getFriends } from '../services/api';
 import { navigator } from '../App';
 
 export const types = {
@@ -14,6 +15,7 @@ export const types = {
   LOGOUT: 'USER/LOGOUT',
   SIGNUP: 'USER/SIGNUP',
   GET_USER: 'USER/GET_USER',
+  GET_FRIENDS: 'USER/GET_FRIENDS',
   GET_FRIEND: 'USER/GET_FRIEND',
   RESET_FRIEND: 'USER/RESET_FRIEND',
   RELOG_USER: 'USER/RELOG_USER',
@@ -96,6 +98,10 @@ export const actions = {
     type: types.GET_USER,
     promise: getUser(userId),
   }),
+  getFriends: userId => ({
+    type: types.GET_FRIENDS,
+    promise: getFriends(userId),
+  }),
   getFriend: friendId => ({
     type: types.GET_FRIEND,
     promise: getUser(friendId),
@@ -133,6 +139,7 @@ const initialState = Map({
   isLoggedIn: false,
   userId: false,
   friendId: false,
+  friends: [],
   region: {
     latitude: 52.558,
     longitude: 13.206504,
@@ -205,6 +212,17 @@ export default (state = initialState, action = {}) => {
             .set('userId', payload.data.id)
             .set('visitedLocations', visitedLocations)
             .set('holes', holes);
+        },
+      });
+    case types.GET_FRIENDS:
+      return handle(state, action, {
+        success: (prevState) => {
+          const friends = payload.data.map(x => ({
+            id: x.id.toString(),
+            username: x.username,
+            level: LevelUtils.getLevelFromExp(x.locations),
+          }));
+          return prevState.set('friends', friends);
         },
       });
     case types.GET_FRIEND:

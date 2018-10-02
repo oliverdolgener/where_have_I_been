@@ -5,6 +5,7 @@ const API_URL = 'https://api.0llum.de/';
 const ENDPOINT_USER = 'user';
 const ENDPOINT_LOGIN = 'login';
 const ENDPOINT_LOCATION = 'location';
+const ENDPOINT_FRIEND = 'friend';
 
 const headers = {
   Accept: 'application/json',
@@ -65,4 +66,10 @@ export const saveTiles = (userId, tilesToSave) => {
     body,
   };
   return fetchJson(url.href(), options);
+};
+
+export const getFriends = (userId) => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_FRIEND).segment(userId.toString());
+  return fetchJson(url.href());
 };
