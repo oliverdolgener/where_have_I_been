@@ -1,5 +1,7 @@
 import React from 'react';
-import { AsyncStorage, View, StyleSheet, Text } from 'react-native';
+import {
+  AsyncStorage, View, StyleSheet, Text,
+} from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as userActions } from '../reducers/user';

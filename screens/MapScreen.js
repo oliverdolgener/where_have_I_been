@@ -101,8 +101,7 @@ class MapScreen extends Component {
   }
 
   componentDidMount() {
-    this.motionListener = DangerZone.DeviceMotion.addListener(result =>
-      this.handleMotionEvent(result));
+    this.motionListener = DangerZone.DeviceMotion.addListener(result => this.handleMotionEvent(result));
     DangerZone.DeviceMotion.setUpdateInterval(1000);
   }
 

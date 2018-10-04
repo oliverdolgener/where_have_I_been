@@ -38,8 +38,7 @@ class Map extends Component {
   onRegionChangeComplete(region) {
     const { setRegion, setFollowLocation, geolocation } = this.props;
 
-    region.longitudeDelta =
-      region.longitudeDelta < 0 ? region.longitudeDelta + 360 : region.longitudeDelta;
+    region.longitudeDelta = region.longitudeDelta < 0 ? region.longitudeDelta + 360 : region.longitudeDelta;
     setRegion(region);
 
     if (Platform.OS === 'ios' && !EarthUtils.isCoordinateInRegion(geolocation.location, region)) {

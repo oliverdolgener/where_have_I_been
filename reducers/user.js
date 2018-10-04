@@ -7,7 +7,9 @@ import Coordinate from '../model/Coordinate';
 import * as MathUtils from '../utils/MathUtils';
 import * as EarthUtils from '../utils/EarthUtils';
 import * as LevelUtils from '../utils/LevelUtils';
-import { getUser, login, signup, saveTiles, getFriends, addFriend } from '../services/api';
+import {
+  getUser, login, signup, saveTiles, getFriends, addFriend,
+} from '../services/api';
 import { navigator } from '../App';
 
 export const types = {
@@ -180,8 +182,7 @@ export default (state = initialState, action = {}) => {
             .set('emailError', '')
             .set('passwordError', '');
         },
-        failure: prevState =>
-          prevState.set('emailError', '').set('passwordError', 'Wrong Email or Password'),
+        failure: prevState => prevState.set('emailError', '').set('passwordError', 'Wrong Email or Password'),
       });
     case types.LOGOUT:
       removeUserAsync();
@@ -194,18 +195,16 @@ export default (state = initialState, action = {}) => {
         .set('holes', []);
     case types.SIGNUP:
       return handle(state, action, {
-        success: prevState =>
-          prevState
-            .set('isLoggedIn', true)
-            .set('userId', payload.data.id)
-            .set('visitedLocations', [])
-            .set('holes', [])
-            .set('emailError', '')
-            .set('passwordError', ''),
-        failure: prevState =>
-          prevState
-            .set('emailError', 'Email address already in use. Try to login instead.')
-            .set('passwordError', ''),
+        success: prevState => prevState
+          .set('isLoggedIn', true)
+          .set('userId', payload.data.id)
+          .set('visitedLocations', [])
+          .set('holes', [])
+          .set('emailError', '')
+          .set('passwordError', ''),
+        failure: prevState => prevState
+          .set('emailError', 'Email address already in use. Try to login instead.')
+          .set('passwordError', ''),
       });
     case types.GET_USER:
       return handle(state, action, {

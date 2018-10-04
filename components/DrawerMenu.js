@@ -1,13 +1,15 @@
 import React from 'react';
-import { StyleSheet, Animated, ScrollView, View, TouchableOpacity, FlatList, Switch } from 'react-native';
+import {
+  StyleSheet, Animated, ScrollView, View, TouchableOpacity, FlatList, Switch,
+} from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import Collapsible from 'react-native-collapsible';
 
 import { actions as userActions } from '../reducers/user';
-import ThemedText from '../components/ThemedText';
-import ThemedIcon from '../components/ThemedIcon';
-import ThemedTextInput from '../components/ThemedTextInput';
+import ThemedText from './ThemedText';
+import ThemedIcon from './ThemedIcon';
+import ThemedTextInput from './ThemedTextInput';
 import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
 import iconSatellite from '../assets/iconSatellite.png';
@@ -102,22 +104,6 @@ class DrawerMenu extends React.Component {
     });
   }
 
-  spin() {
-    this.setState({ isSpinning: true });
-    this.state.spinValue.setValue(0);
-    Animated.timing(this.state.spinValue, {
-      toValue: 1,
-      duration: 2000,
-      useNativeDriver: true,
-    }).start(() => {
-      if (this.props.isSaving) {
-        this.spin();
-      } else {
-        this.setState({ isSpinning: false });
-      }
-    });
-  }
-
   toggleTheme = () => {
     const { theme, setTheme, navigation } = this.props;
     navigation.closeDrawer();
@@ -165,6 +151,12 @@ class DrawerMenu extends React.Component {
     });
   };
 
+  logout = async () => {
+    const { logout, navigation } = this.props;
+    navigation.closeDrawer();
+    logout();
+  };
+
   syncData() {
     const {
       userId, tilesToSave, saveTiles, isSaving,
@@ -174,11 +166,23 @@ class DrawerMenu extends React.Component {
     }
   }
 
-  logout = async () => {
-    const { logout, navigation } = this.props;
-    navigation.closeDrawer();
-    logout();
-  };
+  spin() {
+    const { isSaving } = this.props;
+    const { spinValue } = this.state;
+    this.setState({ isSpinning: true });
+    spinValue.setValue(0);
+    Animated.timing(spinValue, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: true,
+    }).start(() => {
+      if (isSaving) {
+        this.spin();
+      } else {
+        this.setState({ isSpinning: false });
+      }
+    });
+  }
 
   showFriend(id) {
     const { getFriend, navigation } = this.props;
@@ -190,7 +194,9 @@ class DrawerMenu extends React.Component {
     const {
       friends, mapType, tilesToSave, theme, powerSaver,
     } = this.props;
-    const { showFriendlist, showCountries, spinValue } = this.state;
+    const {
+      showFriendlist, showCountries, spinValue, friendName,
+    } = this.state;
 
     const spin = spinValue.interpolate({
       inputRange: [0, 1],
@@ -251,20 +257,20 @@ class DrawerMenu extends React.Component {
                     <ThemedText style={styles.menuBadge}>{item.level}</ThemedText>
                   </TouchableOpacity>
                 )}
-                ListHeaderComponent={
-                  <View style={styles.menuItem} >
+                ListHeaderComponent={(
+                  <View style={styles.menuItem}>
                     <ThemedTextInput
                       style={styles.addFriend}
                       placeholder="Add Friend"
                       onChangeText={text => this.onChangeFriendName(text)}
-                      value={this.state.friendName}
+                      value={friendName}
                       onSubmitEditing={() => this.onAddFriend()}
                     />
-                    <TouchableOpacity onPress={() => this.onAddFriend()} >
+                    <TouchableOpacity onPress={() => this.onAddFriend()}>
                       <ThemedIcon style={styles.menuIcon} source={iconAdd} />
                     </TouchableOpacity>
                   </View>
-                }
+)}
               />
             </Collapsible>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountries()}>
@@ -283,7 +289,7 @@ class DrawerMenu extends React.Component {
                   <TouchableOpacity style={styles.menuItem}>
                     <ThemedText style={styles.menuLabel}>{item.name}</ThemedText>
                   </TouchableOpacity>
-              )}
+                )}
               />
             </Collapsible>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.syncData()}>

@@ -1,5 +1,5 @@
-import * as EarthUtils from '../utils/EarthUtils';
-import * as SortUtils from '../utils/SortUtils';
+import * as EarthUtils from './EarthUtils';
+import * as SortUtils from './SortUtils';
 
 export function toRadians(degrees) {
   return (degrees * Math.PI) / 180;

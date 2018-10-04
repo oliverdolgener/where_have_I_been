@@ -1,5 +1,5 @@
 import * as Earth from '../constants/Earth';
-import * as MathUtils from '../utils/MathUtils';
+import * as MathUtils from './MathUtils';
 import Coordinate from '../model/Coordinate';
 
 export function circumferenceAtLatitude(latitude) {
@@ -19,17 +19,17 @@ export function getRectangleCoordinates(topLeft, botRight, gridDistance = Earth.
     {
       latitude: MathUtils.roundToDecimals(topLeft.latitude + gridDistance / Earth.SQUARE_OFFSET, 6),
       longitude: MathUtils.roundToDecimals(
-        topLeft.longitude -
-          gridDistanceAtLatitude(topLeft.latitude, gridDistance) / Earth.SQUARE_OFFSET -
-          Earth.ROUND_OFFSET_LONG,
+        topLeft.longitude
+          - gridDistanceAtLatitude(topLeft.latitude, gridDistance) / Earth.SQUARE_OFFSET
+          - Earth.ROUND_OFFSET_LONG,
         6,
       ),
     },
     {
       latitude: MathUtils.roundToDecimals(topLeft.latitude + gridDistance / Earth.SQUARE_OFFSET, 6),
       longitude: MathUtils.roundToDecimals(
-        botRight.longitude +
-          gridDistanceAtLatitude(botRight.latitude, gridDistance) / Earth.SQUARE_OFFSET,
+        botRight.longitude
+          + gridDistanceAtLatitude(botRight.latitude, gridDistance) / Earth.SQUARE_OFFSET,
         6,
       ),
     },
@@ -39,8 +39,8 @@ export function getRectangleCoordinates(topLeft, botRight, gridDistance = Earth.
         6,
       ),
       longitude: MathUtils.roundToDecimals(
-        botRight.longitude +
-          gridDistanceAtLatitude(botRight.latitude, gridDistance) / Earth.SQUARE_OFFSET,
+        botRight.longitude
+          + gridDistanceAtLatitude(botRight.latitude, gridDistance) / Earth.SQUARE_OFFSET,
         6,
       ),
     },
@@ -50,9 +50,9 @@ export function getRectangleCoordinates(topLeft, botRight, gridDistance = Earth.
         6,
       ),
       longitude: MathUtils.roundToDecimals(
-        topLeft.longitude -
-          gridDistanceAtLatitude(topLeft.latitude, gridDistance) / Earth.SQUARE_OFFSET -
-          Earth.ROUND_OFFSET_LONG,
+        topLeft.longitude
+          - gridDistanceAtLatitude(topLeft.latitude, gridDistance) / Earth.SQUARE_OFFSET
+          - Earth.ROUND_OFFSET_LONG,
         6,
       ),
     },
@@ -66,11 +66,10 @@ export function getSquareCoordinates(location, gridDistance = Earth.GRID_DISTANC
 export function getSliceCoordinates(coordinates, gridDistance = Earth.GRID_DISTANCE) {
   const slices = [];
   const array = MathUtils.gridToArray(coordinates);
-  const resizedLocations = MathUtils.removeDuplicateLocations(array.map(x =>
-    new Coordinate(
-      Coordinate.getRoundedLatitude(x.latitude, gridDistance),
-      Coordinate.getRoundedLongitude(x.longitude, x.latitude, gridDistance),
-    )));
+  const resizedLocations = MathUtils.removeDuplicateLocations(array.map(x => new Coordinate(
+    Coordinate.getRoundedLatitude(x.latitude, gridDistance),
+    Coordinate.getRoundedLongitude(x.longitude, x.latitude, gridDistance),
+  )));
   const locations = MathUtils.arrayToGrid(resizedLocations);
 
   for (let i = 0; i < locations.length; i++) {
@@ -83,8 +82,8 @@ export function getSliceCoordinates(coordinates, gridDistance = Earth.GRID_DISTA
 
       if (next) {
         if (
-          next.longitude - current.longitude <
-          gridDistanceAtLatitude(current.latitude, gridDistance) + Earth.SLICE_OFFSET
+          next.longitude - current.longitude
+          < gridDistanceAtLatitude(current.latitude, gridDistance) + Earth.SLICE_OFFSET
         ) {
           last = next;
         } else {
@@ -129,16 +128,15 @@ export function isPointInPolygon(coordinate, polygon) {
 
   for (let i = 0; i < polygon.length - 1; i++) {
     if (
-      (polygon[i].latitude <= coordinate.latitude &&
-        polygon[i + 1].latitude > coordinate.latitude) ||
-      (polygon[i].latitude > coordinate.latitude && polygon[i + 1].latitude <= coordinate.latitude)
+      (polygon[i].latitude <= coordinate.latitude
+        && polygon[i + 1].latitude > coordinate.latitude)
+      || (polygon[i].latitude > coordinate.latitude && polygon[i + 1].latitude <= coordinate.latitude)
     ) {
-      const intersect =
-        (coordinate.latitude - polygon[i].latitude) /
-        (polygon[i + 1].latitude - polygon[i].latitude);
+      const intersect = (coordinate.latitude - polygon[i].latitude)
+        / (polygon[i + 1].latitude - polygon[i].latitude);
       if (
-        coordinate.longitude <
-        polygon[i].longitude + intersect * (polygon[i + 1].longitude - polygon[i].longitude)
+        coordinate.longitude
+        < polygon[i].longitude + intersect * (polygon[i + 1].longitude - polygon[i].longitude)
       ) {
         crossings++;
       }
@@ -175,7 +173,7 @@ export function isLongitudeInRegion(longitude, region, factor = 1) {
 
 export function isCoordinateInRegion(coordinate, region, factor = 1) {
   return (
-    isLatitudeInRegion(coordinate.latitude, region, factor) &&
-    isLongitudeInRegion(coordinate.longitude, region, factor)
+    isLatitudeInRegion(coordinate.latitude, region, factor)
+    && isLongitudeInRegion(coordinate.longitude, region, factor)
   );
 }

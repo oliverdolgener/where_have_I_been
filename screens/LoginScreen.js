@@ -133,6 +133,7 @@ class LoginScreen extends React.Component {
 
   render() {
     const { emailError, passwordError } = this.props;
+    const { email, password } = this.state;
 
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -146,7 +147,7 @@ class LoginScreen extends React.Component {
           autoCapitalize="none"
           onEndEditing={this.validateEmail}
           onChangeText={text => this.onChangeEmail(text)}
-          value={this.state.email}
+          value={email}
           selectionColor={Colors.accent}
           underlineColorAndroid={Colors.accent}
           returnKeyType="next"
@@ -162,7 +163,7 @@ class LoginScreen extends React.Component {
           autoCapitalize="none"
           secureTextEntry
           onChangeText={text => this.onChangePassword(text)}
-          value={this.state.password}
+          value={password}
           selectionColor={Colors.accent}
           underlineColorAndroid={Colors.accent}
           returnKeyType="send"
