@@ -15,15 +15,14 @@
     "eslint-plugin-react-native": "^3.3.0",
     "jest-expo": "^30.0.0",
     "prettier-eslint": "^8.7.0",
-    "react-native-scripts": "1.14.0",
     "react-test-renderer": "16.3.1"
   },
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "main": "./node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "react-native-scripts start",
-    "eject": "react-native-scripts eject",
-    "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios",
+    "start": "expo start",
+    "eject": "expo eject",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
     "test": "jest"
   },
   "jest": {
