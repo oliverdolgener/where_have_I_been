@@ -105,8 +105,8 @@ class Map extends Component {
       const unsaved = [...tilesToSave, location];
       const locations = MathUtils.gridToArray(visitedLocations);
       const visited = [...locations, location];
-      setTilesToSave(unsaved);
       setLocations(visited);
+      setTilesToSave(unsaved);
 
       if (!isSaving) {
         saveTiles(userId, unsaved);
