@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   StyleSheet,
   TextInput,
@@ -41,6 +42,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     height: 50,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.accent,
@@ -56,6 +58,10 @@ const styles = StyleSheet.create({
   },
   signUpButtonText: {
     color: Colors.accent,
+  },
+  indicator: {
+    position: 'absolute',
+    right: 20,
   },
 });
 
@@ -78,7 +84,7 @@ class LoginScreen extends React.Component {
 
   onLoginPress = () => {
     const { email, password } = this.state;
-    const { login } = this.props;
+    const { login, isLoggingIn } = this.props;
 
     if (!this.validateEmail()) {
       return;
@@ -88,7 +94,9 @@ class LoginScreen extends React.Component {
       return;
     }
 
-    login(email, password);
+    if (!isLoggingIn) {
+      login(email, password);
+    }
   };
 
   onSignUpPress = () => {
@@ -132,7 +140,7 @@ class LoginScreen extends React.Component {
   };
 
   render() {
-    const { emailError, passwordError } = this.props;
+    const { emailError, passwordError, isLoggingIn } = this.props;
     const { email, password } = this.state;
 
     return (
@@ -171,7 +179,8 @@ class LoginScreen extends React.Component {
         />
         <Text style={styles.error}>{passwordError}</Text>
         <TouchableOpacity style={styles.loginButton} onPress={this.onLoginPress}>
-          <Text style={styles.loginButtonText}>Login</Text>
+          <Text style={styles.loginButtonText}>{isLoggingIn ? 'Logging in...' : 'Login'}</Text>
+          {isLoggingIn && <ActivityIndicator style={styles.indicator} color={Colors.white} />}
         </TouchableOpacity>
         <TouchableOpacity style={styles.signUpButton} onPress={this.onSignUpPress}>
           <Text style={styles.signUpButtonText}>Sign Up</Text>
@@ -182,6 +191,7 @@ class LoginScreen extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  isLoggingIn: state.user.get('isLoggingIn'),
   emailError: state.user.get('emailError'),
   passwordError: state.user.get('passwordError'),
 });

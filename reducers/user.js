@@ -149,7 +149,7 @@ const initialState = Map({
   friends: [],
   region: {
     latitude: 52.558,
-    longitude: 13.206504,
+    longitude: 13.206497,
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
   },
@@ -161,8 +161,9 @@ const initialState = Map({
   mapType: 'hybrid',
   tilesToSave: [],
   theme: 'light',
-  lastTile: new Coordinate(52.558, 13.206504),
+  lastTile: new Coordinate(52.558, 13.206497),
   isSaving: false,
+  isLoggingIn: false,
   powerSaver: 'off',
 });
 
@@ -171,6 +172,7 @@ export default (state = initialState, action = {}) => {
   switch (type) {
     case types.LOGIN:
       return handle(state, action, {
+        start: prevState => prevState.set('isLoggingIn', true),
         success: (prevState) => {
           const visitedLocations = prepareLocations(payload.data.locations);
           const holes = prepareHoles(visitedLocations, state.get('region'));
@@ -183,6 +185,7 @@ export default (state = initialState, action = {}) => {
             .set('passwordError', '');
         },
         failure: prevState => prevState.set('emailError', '').set('passwordError', 'Wrong Email or Password'),
+        finish: prevState => prevState.set('isLoggingIn', false),
       });
     case types.LOGOUT:
       removeUserAsync();
@@ -238,9 +241,7 @@ export default (state = initialState, action = {}) => {
             username: x.username,
             level: LevelUtils.getLevelFromExp(x.locations),
           }));
-          return prevState
-            .set('friends', friends)
-            .set('friendError', '');
+          return prevState.set('friends', friends).set('friendError', '');
         },
       });
     case types.GET_FRIEND:
@@ -303,7 +304,9 @@ export default (state = initialState, action = {}) => {
         success: (prevState) => {
           const savedLocations = action.payload.data;
           const tilesToSave = state.get('tilesToSave');
-          const difference = tilesToSave.filter(x => !savedLocations.find(y => Coordinate.isEqual(y, x)));
+          const difference = tilesToSave.filter(
+            x => !savedLocations.find(y => Coordinate.isEqual(y, x)),
+          );
           setTilesToSaveAsync(difference);
           return prevState.set('tilesToSave', difference);
         },

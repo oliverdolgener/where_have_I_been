@@ -247,7 +247,7 @@ class DrawerMenu extends React.Component {
                 source={showFriendlist ? iconCollapse : iconExpand}
               />
             </TouchableOpacity>
-            <Collapsible collapsed={!showFriendlist} collapsedHeight={0}>
+            <Collapsible collapsed={!showFriendlist}>
               <FlatList
                 data={friends}
                 keyExtractor={item => item.id}
@@ -270,7 +270,7 @@ class DrawerMenu extends React.Component {
                       <ThemedIcon style={styles.menuIcon} source={iconAdd} />
                     </TouchableOpacity>
                   </View>
-)}
+                )}
               />
             </Collapsible>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountries()}>
@@ -281,7 +281,7 @@ class DrawerMenu extends React.Component {
                 source={showCountries ? iconCollapse : iconExpand}
               />
             </TouchableOpacity>
-            <Collapsible collapsed={!showCountries} collapsedHeight={0}>
+            <Collapsible collapsed={!showCountries}>
               <FlatList
                 data={testCountries}
                 keyExtractor={item => item.id.toString()}

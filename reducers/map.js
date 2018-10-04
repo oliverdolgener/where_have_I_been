@@ -16,7 +16,7 @@ const initialState = Map({
   geolocation: {
     location: {
       latitude: 52.558,
-      longitude: 13.206504,
+      longitude: 13.206497,
     },
   },
   geocode: {},
