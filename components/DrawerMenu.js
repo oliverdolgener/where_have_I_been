@@ -40,9 +40,10 @@ const styles = StyleSheet.create({
     height: 30,
   },
   menuLabel: {
+    height: 30,
     flex: 1,
     marginLeft: 20,
-    fontSize: 24,
+    fontSize: 20,
   },
   menuBadge: {
     padding: 3,
@@ -50,6 +51,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     textAlign: 'center',
+  },
+  addFriend: {
+    height: 40,
+    flex: 1,
+    marginLeft: 20,
+    fontSize: 20,
   },
 });
 
@@ -81,7 +88,12 @@ class DrawerMenu extends React.Component {
   onAddFriend() {
     const { userId, addFriend } = this.props;
     const { friendName } = this.state;
-    addFriend(userId, friendName);
+    if (friendName) {
+      addFriend(userId, friendName);
+      this.setState({
+        friendName: '',
+      });
+    }
   }
 
   onChangeFriendName(friendName) {
@@ -242,13 +254,15 @@ class DrawerMenu extends React.Component {
                 ListHeaderComponent={
                   <View style={styles.menuItem} >
                     <ThemedTextInput
-                      style={styles.menuLabel}
+                      style={styles.addFriend}
                       placeholder="Add Friend"
                       onChangeText={text => this.onChangeFriendName(text)}
                       value={this.state.friendName}
                       onSubmitEditing={() => this.onAddFriend()}
                     />
-                    <ThemedIcon style={styles.menuIcon} source={iconAdd} />
+                    <TouchableOpacity onPress={() => this.onAddFriend()} >
+                      <ThemedIcon style={styles.menuIcon} source={iconAdd} />
+                    </TouchableOpacity>
                   </View>
                 }
               />

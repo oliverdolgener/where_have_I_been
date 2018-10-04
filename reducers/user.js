@@ -103,9 +103,9 @@ export const actions = {
     type: types.GET_FRIENDS,
     promise: getFriends(userId),
   }),
-  addFriend: friendName => ({
+  addFriend: (userId, friendName) => ({
     type: types.ADD_FRIEND,
-    promise: addFriend(friendName),
+    promise: addFriend(userId, friendName),
   }),
   getFriend: friendId => ({
     type: types.GET_FRIEND,
@@ -233,7 +233,16 @@ export default (state = initialState, action = {}) => {
     case types.ADD_FRIEND:
       return handle(state, action, {
         failure: prevState => prevState.set('friendError', 'User not found'),
-        success: prevState => prevState.set('friendError', ''),
+        success: (prevState) => {
+          const friends = payload.data.map(x => ({
+            id: x.id.toString(),
+            username: x.username,
+            level: LevelUtils.getLevelFromExp(x.locations),
+          }));
+          return prevState
+            .set('friends', friends)
+            .set('friendError', '');
+        },
       });
     case types.GET_FRIEND:
       return handle(state, action, {
