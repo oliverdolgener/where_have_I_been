@@ -23,6 +23,7 @@ const ThemedText = (props) => {
       placeholderTextColor={placeholderColor}
       returnKeyType="send"
       onSubmitEditing={() => onSubmitEditing()}
+      autoCorrect={false}
     />
   );
 };

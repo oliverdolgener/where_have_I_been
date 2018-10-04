@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  StyleSheet, Animated, ScrollView, View, TouchableOpacity, FlatList, Switch,
+  StyleSheet, Animated, ScrollView, View, TouchableOpacity, Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -248,30 +248,28 @@ class DrawerMenu extends React.Component {
               />
             </TouchableOpacity>
             <Collapsible collapsed={!showFriendlist}>
-              <FlatList
-                data={friends}
-                keyExtractor={item => item.id}
-                renderItem={({ item }) => (
-                  <TouchableOpacity style={styles.menuItem} onPress={() => this.showFriend(item.id)}>
-                    <ThemedText style={styles.menuLabel}>{item.username}</ThemedText>
-                    <ThemedText style={styles.menuBadge}>{item.level}</ThemedText>
-                  </TouchableOpacity>
-                )}
-                ListHeaderComponent={(
-                  <View style={styles.menuItem}>
-                    <ThemedTextInput
-                      style={styles.addFriend}
-                      placeholder="Add Friend"
-                      onChangeText={text => this.onChangeFriendName(text)}
-                      value={friendName}
-                      onSubmitEditing={() => this.onAddFriend()}
-                    />
-                    <TouchableOpacity onPress={() => this.onAddFriend()}>
-                      <ThemedIcon style={styles.menuIcon} source={iconAdd} />
-                    </TouchableOpacity>
-                  </View>
-                )}
-              />
+              <View style={styles.menuItem}>
+                <ThemedTextInput
+                  style={styles.addFriend}
+                  placeholder="Add Friend"
+                  onChangeText={text => this.onChangeFriendName(text)}
+                  value={friendName}
+                  onSubmitEditing={() => this.onAddFriend()}
+                />
+                <TouchableOpacity onPress={() => this.onAddFriend()}>
+                  <ThemedIcon style={styles.menuIcon} source={iconAdd} />
+                </TouchableOpacity>
+              </View>
+              {friends.map(x => (
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  key={x.id}
+                  onPress={() => this.showFriend(x.id)}
+                >
+                  <ThemedText style={styles.menuLabel}>{x.username}</ThemedText>
+                  <ThemedText style={styles.menuBadge}>{x.level}</ThemedText>
+                </TouchableOpacity>
+              ))}
             </Collapsible>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountries()}>
               <ThemedIcon style={styles.menuIcon} source={iconWorld} />
@@ -282,15 +280,15 @@ class DrawerMenu extends React.Component {
               />
             </TouchableOpacity>
             <Collapsible collapsed={!showCountries}>
-              <FlatList
-                data={testCountries}
-                keyExtractor={item => item.id.toString()}
-                renderItem={({ item }) => (
-                  <TouchableOpacity style={styles.menuItem}>
-                    <ThemedText style={styles.menuLabel}>{item.name}</ThemedText>
-                  </TouchableOpacity>
-                )}
-              />
+              {testCountries.map(x => (
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  key={x.id}
+                  onPress={() => this.showFriend(x.id)}
+                >
+                  <ThemedText style={styles.menuLabel}>{x.name}</ThemedText>
+                </TouchableOpacity>
+              ))}
             </Collapsible>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.syncData()}>
               <Animated.View style={{ transform: [{ rotate: spin }] }}>

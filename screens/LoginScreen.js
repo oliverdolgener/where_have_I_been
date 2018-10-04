@@ -160,6 +160,7 @@ class LoginScreen extends React.Component {
           underlineColorAndroid={Colors.accent}
           returnKeyType="next"
           onSubmitEditing={() => this.passwordInput.focus()}
+          autoCorrect={false}
         />
         <Text style={styles.error}>{emailError}</Text>
         <TextInput
@@ -176,6 +177,7 @@ class LoginScreen extends React.Component {
           underlineColorAndroid={Colors.accent}
           returnKeyType="send"
           onSubmitEditing={() => this.onLoginPress()}
+          autoCorrect={false}
         />
         <Text style={styles.error}>{passwordError}</Text>
         <TouchableOpacity style={styles.loginButton} onPress={this.onLoginPress}>
