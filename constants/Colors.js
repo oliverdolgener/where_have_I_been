@@ -1,6 +1,6 @@
 export const white = '#FFFFFF';
 export const black = '#000000';
-export const red = '#FF0000';
+export const red = '#CC0000';
 export const accent = '#1985A1';
 
 export const black50 = 'rgba(0, 0, 0, 0.5)';

@@ -14,7 +14,9 @@ const headers = {
 
 const fetchJson = (url, options) => fetch(url, options).then(response => response
   .json()
-  .then(json => (response.ok ? { headers: response.headers, data: json } : Promise.reject(json))));
+  .then(
+    json => (response.ok ? { headers: response.headers, data: json } : Promise.reject(json)),
+  ));
 
 export const getUser = (userId) => {
   const url = new URI(API_URL);
@@ -80,6 +82,20 @@ export const addFriend = (userId, friendName) => {
   });
   const options = {
     method: 'POST',
+    headers,
+    body,
+  };
+  return fetchJson(url.href(), options);
+};
+
+export const removeFriend = (userId, friendId) => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_FRIEND).segment(userId.toString());
+  const body = JSON.stringify({
+    friendId,
+  });
+  const options = {
+    method: 'DELETE',
     headers,
     body,
   };

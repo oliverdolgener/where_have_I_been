@@ -8,7 +8,13 @@ import * as MathUtils from '../utils/MathUtils';
 import * as EarthUtils from '../utils/EarthUtils';
 import * as LevelUtils from '../utils/LevelUtils';
 import {
-  getUser, login, signup, saveTiles, getFriends, addFriend,
+  getUser,
+  login,
+  signup,
+  saveTiles,
+  getFriends,
+  addFriend,
+  removeFriend,
 } from '../services/api';
 import { navigator } from '../App';
 
@@ -19,6 +25,7 @@ export const types = {
   GET_USER: 'USER/GET_USER',
   GET_FRIENDS: 'USER/GET_FRIENDS',
   ADD_FRIEND: 'USER/ADD_FRIEND',
+  REMOVE_FRIEND: 'USER/REMOVE_FRIEND',
   GET_FRIEND: 'USER/GET_FRIEND',
   RESET_FRIEND: 'USER/RESET_FRIEND',
   RELOG_USER: 'USER/RELOG_USER',
@@ -107,6 +114,10 @@ export const actions = {
   addFriend: (userId, friendName) => ({
     type: types.ADD_FRIEND,
     promise: addFriend(userId, friendName),
+  }),
+  removeFriend: (userId, friendId) => ({
+    type: types.REMOVE_FRIEND,
+    promise: removeFriend(userId, friendId),
   }),
   getFriend: friendId => ({
     type: types.GET_FRIEND,
@@ -241,6 +252,17 @@ export default (state = initialState, action = {}) => {
             level: LevelUtils.getLevelFromExp(x.locations),
           }));
           return prevState.set('friends', friends).set('friendError', '');
+        },
+      });
+    case types.REMOVE_FRIEND:
+      return handle(state, action, {
+        success: (prevState) => {
+          const friends = payload.data.map(x => ({
+            id: x.id.toString(),
+            username: x.username,
+            level: LevelUtils.getLevelFromExp(x.locations),
+          }));
+          return prevState.set('friends', friends);
         },
       });
     case types.GET_FRIEND:

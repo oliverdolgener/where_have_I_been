@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  StyleSheet, Animated, ScrollView, View, TouchableOpacity, Switch,
+  StyleSheet, Animated, ScrollView, View, Image, TouchableOpacity, Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -23,6 +23,7 @@ import iconNight from '../assets/iconNight.png';
 import iconLogout from '../assets/iconLogout.png';
 import iconPowerSaver from '../assets/iconPowerSaver.png';
 import iconAdd from '../assets/iconAdd.png';
+import iconRemove from '../assets/iconRemove.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -96,6 +97,11 @@ class DrawerMenu extends React.Component {
         friendName: '',
       });
     }
+  }
+
+  onRemoveFriend(friendId) {
+    const { userId, removeFriend } = this.props;
+    removeFriend(userId, friendId);
   }
 
   onChangeFriendName(friendName) {
@@ -277,6 +283,9 @@ class DrawerMenu extends React.Component {
                 >
                   <ThemedText style={styles.menuLabel}>{x.username}</ThemedText>
                   <ThemedText style={styles.menuBadge}>{x.level}</ThemedText>
+                  <TouchableOpacity onPress={() => this.onRemoveFriend(x.id)}>
+                    <Image style={[styles.menuIcon, { tintColor: Colors.red }]} source={iconRemove} />
+                  </TouchableOpacity>
                 </TouchableOpacity>
               ))}
             </Collapsible>
@@ -341,6 +350,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   getFriends: userActions.getFriends,
   addFriend: userActions.addFriend,
+  removeFriend: userActions.removeFriend,
   getFriend: userActions.getFriend,
   logout: userActions.logout,
   setMapType: userActions.setMapType,
