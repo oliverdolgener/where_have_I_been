@@ -311,6 +311,9 @@ export default (state = initialState, action = {}) => {
         ? state.get('friendLocations')
         : state.get('visitedLocations');
       const holes = prepareHoles(locations, action.region);
+      if (JSON.stringify(holes) === JSON.stringify(state.get('holes'))) {
+        return state.set('region', action.region);
+      }
       return state.set('region', action.region).set('holes', holes);
     }
     case types.SET_MAPTYPE:
