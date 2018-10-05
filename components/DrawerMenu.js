@@ -104,21 +104,30 @@ class DrawerMenu extends React.Component {
     });
   }
 
-  toggleTheme = () => {
-    const { theme, setTheme, navigation } = this.props;
+  closeDrawer = () => {
+    const { navigation } = this.props;
     navigation.closeDrawer();
+    this.setState({
+      showFriendlist: false,
+      showCountries: false,
+    });
+  }
+
+  toggleTheme = () => {
+    const { theme, setTheme } = this.props;
+    this.closeDrawer();
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   togglePowerSaver = () => {
-    const { powerSaver, setPowerSaver, navigation } = this.props;
-    navigation.closeDrawer();
+    const { powerSaver, setPowerSaver } = this.props;
+    this.closeDrawer();
     setPowerSaver(powerSaver === 'on' ? 'off' : 'on');
   };
 
   toggleMapType = () => {
-    const { navigation, mapType, setMapType } = this.props;
-    navigation.closeDrawer();
+    const { mapType, setMapType } = this.props;
+    this.closeDrawer();
     switch (mapType) {
       case 'hybrid':
         setMapType('standard');
@@ -152,8 +161,8 @@ class DrawerMenu extends React.Component {
   };
 
   logout = async () => {
-    const { logout, navigation } = this.props;
-    navigation.closeDrawer();
+    const { logout } = this.props;
+    this.closeDrawer();
     logout();
   };
 
@@ -185,8 +194,8 @@ class DrawerMenu extends React.Component {
   }
 
   showFriend(id) {
-    const { getFriend, navigation } = this.props;
-    navigation.closeDrawer();
+    const { getFriend } = this.props;
+    this.closeDrawer();
     getFriend(id);
   }
 
