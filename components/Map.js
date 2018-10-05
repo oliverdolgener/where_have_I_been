@@ -103,8 +103,8 @@ class Map extends Component {
 
     if (!MathUtils.isLocationInGrid(location, visitedLocations)) {
       const unsaved = [...tilesToSave, location];
-      const locations = MathUtils.gridToArray(visitedLocations);
-      const visited = [...locations, location];
+      const locations = MathUtils.insertIntoGrid(visitedLocations, location);
+      const visited = MathUtils.gridToArray(locations);
       setLocations(visited);
       setTilesToSave(unsaved);
 

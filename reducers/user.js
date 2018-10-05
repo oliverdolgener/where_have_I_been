@@ -63,8 +63,6 @@ const setPowerSaverAsync = async (powerSaver) => {
 };
 
 const prepareLocations = (locations) => {
-  // const visitedLocations = locations.map(x => new Coordinate(x.latitude, x.longitude, x.timestamp));
-  // const uniques = MathUtils.removeDuplicateLocations(locations);
   const grid = MathUtils.arrayToGrid(locations);
   return grid;
 };
@@ -72,7 +70,8 @@ const prepareLocations = (locations) => {
 const prepareHoles = (locations, region) => {
   const visibleLocations = MathUtils.filterVisibleLocations(locations, region);
   const gridDistance = EarthUtils.getGridDistanceByRegion(region);
-  return EarthUtils.getSliceCoordinates(visibleLocations, gridDistance);
+  const slices = EarthUtils.getSliceCoordinates(visibleLocations, gridDistance);
+  return slices;
 };
 
 export const actions = {

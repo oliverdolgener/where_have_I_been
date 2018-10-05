@@ -133,8 +133,6 @@ export function arrayToGrid(array) {
     return [];
   }
 
-  array.sort(SortUtils.byLatitudeDesc);
-
   const grid = [];
 
   let row = {
@@ -195,4 +193,34 @@ export function filterVisibleLocations(locations, region) {
   });
 
   return visibleLocations;
+}
+
+export function insertIntoGrid(grid, location) {
+  for (let i = 0; i < grid.length; i++) {
+    if (grid[i].latitude === location.latitude) {
+      const row = grid[i].locations;
+      for (let k = 0; k < row.length; k++) {
+        if (row[k].longitude > location.longitude) {
+          grid[i].locations.splice(k, 0, location);
+          return grid;
+        }
+        grid[i].locations.push(location);
+        return grid;
+      }
+    }
+
+    if (grid[i].latitude > location.latitude) {
+      grid.splice(i, 0, {
+        latitude: location.latitude,
+        locations: [location],
+      });
+      return grid;
+    }
+  }
+
+  grid.push({
+    latitude: location.latitude,
+    locations: [location],
+  });
+  return grid;
 }
