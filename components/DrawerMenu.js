@@ -111,7 +111,7 @@ class DrawerMenu extends React.Component {
       showFriendlist: false,
       showCountries: false,
     });
-  }
+  };
 
   toggleTheme = () => {
     const { theme, setTheme } = this.props;
@@ -176,7 +176,6 @@ class DrawerMenu extends React.Component {
   }
 
   spin() {
-    const { isSaving } = this.props;
     const { spinValue } = this.state;
     this.setState({ isSpinning: true });
     spinValue.setValue(0);
@@ -185,6 +184,7 @@ class DrawerMenu extends React.Component {
       duration: 2000,
       useNativeDriver: true,
     }).start(() => {
+      const { isSaving } = this.props;
       if (isSaving) {
         this.spin();
       } else {
