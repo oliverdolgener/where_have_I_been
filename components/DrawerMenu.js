@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import Collapsible from 'react-native-collapsible';
 
 import { actions as userActions } from '../reducers/user';
+import { actions as mapActions } from '../reducers/map';
 import ThemedText from './ThemedText';
 import ThemedIcon from './ThemedIcon';
 import ThemedTextInput from './ThemedTextInput';
@@ -24,6 +25,7 @@ import iconLogout from '../assets/iconLogout.png';
 import iconPowerSaver from '../assets/iconPowerSaver.png';
 import iconAdd from '../assets/iconAdd.png';
 import iconRemove from '../assets/iconRemove.png';
+import iconOrientation from '../assets/iconOrientation.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -125,6 +127,12 @@ class DrawerMenu extends React.Component {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
+  toggleFollowOrientation = () => {
+    const { followOrientation, setFollowOrientation } = this.props;
+    this.closeDrawer();
+    setFollowOrientation(!followOrientation);
+  };
+
   togglePowerSaver = () => {
     const { powerSaver, setPowerSaver } = this.props;
     this.closeDrawer();
@@ -207,7 +215,7 @@ class DrawerMenu extends React.Component {
 
   render() {
     const {
-      friends, mapType, tilesToSave, theme, powerSaver,
+      friends, mapType, tilesToSave, theme, powerSaver, followOrientation,
     } = this.props;
     const {
       showFriendlist, showCountries, spinValue, friendName,
@@ -253,6 +261,11 @@ class DrawerMenu extends React.Component {
               <ThemedIcon style={styles.menuIcon} source={iconMap} />
               <ThemedText style={styles.menuLabel}>Map Type</ThemedText>
               <ThemedIcon style={styles.menuIcon} source={mapTypeIcon} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleFollowOrientation()}>
+              <ThemedIcon style={styles.menuIcon} source={iconOrientation} />
+              <ThemedText style={styles.menuLabel}>Compass</ThemedText>
+              <Switch value={followOrientation} onValueChange={() => this.toggleFollowOrientation()} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleFriendlist()}>
               <ThemedIcon style={styles.menuIcon} source={iconFriendlist} />
@@ -345,6 +358,7 @@ const mapStateToProps = state => ({
   isSaving: state.user.get('isSaving'),
   powerSaver: state.user.get('powerSaver'),
   friendError: state.user.get('friendError'),
+  followOrientation: state.map.get('followOrientation'),
 });
 
 const mapDispatchToProps = {
@@ -357,6 +371,7 @@ const mapDispatchToProps = {
   saveTiles: userActions.saveTiles,
   setTheme: userActions.setTheme,
   setPowerSaver: userActions.setPowerSaver,
+  setFollowOrientation: mapActions.setFollowOrientation,
 };
 
 export default connect(

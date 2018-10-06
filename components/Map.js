@@ -123,6 +123,15 @@ class Map extends Component {
     this.moveToLocation(geolocation.location);
   }
 
+  rotateToOrientation(angle) {
+    this.map && this.map.animateToBearing(angle, 500);
+  }
+
+  rotateToCurrentOrientation() {
+    const { orientation } = this.props;
+    this.rotateToOrientation(orientation);
+  }
+
   render() {
     const {
       isLoggedIn, mapType, holes, theme, lastTile, setFollowLocation,
@@ -200,6 +209,7 @@ const mapStateToProps = state => ({
   isSaving: state.user.get('isSaving'),
   followLocation: state.map.get('followLocation'),
   geolocation: state.map.get('geolocation'),
+  orientation: state.map.get('orientation'),
 });
 
 const mapDispatchToProps = {

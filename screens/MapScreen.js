@@ -110,19 +110,25 @@ class MapScreen extends Component {
   }
 
   handleMotionEvent(result) {
-    const { powerSaver } = this.props;
+    const { powerSaver, setOrientation, followOrientation } = this.props;
     if (powerSaver === 'off') {
       return;
     }
 
-    if (result.rotation && result.rotation.beta < -1) {
-      this.setState({
-        showBatterySaver: true,
-      });
-    } else if (result.rotation && result.rotation.beta > 1) {
-      this.setState({
-        showBatterySaver: false,
-      });
+    if (result.rotation) {
+      const angle = MathUtils.toDegrees(-result.rotation.alpha);
+      setOrientation(angle);
+      followOrientation ? this.map.rotateToOrientation(angle) : this.map.rotateToOrientation(0);
+
+      if (result.rotation.beta < -1) {
+        this.setState({
+          showBatterySaver: true,
+        });
+      } else if (result.rotation.beta > 1) {
+        this.setState({
+          showBatterySaver: false,
+        });
+      }
     }
   }
 
@@ -213,11 +219,13 @@ const mapStateToProps = state => ({
   geolocation: state.map.get('geolocation'),
   geocode: state.map.get('geocode'),
   followLocation: state.map.get('followLocation'),
+  followOrientation: state.map.get('followOrientation'),
 });
 
 const mapDispatchToProps = {
   resetFriend: userActions.resetFriend,
   setFollowLocation: mapActions.setFollowLocation,
+  setOrientation: mapActions.setOrientation,
 };
 
 export default connect(
