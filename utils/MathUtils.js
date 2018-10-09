@@ -174,14 +174,14 @@ export function gridToArray(locations) {
 export function filterVisibleLocations(locations, region) {
   const visibleLocations = [];
   locations.forEach((x) => {
-    if (EarthUtils.isLatitudeInRegion(x.latitude, region, 2)) {
+    if (EarthUtils.isLatitudeInRegion(x.latitude, region, 3)) {
       const row = {
         latitude: x.latitude,
         locations: [],
       };
 
       x.locations.forEach((y) => {
-        if (EarthUtils.isLongitudeInRegion(y.longitude, region, 2)) {
+        if (EarthUtils.isLongitudeInRegion(y.longitude, region, 3)) {
           row.locations.push(y);
         }
       });
