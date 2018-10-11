@@ -39,6 +39,7 @@ export const types = {
   SET_THEME: 'USER/SET_THEME',
   SET_POWER_SAVER: 'USER/SET_POWER_SAVER',
   SET_LAST_TILE: 'USER/SET_LAST_TILE',
+  SET_PUSH_TOKEN: 'USER/SET_PUSH_TOKEN',
 };
 
 const setUserAsync = async (id) => {
@@ -82,9 +83,9 @@ const prepareHoles = (locations, region) => {
 };
 
 export const actions = {
-  login: (email, password) => ({
+  login: (email, password, pushToken) => ({
     type: types.LOGIN,
-    promise: login(email, password),
+    promise: login(email, password, pushToken),
     meta: {
       onSuccess: (result) => {
         setUserAsync(result.data.id);
@@ -93,9 +94,9 @@ export const actions = {
     },
   }),
   logout: () => ({ type: types.LOGOUT }),
-  signup: (email, password) => ({
+  signup: (email, password, pushToken) => ({
     type: types.SIGNUP,
-    promise: signup(email, password),
+    promise: signup(email, password, pushToken),
     meta: {
       onSuccess: (result) => {
         setUserAsync(result.data.id);
@@ -150,6 +151,7 @@ export const actions = {
   setTheme: theme => ({ type: types.SET_THEME, theme }),
   setPowerSaver: powerSaver => ({ type: types.SET_POWER_SAVER, powerSaver }),
   setLastTile: lastTile => ({ type: types.SET_LAST_TILE, lastTile }),
+  setPushToken: pushToken => ({ type: types.SET_PUSH_TOKEN, pushToken }),
 };
 
 const initialState = Map({
@@ -175,6 +177,7 @@ const initialState = Map({
   isSaving: false,
   isLoggingIn: false,
   powerSaver: 'off',
+  pushToken: false,
 });
 
 export default (state = initialState, action = {}) => {
@@ -345,6 +348,9 @@ export default (state = initialState, action = {}) => {
     case types.SET_LAST_TILE: {
       setLastTileAsync(action.lastTile);
       return state.set('lastTile', action.lastTile);
+    }
+    case types.SET_PUSH_TOKEN: {
+      return state.set('pushToken', action.pushToken);
     }
     default:
       return state;

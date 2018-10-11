@@ -24,12 +24,13 @@ export const getUser = (userId) => {
   return fetchJson(url.href());
 };
 
-export const login = (email, password) => {
+export const login = (email, password, pushToken) => {
   const url = new URI(API_URL);
   url.segment(ENDPOINT_LOGIN);
   const body = JSON.stringify({
     email,
     password,
+    pushToken,
   });
   const options = {
     method: 'POST',
@@ -39,12 +40,13 @@ export const login = (email, password) => {
   return fetchJson(url.href(), options);
 };
 
-export const signup = (email, password) => {
+export const signup = (email, password, pushToken) => {
   const url = new URI(API_URL);
   url.segment(ENDPOINT_USER);
   const body = JSON.stringify({
     email,
     password,
+    pushToken,
   });
   const options = {
     method: 'POST',

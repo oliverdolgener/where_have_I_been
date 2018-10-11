@@ -3,6 +3,7 @@ import {
   AsyncStorage, View, StyleSheet, Text,
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Permissions, Notifications } from 'expo';
 
 import { actions as userActions } from '../reducers/user';
 import * as Colors from '../constants/Colors';
@@ -26,7 +27,15 @@ const styles = StyleSheet.create({
 
 class SplashScreen extends React.Component {
   componentWillMount() {
+    this.registerForPushAsync();
     this.getUserAsync();
+  }
+
+  registerForPushAsync = async () => {
+    const { setPushToken } = this.props;
+    await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    const token = await Notifications.getExpoPushTokenAsync();
+    setPushToken(token);
   }
 
   getUserAsync = async () => {
@@ -90,6 +99,7 @@ const mapDispatchToProps = {
   setLastTile: userActions.setLastTile,
   setTheme: userActions.setTheme,
   setPowerSaver: userActions.setPowerSaver,
+  setPushToken: userActions.setPushToken,
 };
 
 export default connect(
