@@ -33,7 +33,7 @@ class SplashScreen extends React.Component {
 
   registerForPushAsync = async () => {
     const { setPushToken } = this.props;
-    await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    await Permissions.askAsync(Permissions.NOTIFICATIONS);
     const token = await Notifications.getExpoPushTokenAsync();
     setPushToken(token);
   }
