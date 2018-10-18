@@ -2,6 +2,7 @@ import { Map } from 'immutable';
 import { handle } from 'redux-pack';
 
 import { getCountries } from '../services/api';
+import * as EarthUtils from '../utils/EarthUtils';
 
 export const types = {
   SET_MAP: 'MAP/SET_MAP',
@@ -52,12 +53,10 @@ export default (state = initialState, action = {}) => {
           const countries = payload.data.map(x => ({
             id: x.id.toString(),
             name: x.name,
-            region: {
-              latitude: x.latitude,
-              longitude: x.longitude,
-              latitudeDelta: x.latitude_delta,
-              longitudeDelta: x.longitude_delta,
-            },
+            region: EarthUtils.coordinatesToRegion([
+              { latitude: x.lat_min, longitude: x.long_min },
+              { latitude: x.lat_max, longitude: x.long_max },
+            ]),
           }));
           return prevState.set('countries', countries);
         },
