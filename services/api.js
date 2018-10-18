@@ -6,6 +6,7 @@ const ENDPOINT_USER = 'user';
 const ENDPOINT_LOGIN = 'login';
 const ENDPOINT_LOCATION = 'location';
 const ENDPOINT_FRIEND = 'friend';
+const ENDPOINT_COUNTRY = 'country';
 
 const headers = {
   Accept: 'application/json',
@@ -102,4 +103,10 @@ export const removeFriend = (userId, friendId) => {
     body,
   };
   return fetchJson(url.href(), options);
+};
+
+export const getCountries = () => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_COUNTRY);
+  return fetchJson(url.href());
 };

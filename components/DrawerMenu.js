@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import Collapsible from 'react-native-collapsible';
 
 import { actions as userActions } from '../reducers/user';
+import { actions as mapActions } from '../reducers/map';
 import ThemedText from './ThemedText';
 import ThemedIcon from './ThemedIcon';
 import ThemedTextInput from './ThemedTextInput';
@@ -76,8 +77,9 @@ class DrawerMenu extends React.Component {
   }
 
   componentDidMount() {
-    const { userId, getFriends } = this.props;
+    const { userId, getFriends, getCountries } = this.props;
     getFriends(userId);
+    getCountries();
   }
 
   componentDidUpdate() {
@@ -205,9 +207,15 @@ class DrawerMenu extends React.Component {
     getFriend(id);
   }
 
+  showCountry(region) {
+    const { map } = this.props;
+    map && map.moveToRegion(region);
+    this.closeDrawer();
+  }
+
   render() {
     const {
-      friends, mapType, tilesToSave, theme, powerSaver,
+      friends, countries, mapType, tilesToSave, theme, powerSaver,
     } = this.props;
     const {
       showFriendlist, showCountries, spinValue, friendName,
@@ -235,12 +243,6 @@ class DrawerMenu extends React.Component {
         mapTypeIcon = iconSatellite;
         break;
     }
-
-    const testCountries = [
-      { id: 0, name: 'Germany' },
-      { id: 1, name: 'Croatia' },
-      { id: 2, name: 'Czech Republic' },
-    ];
 
     return (
       <SafeAreaView
@@ -298,11 +300,11 @@ class DrawerMenu extends React.Component {
               />
             </TouchableOpacity>
             <Collapsible collapsed={!showCountries}>
-              {testCountries.map(x => (
+              {countries.map(x => (
                 <TouchableOpacity
                   style={styles.menuItem}
                   key={x.id}
-                  onPress={() => this.showFriend(x.id)}
+                  onPress={() => this.showCountry(x.region)}
                 >
                   <ThemedText style={styles.menuLabel}>{x.name}</ThemedText>
                 </TouchableOpacity>
@@ -345,6 +347,8 @@ const mapStateToProps = state => ({
   isSaving: state.user.get('isSaving'),
   powerSaver: state.user.get('powerSaver'),
   friendError: state.user.get('friendError'),
+  map: state.map.get('map'),
+  countries: state.map.get('countries'),
 });
 
 const mapDispatchToProps = {
@@ -357,6 +361,7 @@ const mapDispatchToProps = {
   saveTiles: userActions.saveTiles,
   setTheme: userActions.setTheme,
   setPowerSaver: userActions.setPowerSaver,
+  getCountries: mapActions.getCountries,
 };
 
 export default connect(

@@ -150,11 +150,7 @@ class MapScreen extends Component {
 
     return (
       <View style={styles.container}>
-        <Map
-          onRef={(ref) => {
-            this.map = ref;
-          }}
-        />
+        <Map />
         <TouchableOpacity style={styles.menuButton} onPress={() => navigation.openDrawer()}>
           <Image style={styles.menuImage} source={iconMenu} />
         </TouchableOpacity>
@@ -191,8 +187,9 @@ class MapScreen extends Component {
             <View style={styles.locationButton}>
               <TouchableOpacity
                 onPress={() => {
+                  const { map } = this.props;
+                  map && map.moveToCurrentLocation();
                   setFollowLocation(true);
-                  this.map.moveToCurrentLocation();
                 }}
               >
                 <Image style={styles.locationImage} source={iconLocation} />
@@ -210,6 +207,7 @@ const mapStateToProps = state => ({
   friendId: state.user.get('friendId'),
   visitedLocations: state.user.get('visitedLocations'),
   powerSaver: state.user.get('powerSaver'),
+  map: state.map.get('map'),
   geolocation: state.map.get('geolocation'),
   geocode: state.map.get('geocode'),
   followLocation: state.map.get('followLocation'),

@@ -177,3 +177,24 @@ export function isCoordinateInRegion(coordinate, region, factor = 1) {
     && isLongitudeInRegion(coordinate.longitude, region, factor)
   );
 }
+
+export function coordinatesToRegion(coordinates) {
+  let latMin = coordinates[0].latitude;
+  let latMax = coordinates[0].latitude;
+  let longMin = coordinates[0].longitude;
+  let longMax = coordinates[0].longitude;
+
+  coordinates.forEach((coordinate) => {
+    latMin = Math.min(latMin, coordinate.latitude);
+    latMax = Math.max(latMax, coordinate.latitude);
+    longMin = Math.min(longMin, coordinate.longitude);
+    longMax = Math.max(longMax, coordinate.longitude);
+  });
+
+  return {
+    latitude: (latMin + latMax) / 2,
+    longitude: (longMin + longMax) / 2,
+    latitudeDelta: (latMax - latMin),
+    longitudeDelta: (longMax - longMin),
+  };
+}

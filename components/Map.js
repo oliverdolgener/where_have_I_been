@@ -21,10 +21,9 @@ const styles = {
 
 class Map extends Component {
   componentDidMount() {
-    const { lastTile, onRef } = this.props;
+    const { lastTile } = this.props;
     this.watchPositionAsync();
     this.getGeocodeAsync(lastTile);
-    onRef(this);
   }
 
   onTileChange(tile) {
@@ -123,9 +122,13 @@ class Map extends Component {
     this.moveToLocation(geolocation.location);
   }
 
+  moveToRegion(region) {
+    this.map && this.map.animateToRegion(region, 500);
+  }
+
   render() {
     const {
-      isLoggedIn, mapType, holes, theme, lastTile, setFollowLocation,
+      isLoggedIn, mapType, holes, theme, lastTile, setMap, setFollowLocation,
     } = this.props;
 
     if (!isLoggedIn && this.positionListener) {
@@ -140,6 +143,7 @@ class Map extends Component {
         key={`mapView-${theme}`}
         style={styles.container}
         provider="google"
+        onMapReady={() => setMap(this)}
         initialRegion={{
           latitude: lastTile.latitude,
           longitude: lastTile.longitude,
@@ -208,6 +212,7 @@ const mapDispatchToProps = {
   setTilesToSave: userActions.setTilesToSave,
   saveTiles: userActions.saveTiles,
   setLastTile: userActions.setLastTile,
+  setMap: mapActions.setMap,
   setGeolocation: mapActions.setGeolocation,
   setGeocode: mapActions.setGeocode,
   setFollowLocation: mapActions.setFollowLocation,
