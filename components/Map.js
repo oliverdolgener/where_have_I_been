@@ -150,7 +150,7 @@ class Map extends Component {
           latitudeDelta: 0.005,
           longitudeDelta: 0.005,
         }}
-        mapType={mapType === 'watercolor' ? 'none' : mapType}
+        mapType={mapType}
         customMapStyle={theme === 'dark' ? mapStyleDark : mapStyleLight}
         showsUserLocation
         showsMyLocationButton={false}
@@ -173,12 +173,6 @@ class Map extends Component {
         onRegionChangeComplete={newRegion => this.onRegionChangeComplete(newRegion)}
         onPanDrag={() => setFollowLocation(false)}
       >
-        {mapType === 'watercolor' && (
-          <MapView.UrlTile
-            urlTemplate="http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg"
-            zIndex={-1}
-          />
-        )}
         <MapView.Polygon
           fillColor={Colors.black80}
           strokeWidth={0}

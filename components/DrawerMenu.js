@@ -14,7 +14,6 @@ import ThemedTextInput from './ThemedTextInput';
 import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
 import iconSatellite from '../assets/iconSatellite.png';
-import iconWatercolor from '../assets/iconWatercolor.png';
 import iconFriendlist from '../assets/iconFriendlist.png';
 import iconCollapse from '../assets/iconCollapse.png';
 import iconExpand from '../assets/iconExpand.png';
@@ -141,9 +140,6 @@ class DrawerMenu extends React.Component {
         setMapType('standard');
         break;
       case 'standard':
-        setMapType('watercolor');
-        break;
-      case 'watercolor':
         setMapType('hybrid');
         break;
       default:
@@ -236,9 +232,6 @@ class DrawerMenu extends React.Component {
         break;
       case 'standard':
         mapTypeIcon = iconMap;
-        break;
-      case 'watercolor':
-        mapTypeIcon = iconWatercolor;
         break;
       default:
         mapTypeIcon = iconSatellite;
