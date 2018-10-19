@@ -52,9 +52,11 @@ class Map extends Component {
     }
 
     const location = new Coordinate(coordinate.latitude, coordinate.longitude);
+    const timestamp = (new Date()).getTime();
     const roundedLocation = new Coordinate(
       location.getRoundedLatitude(),
       location.getRoundedLongitude(),
+      timestamp,
     );
 
     if (editType === 'buy') {
