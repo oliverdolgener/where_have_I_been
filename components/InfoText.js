@@ -17,7 +17,6 @@ const styles = {
     width: 20,
     height: 20,
     marginRight: 5,
-    tintColor: Colors.black,
   },
   label: {
     minWidth: 40,

@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.accent,
+    backgroundColor: Colors.blue,
   },
   loginButtonText: {
     color: Colors.white,
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   signUpButtonText: {
-    color: Colors.accent,
+    color: Colors.blue,
   },
   indicator: {
     position: 'absolute',
@@ -156,8 +156,8 @@ class LoginScreen extends React.Component {
           onEndEditing={this.validateEmail}
           onChangeText={text => this.onChangeEmail(text)}
           value={email}
-          selectionColor={Colors.accent}
-          underlineColorAndroid={Colors.accent}
+          selectionColor={Colors.blue}
+          underlineColorAndroid={Colors.blue}
           returnKeyType="next"
           onSubmitEditing={() => this.passwordInput.focus()}
           autoCorrect={false}
@@ -173,8 +173,8 @@ class LoginScreen extends React.Component {
           secureTextEntry
           onChangeText={text => this.onChangePassword(text)}
           value={password}
-          selectionColor={Colors.accent}
-          underlineColorAndroid={Colors.accent}
+          selectionColor={Colors.blue}
+          underlineColorAndroid={Colors.blue}
           returnKeyType="send"
           onSubmitEditing={() => this.onLoginPress()}
           autoCorrect={false}

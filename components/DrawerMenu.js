@@ -6,7 +6,6 @@ import {
   View,
   Image,
   TouchableOpacity,
-  Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -15,13 +14,13 @@ import Collapsible from 'react-native-collapsible';
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import ThemedText from './ThemedText';
-import ThemedIcon from './ThemedIcon';
 import ThemedTextInput from './ThemedTextInput';
 import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
+import iconStreetView from '../assets/iconStreetView.png';
 import iconSatellite from '../assets/iconSatellite.png';
 import iconFriendlist from '../assets/iconFriendlist.png';
-import iconExpand from '../assets/iconExpand.png';
+import iconCollapse from '../assets/iconCollapse.png';
 import iconWorld from '../assets/iconWorld.png';
 import iconSync from '../assets/iconSync.png';
 import iconNight from '../assets/iconNight.png';
@@ -30,10 +29,13 @@ import iconPowerSaver from '../assets/iconPowerSaver.png';
 import iconAdd from '../assets/iconAdd.png';
 import iconRemove from '../assets/iconRemove.png';
 import iconEdit from '../assets/iconEdit.png';
+import iconToggleOn from '../assets/iconToggleOn.png';
+import iconToggleOff from '../assets/iconToggleOff.png';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.white,
   },
   menuContainer: {
     flex: 1,
@@ -49,13 +51,29 @@ const styles = StyleSheet.create({
     height: 30,
   },
   menuLabel: {
-    height: 30,
     flex: 1,
-    marginLeft: 20,
+    marginLeft: 15,
+    fontSize: 24,
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 20,
+    paddingRight: 10,
+    marginBottom: 15,
+  },
+  listIcon: {
+    width: 25,
+    height: 25,
+  },
+  listLabel: {
+    flex: 1,
+    marginLeft: 10,
     fontSize: 20,
   },
   menuBadge: {
-    padding: 3,
+    height: 25,
+    width: 30,
     fontSize: 16,
     borderWidth: 1,
     borderRadius: 5,
@@ -77,8 +95,8 @@ class DrawerMenu extends React.Component {
       showCountries: false,
       isSpinning: false,
       spinValue: new Animated.Value(0),
-      friendlistIconValue: new Animated.Value(0),
-      countriesIconValue: new Animated.Value(0),
+      friendlistIconValue: new Animated.Value(1),
+      countriesIconValue: new Animated.Value(1),
       friendName: '',
     };
   }
@@ -194,7 +212,7 @@ class DrawerMenu extends React.Component {
 
   openListAnimation = (value) => {
     Animated.timing(value, {
-      toValue: 1,
+      toValue: 0,
       duration: 300,
       useNativeDriver: true,
     }).start();
@@ -202,7 +220,7 @@ class DrawerMenu extends React.Component {
 
   closeListAnimation = (value) => {
     Animated.timing(value, {
-      toValue: 0,
+      toValue: 1,
       duration: 300,
       useNativeDriver: true,
     }).start();
@@ -276,42 +294,27 @@ class DrawerMenu extends React.Component {
       outputRange: ['0deg', '180deg'],
     });
 
-    const backgroundColor = theme === 'dark' ? Colors.black80 : Colors.white80;
-
-    let mapTypeIcon;
-    switch (mapType) {
-      case 'hybrid':
-        mapTypeIcon = iconSatellite;
-        break;
-      case 'standard':
-        mapTypeIcon = iconMap;
-        break;
-      default:
-        mapTypeIcon = iconSatellite;
-        break;
-    }
-
     return (
       <SafeAreaView
-        style={[styles.container, { backgroundColor }]}
+        style={styles.container}
         forceInset={{ top: 'always', horizontal: 'never' }}
       >
         <ScrollView>
           <View style={styles.menuContainer}>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleMapType()}>
-              <ThemedIcon style={styles.menuIcon} source={iconMap} />
+              <Image style={styles.menuIcon} source={iconMap} />
               <ThemedText style={styles.menuLabel}>Map Type</ThemedText>
-              <ThemedIcon style={styles.menuIcon} source={mapTypeIcon} />
+              <Image style={styles.menuIcon} source={mapType === 'standard' ? iconStreetView : iconSatellite} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleFriendlist()}>
-              <ThemedIcon style={styles.menuIcon} source={iconFriendlist} />
+              <Image style={styles.menuIcon} source={iconFriendlist} />
               <ThemedText style={styles.menuLabel}>Friendlist</ThemedText>
               <Animated.View style={{ transform: [{ rotateX: friendlistFlip }] }}>
-                <ThemedIcon style={styles.menuIcon} source={iconExpand} />
+                <Image style={styles.menuIcon} source={iconCollapse} />
               </Animated.View>
             </TouchableOpacity>
             <Collapsible collapsed={!showFriendlist}>
-              <View style={styles.menuItem}>
+              <View style={styles.listItem}>
                 <ThemedTextInput
                   style={styles.addFriend}
                   placeholder="Add Friend"
@@ -320,20 +323,20 @@ class DrawerMenu extends React.Component {
                   onSubmitEditing={() => this.onAddFriend()}
                 />
                 <TouchableOpacity onPress={() => this.onAddFriend()}>
-                  <ThemedIcon style={styles.menuIcon} source={iconAdd} />
+                  <Image style={styles.listIcon} source={iconAdd} />
                 </TouchableOpacity>
               </View>
               {friends.map(x => (
                 <TouchableOpacity
-                  style={styles.menuItem}
+                  style={styles.listItem}
                   key={x.id}
                   onPress={() => this.showFriend(x.id)}
                 >
-                  <ThemedText style={styles.menuLabel}>{x.username}</ThemedText>
                   <ThemedText style={styles.menuBadge}>{x.level}</ThemedText>
+                  <ThemedText style={styles.listLabel}>{x.username}</ThemedText>
                   <TouchableOpacity onPress={() => this.onRemoveFriend(x.id)}>
                     <Image
-                      style={[styles.menuIcon, { tintColor: Colors.red }]}
+                      style={styles.listIcon}
                       source={iconRemove}
                     />
                   </TouchableOpacity>
@@ -341,47 +344,47 @@ class DrawerMenu extends React.Component {
               ))}
             </Collapsible>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountries()}>
-              <ThemedIcon style={styles.menuIcon} source={iconWorld} />
+              <Image style={styles.menuIcon} source={iconWorld} />
               <ThemedText style={styles.menuLabel}>Countries</ThemedText>
               <Animated.View style={{ transform: [{ rotateX: countriesFlip }] }}>
-                <ThemedIcon style={styles.menuIcon} source={iconExpand} />
+                <Image style={styles.menuIcon} source={iconCollapse} />
               </Animated.View>
             </TouchableOpacity>
             <Collapsible collapsed={!showCountries}>
               {countries.map(x => (
                 <TouchableOpacity
-                  style={styles.menuItem}
+                  style={styles.listItem}
                   key={x.id}
                   onPress={() => this.showCountry(x.region)}
                 >
-                  <ThemedText style={styles.menuLabel}>{x.name}</ThemedText>
+                  <ThemedText style={styles.listLabel}>{x.name}</ThemedText>
                 </TouchableOpacity>
               ))}
             </Collapsible>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.syncData()}>
               <Animated.View style={{ transform: [{ rotate: spin }] }}>
-                <ThemedIcon style={styles.menuIcon} source={iconSync} />
+                <Image style={styles.menuIcon} source={iconSync} />
               </Animated.View>
               <ThemedText style={styles.menuLabel}>Sync Data</ThemedText>
               <ThemedText style={styles.menuBadge}>{tilesToSave.length}</ThemedText>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleTheme()}>
-              <ThemedIcon style={styles.menuIcon} source={iconNight} />
+              <Image style={styles.menuIcon} source={iconNight} />
               <ThemedText style={styles.menuLabel}>Night Mode</ThemedText>
-              <Switch value={theme === 'dark'} onValueChange={() => this.toggleTheme()} />
+              <Image style={styles.menuIcon} source={theme === 'dark' ? iconToggleOn : iconToggleOff} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.togglePowerSaver()}>
-              <ThemedIcon style={styles.menuIcon} source={iconPowerSaver} />
+              <Image style={styles.menuIcon} source={iconPowerSaver} />
               <ThemedText style={styles.menuLabel}>Power Saver</ThemedText>
-              <Switch value={powerSaver === 'on'} onValueChange={() => this.togglePowerSaver()} />
+              <Image style={styles.menuIcon} source={powerSaver === 'on' ? iconToggleOn : iconToggleOff} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleEditMode()}>
-              <ThemedIcon style={styles.menuIcon} source={iconEdit} />
+              <Image style={styles.menuIcon} source={iconEdit} />
               <ThemedText style={styles.menuLabel}>Edit Mode</ThemedText>
-              <Switch value={editMode} onValueChange={() => this.toggleEditMode()} />
+              <Image style={styles.menuIcon} source={editMode ? iconToggleOn : iconToggleOff} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.logout()}>
-              <ThemedIcon style={styles.menuIcon} source={iconLogout} />
+              <Image style={styles.menuIcon} source={iconLogout} />
               <ThemedText style={styles.menuLabel}>Logout</ThemedText>
             </TouchableOpacity>
           </View>

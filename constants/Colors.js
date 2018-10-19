@@ -1,7 +1,8 @@
-export const white = '#FFFFFF';
+export const white = '#fffaf2';
 export const black = '#000000';
 export const red = '#CC0000';
-export const accent = '#1985A1';
+export const blue = '#1985A1';
+export const blueActive = '#1D9ABA';
 
 export const black50 = 'rgba(0, 0, 0, 0.5)';
 export const black80 = 'rgba(0, 0, 0, 0.8)';

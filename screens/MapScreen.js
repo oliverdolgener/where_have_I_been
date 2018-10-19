@@ -16,7 +16,7 @@ import iconLocation from '../assets/iconLocation.png';
 import iconSquare from '../assets/iconSquare.png';
 import iconSpeed from '../assets/iconSpeed.png';
 import iconAltitude from '../assets/iconAltitude.png';
-import iconClose from '../assets/iconClose.png';
+import iconClose from '../assets/iconRemove.png';
 
 const styles = {
   container: {
@@ -35,12 +35,10 @@ const styles = {
     top: 30,
     left: 10,
     borderRadius: 5,
-    backgroundColor: Colors.white80,
   },
   menuImage: {
     width: 40,
     height: 40,
-    tintColor: Colors.black80,
   },
   geocodeContainer: {
     position: 'absolute',
@@ -83,12 +81,10 @@ const styles = {
   locationImage: {
     width: 50,
     height: 50,
-    tintColor: Colors.lightBlue80,
   },
   removeImage: {
     width: 50,
     height: 50,
-    tintColor: Colors.red80,
   },
 };
 
