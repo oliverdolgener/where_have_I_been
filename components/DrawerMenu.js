@@ -1,6 +1,12 @@
 import React from 'react';
 import {
-  StyleSheet, Animated, ScrollView, View, Image, TouchableOpacity, Switch,
+  StyleSheet,
+  Animated,
+  ScrollView,
+  View,
+  Image,
+  TouchableOpacity,
+  Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -15,7 +21,6 @@ import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
 import iconSatellite from '../assets/iconSatellite.png';
 import iconFriendlist from '../assets/iconFriendlist.png';
-import iconCollapse from '../assets/iconCollapse.png';
 import iconExpand from '../assets/iconExpand.png';
 import iconWorld from '../assets/iconWorld.png';
 import iconSync from '../assets/iconSync.png';
@@ -153,7 +158,9 @@ class DrawerMenu extends React.Component {
 
   toggleFriendlist = () => {
     const { showFriendlist, friendlistIconValue, countriesIconValue } = this.state;
-    showFriendlist ? this.closeListAnimation(friendlistIconValue) : this.openListAnimation(friendlistIconValue);
+    showFriendlist
+      ? this.closeListAnimation(friendlistIconValue)
+      : this.openListAnimation(friendlistIconValue);
     this.closeListAnimation(countriesIconValue);
     this.setState({
       showFriendlist: !showFriendlist,
@@ -163,7 +170,9 @@ class DrawerMenu extends React.Component {
 
   toggleCountries = () => {
     const { showCountries, countriesIconValue, friendlistIconValue } = this.state;
-    showCountries ? this.closeListAnimation(countriesIconValue) : this.openListAnimation(countriesIconValue);
+    showCountries
+      ? this.closeListAnimation(countriesIconValue)
+      : this.openListAnimation(countriesIconValue);
     this.closeListAnimation(friendlistIconValue);
     this.setState({
       showCountries: !showCountries,
@@ -175,7 +184,7 @@ class DrawerMenu extends React.Component {
     const { editMode, setEditMode } = this.props;
     this.closeDrawer();
     setEditMode(!editMode);
-  }
+  };
 
   logout = async () => {
     const { logout } = this.props;
@@ -189,7 +198,7 @@ class DrawerMenu extends React.Component {
       duration: 300,
       useNativeDriver: true,
     }).start();
-  }
+  };
 
   closeListAnimation = (value) => {
     Animated.timing(value, {
@@ -197,7 +206,7 @@ class DrawerMenu extends React.Component {
       duration: 300,
       useNativeDriver: true,
     }).start();
-  }
+  };
 
   syncData() {
     const {
@@ -244,7 +253,12 @@ class DrawerMenu extends React.Component {
       friends, countries, mapType, tilesToSave, theme, powerSaver, editMode,
     } = this.props;
     const {
-      showFriendlist, showCountries, spinValue, friendlistIconValue, countriesIconValue, friendName,
+      showFriendlist,
+      showCountries,
+      spinValue,
+      friendlistIconValue,
+      countriesIconValue,
+      friendName,
     } = this.state;
 
     const spin = spinValue.interpolate({
@@ -318,7 +332,10 @@ class DrawerMenu extends React.Component {
                   <ThemedText style={styles.menuLabel}>{x.username}</ThemedText>
                   <ThemedText style={styles.menuBadge}>{x.level}</ThemedText>
                   <TouchableOpacity onPress={() => this.onRemoveFriend(x.id)}>
-                    <Image style={[styles.menuIcon, { tintColor: Colors.red }]} source={iconRemove} />
+                    <Image
+                      style={[styles.menuIcon, { tintColor: Colors.red }]}
+                      source={iconRemove}
+                    />
                   </TouchableOpacity>
                 </TouchableOpacity>
               ))}
