@@ -72,6 +72,8 @@ class DrawerMenu extends React.Component {
       showCountries: false,
       isSpinning: false,
       spinValue: new Animated.Value(0),
+      friendlistIconValue: new Animated.Value(0),
+      countriesIconValue: new Animated.Value(0),
       friendName: '',
     };
   }
@@ -150,7 +152,9 @@ class DrawerMenu extends React.Component {
   };
 
   toggleFriendlist = () => {
-    const { showFriendlist } = this.state;
+    const { showFriendlist, friendlistIconValue, countriesIconValue } = this.state;
+    showFriendlist ? this.closeListAnimation(friendlistIconValue) : this.openListAnimation(friendlistIconValue);
+    this.closeListAnimation(countriesIconValue);
     this.setState({
       showFriendlist: !showFriendlist,
       showCountries: false,
@@ -158,7 +162,9 @@ class DrawerMenu extends React.Component {
   };
 
   toggleCountries = () => {
-    const { showCountries } = this.state;
+    const { showCountries, countriesIconValue, friendlistIconValue } = this.state;
+    showCountries ? this.closeListAnimation(countriesIconValue) : this.openListAnimation(countriesIconValue);
+    this.closeListAnimation(friendlistIconValue);
     this.setState({
       showCountries: !showCountries,
       showFriendlist: false,
@@ -176,6 +182,22 @@ class DrawerMenu extends React.Component {
     this.closeDrawer();
     logout();
   };
+
+  openListAnimation = (value) => {
+    Animated.timing(value, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }
+
+  closeListAnimation = (value) => {
+    Animated.timing(value, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }
 
   syncData() {
     const {
@@ -222,12 +244,22 @@ class DrawerMenu extends React.Component {
       friends, countries, mapType, tilesToSave, theme, powerSaver, editMode,
     } = this.props;
     const {
-      showFriendlist, showCountries, spinValue, friendName,
+      showFriendlist, showCountries, spinValue, friendlistIconValue, countriesIconValue, friendName,
     } = this.state;
 
     const spin = spinValue.interpolate({
       inputRange: [0, 1],
       outputRange: ['360deg', '0deg'],
+    });
+
+    const friendlistFlip = friendlistIconValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '180deg'],
+    });
+
+    const countriesFlip = countriesIconValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '180deg'],
     });
 
     const backgroundColor = theme === 'dark' ? Colors.black80 : Colors.white80;
@@ -260,10 +292,9 @@ class DrawerMenu extends React.Component {
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleFriendlist()}>
               <ThemedIcon style={styles.menuIcon} source={iconFriendlist} />
               <ThemedText style={styles.menuLabel}>Friendlist</ThemedText>
-              <ThemedIcon
-                style={styles.menuIcon}
-                source={showFriendlist ? iconCollapse : iconExpand}
-              />
+              <Animated.View style={{ transform: [{ rotateX: friendlistFlip }] }}>
+                <ThemedIcon style={styles.menuIcon} source={iconExpand} />
+              </Animated.View>
             </TouchableOpacity>
             <Collapsible collapsed={!showFriendlist}>
               <View style={styles.menuItem}>
@@ -295,10 +326,9 @@ class DrawerMenu extends React.Component {
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountries()}>
               <ThemedIcon style={styles.menuIcon} source={iconWorld} />
               <ThemedText style={styles.menuLabel}>Countries</ThemedText>
-              <ThemedIcon
-                style={styles.menuIcon}
-                source={showCountries ? iconCollapse : iconExpand}
-              />
+              <Animated.View style={{ transform: [{ rotateX: countriesFlip }] }}>
+                <ThemedIcon style={styles.menuIcon} source={iconExpand} />
+              </Animated.View>
             </TouchableOpacity>
             <Collapsible collapsed={!showCountries}>
               {countries.map(x => (

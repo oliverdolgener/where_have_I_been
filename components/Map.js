@@ -52,7 +52,7 @@ class Map extends Component {
     }
 
     const location = new Coordinate(coordinate.latitude, coordinate.longitude);
-    const timestamp = (new Date()).getTime();
+    const timestamp = new Date().getTime();
     const roundedLocation = new Coordinate(
       location.getRoundedLatitude(),
       location.getRoundedLongitude(),
@@ -147,13 +147,7 @@ class Map extends Component {
 
   render() {
     const {
-      isLoggedIn,
-      mapType,
-      holes,
-      theme,
-      lastTile,
-      setMap,
-      setFollowLocation,
+      isLoggedIn, mapType, holes, theme, lastTile, setMap, setFollowLocation,
     } = this.props;
 
     if (!isLoggedIn && this.positionListener) {
