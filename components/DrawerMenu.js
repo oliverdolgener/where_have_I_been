@@ -24,6 +24,7 @@ import iconLogout from '../assets/iconLogout.png';
 import iconPowerSaver from '../assets/iconPowerSaver.png';
 import iconAdd from '../assets/iconAdd.png';
 import iconRemove from '../assets/iconRemove.png';
+import iconEdit from '../assets/iconEdit.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -164,6 +165,12 @@ class DrawerMenu extends React.Component {
     });
   };
 
+  toggleEditMode = () => {
+    const { editMode, setEditMode } = this.props;
+    this.closeDrawer();
+    setEditMode(!editMode);
+  }
+
   logout = async () => {
     const { logout } = this.props;
     this.closeDrawer();
@@ -212,7 +219,7 @@ class DrawerMenu extends React.Component {
 
   render() {
     const {
-      friends, countries, mapType, tilesToSave, theme, powerSaver,
+      friends, countries, mapType, tilesToSave, theme, powerSaver, editMode,
     } = this.props;
     const {
       showFriendlist, showCountries, spinValue, friendName,
@@ -321,6 +328,11 @@ class DrawerMenu extends React.Component {
               <ThemedText style={styles.menuLabel}>Power Saver</ThemedText>
               <Switch value={powerSaver === 'on'} onValueChange={() => this.togglePowerSaver()} />
             </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleEditMode()}>
+              <ThemedIcon style={styles.menuIcon} source={iconEdit} />
+              <ThemedText style={styles.menuLabel}>Edit Mode</ThemedText>
+              <Switch value={editMode} onValueChange={() => this.toggleEditMode()} />
+            </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.logout()}>
               <ThemedIcon style={styles.menuIcon} source={iconLogout} />
               <ThemedText style={styles.menuLabel}>Logout</ThemedText>
@@ -343,6 +355,7 @@ const mapStateToProps = state => ({
   friendError: state.user.get('friendError'),
   map: state.map.get('map'),
   countries: state.map.get('countries'),
+  editMode: state.map.get('editMode'),
 });
 
 const mapDispatchToProps = {
@@ -357,6 +370,7 @@ const mapDispatchToProps = {
   setPowerSaver: userActions.setPowerSaver,
   getCountries: mapActions.getCountries,
   setFollowLocation: mapActions.setFollowLocation,
+  setEditMode: mapActions.setEditMode,
 };
 
 export default connect(

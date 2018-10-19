@@ -10,6 +10,8 @@ export const types = {
   SET_GEOCODE: 'MAP/SET_GEOCODE',
   SET_FOLLOW_LOCATION: 'MAP/SET_FOLLOW_LOCATION',
   GET_COUNTRIES: 'MAP/GET_COUNTRIES',
+  SET_EDIT_MODE: 'MAP/SET_EDIT_MODE',
+  SET_EDIT_TYPE: 'MAP/SET_EDIT_TYPE',
 };
 
 export const actions = {
@@ -21,6 +23,8 @@ export const actions = {
     type: types.GET_COUNTRIES,
     promise: getCountries(),
   }),
+  setEditMode: editMode => ({ type: types.SET_EDIT_MODE, editMode }),
+  setEditType: editType => ({ type: types.SET_EDIT_TYPE, editType }),
 };
 
 const initialState = Map({
@@ -34,6 +38,8 @@ const initialState = Map({
   geocode: {},
   followLocation: true,
   countries: [],
+  editMode: false,
+  editType: 'buy',
 });
 
 export default (state = initialState, action = {}) => {
@@ -61,6 +67,10 @@ export default (state = initialState, action = {}) => {
           return prevState.set('countries', countries);
         },
       });
+    case types.SET_EDIT_MODE:
+      return state.set('editMode', action.editMode);
+    case types.SET_EDIT_TYPE:
+      return state.set('editType', action.editType);
     default:
       return state;
   }

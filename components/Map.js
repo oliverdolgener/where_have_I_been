@@ -45,6 +45,23 @@ class Map extends Component {
     }
   }
 
+  onMapPress(coordinate) {
+    const { editMode, editType } = this.props;
+    if (!editMode) {
+      return;
+    }
+
+    const location = new Coordinate(coordinate.latitude, coordinate.longitude);
+    const roundedLocation = new Coordinate(
+      location.getRoundedLatitude(),
+      location.getRoundedLongitude(),
+    );
+
+    if (editType === 'buy') {
+      this.addLocation(roundedLocation);
+    }
+  }
+
   getGeocodeAsync = async (location) => {
     const { setGeocode } = this.props;
     await Permissions.askAsync(Permissions.LOCATION);
@@ -128,7 +145,13 @@ class Map extends Component {
 
   render() {
     const {
-      isLoggedIn, mapType, holes, theme, lastTile, setMap, setFollowLocation,
+      isLoggedIn,
+      mapType,
+      holes,
+      theme,
+      lastTile,
+      setMap,
+      setFollowLocation,
     } = this.props;
 
     if (!isLoggedIn && this.positionListener) {
@@ -172,6 +195,7 @@ class Map extends Component {
         loadingEnabled
         onRegionChangeComplete={newRegion => this.onRegionChangeComplete(newRegion)}
         onPanDrag={() => setFollowLocation(false)}
+        onLongPress={event => this.onMapPress(event.nativeEvent.coordinate)}
       >
         <MapView.Polygon
           fillColor={Colors.black80}
@@ -198,6 +222,8 @@ const mapStateToProps = state => ({
   isSaving: state.user.get('isSaving'),
   followLocation: state.map.get('followLocation'),
   geolocation: state.map.get('geolocation'),
+  editMode: state.map.get('editMode'),
+  editType: state.map.get('editType'),
 });
 
 const mapDispatchToProps = {
