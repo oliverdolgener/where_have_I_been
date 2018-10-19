@@ -208,8 +208,9 @@ class DrawerMenu extends React.Component {
   }
 
   showCountry(region) {
-    const { map } = this.props;
+    const { map, setFollowLocation } = this.props;
     map && map.moveToRegion(region);
+    setFollowLocation(false);
     this.closeDrawer();
   }
 
@@ -362,6 +363,7 @@ const mapDispatchToProps = {
   setTheme: userActions.setTheme,
   setPowerSaver: userActions.setPowerSaver,
   getCountries: mapActions.getCountries,
+  setFollowLocation: mapActions.setFollowLocation,
 };
 
 export default connect(
