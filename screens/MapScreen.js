@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { View, Image, TouchableOpacity } from 'react-native';
+import {
+  View, Text, Image, TouchableOpacity,
+} from 'react-native';
 import { connect } from 'react-redux';
 import { DangerZone } from 'expo';
+import ProgressBar from 'react-native-progress/Bar';
 
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import Map from '../components/Map';
-import InfoText from '../components/InfoText';
 import * as LevelUtils from '../utils/LevelUtils';
 import * as MathUtils from '../utils/MathUtils';
 import * as Colors from '../constants/Colors';
@@ -21,6 +23,34 @@ import iconClose from '../assets/iconRemove.png';
 const styles = {
   container: {
     flex: 1,
+  },
+  toolbar: {
+    width: '100%',
+    height: 30,
+    backgroundColor: Colors.white,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  toolbarItem: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  toolbarIcon: {
+    width: 20,
+    height: 20,
+    marginLeft: 10,
+  },
+  toolbarLabel: {
+    flex: 1,
+    fontSize: 16,
+    textAlign: 'right',
+    marginRight: 10,
+  },
+  separator: {
+    height: '100%',
+    borderWidth: 0.5,
+    borderColor: Colors.black,
   },
   batterySaver: {
     position: 'absolute',
@@ -37,52 +67,18 @@ const styles = {
     borderRadius: 5,
   },
   menuImage: {
-    width: 40,
-    height: 40,
-  },
-  geocodeContainer: {
-    position: 'absolute',
-    top: 30,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-  },
-  geocodeInfo: {
-    marginBottom: 10,
-  },
-  levelInfo: {
-    position: 'absolute',
-    top: 30,
-    right: 10,
-  },
-  tileInfo: {
-    position: 'absolute',
-    top: 70,
-    right: 10,
-  },
-  speedInfo: {
-    position: 'absolute',
-    top: 110,
-    right: 10,
-  },
-  altitudeInfo: {
-    position: 'absolute',
-    top: 150,
-    right: 10,
-  },
-  locationButton: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 10,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  locationImage: {
     width: 50,
     height: 50,
   },
-  removeImage: {
+  actionButton: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 50,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  actionIcon: {
     width: 50,
     height: 50,
   },
@@ -129,7 +125,6 @@ class MapScreen extends Component {
       friendId,
       resetFriend,
       geolocation,
-      geocode,
       followLocation,
       setFollowLocation,
       powerSaver,
@@ -138,49 +133,55 @@ class MapScreen extends Component {
     const { showBatterySaver } = this.state;
 
     const locations = MathUtils.gridToArray(visitedLocations);
-
-    // const neighbours = MathUtils.gridToArray(visitedLocations).map(x => Coordinate.getNeighbours(x, visitedLocations).length + 1);
-    // const score = neighbours.reduce((y, z) => y + z, 0);
     const level = LevelUtils.getLevelFromExp(locations.length);
-    const gradient = LevelUtils.getPercentToNextLevel(locations.length);
+    const progress = LevelUtils.getPercentToNextLevel(locations.length);
 
     return (
       <View style={styles.container}>
         <Map />
+        <View style={styles.toolbar}>
+          <View style={styles.toolbarItem}>
+            <Image style={styles.toolbarIcon} source={iconLevel} />
+            <Text style={styles.toolbarLabel}>{level}</Text>
+          </View>
+          <View style={styles.separator} />
+          <View style={styles.toolbarItem}>
+            <Image style={styles.toolbarIcon} source={iconSquare} />
+            <Text style={styles.toolbarLabel}>{locations.length}</Text>
+          </View>
+          <View style={styles.separator} />
+          <View style={styles.toolbarItem}>
+            <Image style={styles.toolbarIcon} source={iconSpeed} />
+            <Text style={styles.toolbarLabel}>{geolocation.speed || 0}</Text>
+          </View>
+          <View style={styles.separator} />
+          <View style={styles.toolbarItem}>
+            <Image style={styles.toolbarIcon} source={iconAltitude} />
+            <Text style={styles.toolbarLabel}>{geolocation.altitude || 0}</Text>
+          </View>
+        </View>
+        <ProgressBar
+          progress={progress}
+          width={null}
+          height={5}
+          borderRadius={0}
+          borderWidth={0}
+          unfilledColor={Colors.white}
+          color={Colors.blue}
+          useNativeDriver
+        />
         <TouchableOpacity style={styles.menuButton} onPress={() => navigation.openDrawer()}>
           <Image style={styles.menuImage} source={iconMenu} />
         </TouchableOpacity>
-        {geocode && (
-          <View style={styles.geocodeContainer} pointerEvents="none">
-            <InfoText style={styles.geocodeInfo} label={geocode.city} />
-            <InfoText style={styles.geocodeInfo} label={geocode.region} />
-            <InfoText style={styles.geocodeInfo} label={geocode.country} />
-          </View>
-        )}
-        <InfoText
-          style={styles.levelInfo}
-          label={level}
-          icon={iconLevel}
-          alignRight
-          gradient={gradient}
-        />
-        <InfoText style={styles.tileInfo} label={locations.length} icon={iconSquare} alignRight />
-        <InfoText style={styles.speedInfo} label={geolocation.speed} icon={iconSpeed} alignRight />
-        <InfoText
-          style={styles.altitudeInfo}
-          label={geolocation.altitude}
-          icon={iconAltitude}
-          alignRight
-        />
         {friendId ? (
-          <View style={styles.locationButton}>
+          <View style={styles.actionButton}>
             <TouchableOpacity onPress={() => resetFriend()}>
-              <Image style={styles.removeImage} source={iconClose} />
+              <Image style={styles.actionIcon} source={iconClose} />
             </TouchableOpacity>
           </View>
         ) : (
           !followLocation && (
-            <View style={styles.locationButton}>
+            <View style={styles.actionButton}>
               <TouchableOpacity
                 onPress={() => {
                   const { map } = this.props;
@@ -188,7 +189,7 @@ class MapScreen extends Component {
                   setFollowLocation(true);
                 }}
               >
-                <Image style={styles.locationImage} source={iconLocation} />
+                <Image style={styles.actionIcon} source={iconLocation} />
               </TouchableOpacity>
             </View>
           )
