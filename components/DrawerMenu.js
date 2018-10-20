@@ -4,7 +4,9 @@ import {
   Animated,
   ScrollView,
   View,
+  Text,
   Image,
+  TextInput,
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
@@ -13,8 +15,6 @@ import Collapsible from 'react-native-collapsible';
 
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
-import ThemedText from './ThemedText';
-import ThemedTextInput from './ThemedTextInput';
 import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
 import iconStreetView from '../assets/iconStreetView.png';
@@ -303,19 +303,19 @@ class DrawerMenu extends React.Component {
           <View style={styles.menuContainer}>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleMapType()}>
               <Image style={styles.menuIcon} source={iconMap} />
-              <ThemedText style={styles.menuLabel}>Map Type</ThemedText>
+              <Text style={styles.menuLabel}>Map Type</Text>
               <Image style={styles.menuIcon} source={mapType === 'standard' ? iconStreetView : iconSatellite} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleFriendlist()}>
               <Image style={styles.menuIcon} source={iconFriendlist} />
-              <ThemedText style={styles.menuLabel}>Friendlist</ThemedText>
+              <Text style={styles.menuLabel}>Friendlist</Text>
               <Animated.View style={{ transform: [{ rotateX: friendlistFlip }] }}>
                 <Image style={styles.menuIcon} source={iconCollapse} />
               </Animated.View>
             </TouchableOpacity>
             <Collapsible collapsed={!showFriendlist}>
               <View style={styles.listItem}>
-                <ThemedTextInput
+                <TextInput
                   style={styles.addFriend}
                   placeholder="Add Friend"
                   onChangeText={text => this.onChangeFriendName(text)}
@@ -332,8 +332,8 @@ class DrawerMenu extends React.Component {
                   key={x.id}
                   onPress={() => this.showFriend(x.id)}
                 >
-                  <ThemedText style={styles.menuBadge}>{x.level}</ThemedText>
-                  <ThemedText style={styles.listLabel}>{x.username}</ThemedText>
+                  <Text style={styles.menuBadge}>{x.level}</Text>
+                  <Text style={styles.listLabel}>{x.username}</Text>
                   <TouchableOpacity onPress={() => this.onRemoveFriend(x.id)}>
                     <Image
                       style={styles.listIcon}
@@ -345,7 +345,7 @@ class DrawerMenu extends React.Component {
             </Collapsible>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountries()}>
               <Image style={styles.menuIcon} source={iconWorld} />
-              <ThemedText style={styles.menuLabel}>Countries</ThemedText>
+              <Text style={styles.menuLabel}>Countries</Text>
               <Animated.View style={{ transform: [{ rotateX: countriesFlip }] }}>
                 <Image style={styles.menuIcon} source={iconCollapse} />
               </Animated.View>
@@ -357,7 +357,7 @@ class DrawerMenu extends React.Component {
                   key={x.id}
                   onPress={() => this.showCountry(x.region)}
                 >
-                  <ThemedText style={styles.listLabel}>{x.name}</ThemedText>
+                  <Text style={styles.listLabel}>{x.name}</Text>
                 </TouchableOpacity>
               ))}
             </Collapsible>
@@ -365,27 +365,27 @@ class DrawerMenu extends React.Component {
               <Animated.View style={{ transform: [{ rotate: spin }] }}>
                 <Image style={styles.menuIcon} source={iconSync} />
               </Animated.View>
-              <ThemedText style={styles.menuLabel}>Sync Data</ThemedText>
-              <ThemedText style={styles.menuBadge}>{tilesToSave.length}</ThemedText>
+              <Text style={styles.menuLabel}>Sync Data</Text>
+              <Text style={styles.menuBadge}>{tilesToSave.length}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleTheme()}>
               <Image style={styles.menuIcon} source={iconNight} />
-              <ThemedText style={styles.menuLabel}>Night Mode</ThemedText>
+              <Text style={styles.menuLabel}>Night Mode</Text>
               <Image style={styles.menuIcon} source={theme === 'dark' ? iconToggleOn : iconToggleOff} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.togglePowerSaver()}>
               <Image style={styles.menuIcon} source={iconPowerSaver} />
-              <ThemedText style={styles.menuLabel}>Power Saver</ThemedText>
+              <Text style={styles.menuLabel}>Power Saver</Text>
               <Image style={styles.menuIcon} source={powerSaver === 'on' ? iconToggleOn : iconToggleOff} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleEditMode()}>
               <Image style={styles.menuIcon} source={iconEdit} />
-              <ThemedText style={styles.menuLabel}>Edit Mode</ThemedText>
+              <Text style={styles.menuLabel}>Edit Mode</Text>
               <Image style={styles.menuIcon} source={editMode ? iconToggleOn : iconToggleOff} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.logout()}>
               <Image style={styles.menuIcon} source={iconLogout} />
-              <ThemedText style={styles.menuLabel}>Logout</ThemedText>
+              <Text style={styles.menuLabel}>Logout</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
