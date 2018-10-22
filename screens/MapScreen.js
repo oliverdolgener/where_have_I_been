@@ -33,7 +33,7 @@ const styles = {
     alignItems: 'center',
   },
   toolbarItem: {
-    flex: 1,
+    flex: 3,
     flexDirection: 'row',
   },
   toolbarIcon: {
@@ -145,7 +145,7 @@ class MapScreen extends Component {
             <Text style={styles.toolbarLabel}>{level}</Text>
           </View>
           <View style={styles.separator} />
-          <View style={styles.toolbarItem}>
+          <View style={[styles.toolbarItem, { flex: 5 }]}>
             <Image style={styles.toolbarIcon} source={iconSquare} />
             <Text style={styles.toolbarLabel}>{locations.length}</Text>
           </View>
@@ -155,7 +155,7 @@ class MapScreen extends Component {
             <Text style={styles.toolbarLabel}>{geolocation.speed || 0}</Text>
           </View>
           <View style={styles.separator} />
-          <View style={styles.toolbarItem}>
+          <View style={[styles.toolbarItem, { flex: 4 }]}>
             <Image style={styles.toolbarIcon} source={iconAltitude} />
             <Text style={styles.toolbarLabel}>{geolocation.altitude || 0}</Text>
           </View>
