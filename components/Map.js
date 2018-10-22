@@ -21,9 +21,10 @@ const styles = {
 
 class Map extends Component {
   componentDidMount() {
-    const { lastTile } = this.props;
+    const { lastTile, getFlights, userId } = this.props;
     this.watchPositionAsync();
     this.getGeocodeAsync(lastTile);
+    getFlights(userId);
   }
 
   onTileChange(tile) {
@@ -147,7 +148,7 @@ class Map extends Component {
 
   render() {
     const {
-      isLoggedIn, mapType, holes, theme, lastTile, setMap, setFollowLocation,
+      isLoggedIn, mapType, holes, theme, lastTile, setMap, setFollowLocation, flights,
     } = this.props;
 
     if (!isLoggedIn && this.positionListener) {
@@ -200,6 +201,18 @@ class Map extends Component {
           coordinates={Earth.FOG}
           holes={holes}
         />
+        {flights.map(x => (
+          <MapView.Polyline
+            key={x.id.toString()}
+            coordinates={[
+              { latitude: x.start_latitude, longitude: x.start_longitude },
+              { latitude: x.destination_latitude, longitude: x.destination_longitude },
+            ]}
+            strokeColor={Colors.blue}
+            strokeWidth={2}
+            geodesic
+          />
+        ))}
       </MapView>
     );
   }
@@ -216,6 +229,7 @@ const mapStateToProps = state => ({
   theme: state.user.get('theme'),
   lastTile: state.user.get('lastTile'),
   isSaving: state.user.get('isSaving'),
+  flights: state.user.get('flights'),
   followLocation: state.map.get('followLocation'),
   geolocation: state.map.get('geolocation'),
   editMode: state.map.get('editMode'),
@@ -228,6 +242,7 @@ const mapDispatchToProps = {
   setTilesToSave: userActions.setTilesToSave,
   saveTiles: userActions.saveTiles,
   setLastTile: userActions.setLastTile,
+  getFlights: userActions.getFlights,
   setMap: mapActions.setMap,
   setGeolocation: mapActions.setGeolocation,
   setGeocode: mapActions.setGeocode,

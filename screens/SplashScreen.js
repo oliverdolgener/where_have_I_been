@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { Permissions, Notifications } from 'expo';
 
 import { actions as userActions } from '../reducers/user';
+import { actions as mapActions } from '../reducers/map';
 import * as Colors from '../constants/Colors';
 
 const styles = StyleSheet.create({
@@ -27,8 +28,10 @@ const styles = StyleSheet.create({
 
 class SplashScreen extends React.Component {
   componentWillMount() {
+    const { getAirports } = this.props;
     this.registerForPushAsync();
     this.getUserAsync();
+    getAirports();
   }
 
   registerForPushAsync = async () => {
@@ -100,6 +103,7 @@ const mapDispatchToProps = {
   setTheme: userActions.setTheme,
   setPowerSaver: userActions.setPowerSaver,
   setPushToken: userActions.setPushToken,
+  getAirports: mapActions.getAirports,
 };
 
 export default connect(

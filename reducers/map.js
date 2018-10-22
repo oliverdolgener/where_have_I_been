@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import { handle } from 'redux-pack';
 
-import { getCountries } from '../services/api';
+import { getCountries, getAirports } from '../services/api';
 import * as EarthUtils from '../utils/EarthUtils';
 
 export const types = {
@@ -10,6 +10,7 @@ export const types = {
   SET_GEOCODE: 'MAP/SET_GEOCODE',
   SET_FOLLOW_LOCATION: 'MAP/SET_FOLLOW_LOCATION',
   GET_COUNTRIES: 'MAP/GET_COUNTRIES',
+  GET_AIRPORTS: 'MAP/GET_AIRPORTS',
   SET_EDIT_MODE: 'MAP/SET_EDIT_MODE',
   SET_EDIT_TYPE: 'MAP/SET_EDIT_TYPE',
 };
@@ -22,6 +23,10 @@ export const actions = {
   getCountries: () => ({
     type: types.GET_COUNTRIES,
     promise: getCountries(),
+  }),
+  getAirports: () => ({
+    type: types.GET_AIRPORTS,
+    promise: getAirports(),
   }),
   setEditMode: editMode => ({ type: types.SET_EDIT_MODE, editMode }),
   setEditType: editType => ({ type: types.SET_EDIT_TYPE, editType }),
@@ -38,6 +43,7 @@ const initialState = Map({
   geocode: {},
   followLocation: true,
   countries: [],
+  airports: [],
   editMode: false,
   editType: 'buy',
 });
@@ -66,6 +72,10 @@ export default (state = initialState, action = {}) => {
           }));
           return prevState.set('countries', countries);
         },
+      });
+    case types.GET_AIRPORTS:
+      return handle(state, action, {
+        success: prevState => prevState.set('airports', payload.data),
       });
     case types.SET_EDIT_MODE:
       return state.set('editMode', action.editMode);

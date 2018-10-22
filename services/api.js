@@ -7,6 +7,8 @@ const ENDPOINT_LOGIN = 'login';
 const ENDPOINT_LOCATION = 'location';
 const ENDPOINT_FRIEND = 'friend';
 const ENDPOINT_COUNTRY = 'country';
+const ENDPOINT_AIRPORT = 'airport';
+const ENDPOINT_FLIGHT = 'flight';
 
 const headers = {
   Accept: 'application/json',
@@ -108,5 +110,17 @@ export const removeFriend = (userId, friendId) => {
 export const getCountries = () => {
   const url = new URI(API_URL);
   url.segment(ENDPOINT_COUNTRY);
+  return fetchJson(url.href());
+};
+
+export const getAirports = () => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_AIRPORT);
+  return fetchJson(url.href());
+};
+
+export const getFlights = (userId) => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_FLIGHT).segment(userId.toString());
   return fetchJson(url.href());
 };

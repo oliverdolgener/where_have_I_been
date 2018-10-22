@@ -15,6 +15,7 @@ import {
   getFriends,
   addFriend,
   removeFriend,
+  getFlights,
 } from '../services/api';
 import { navigator } from '../App';
 
@@ -40,6 +41,7 @@ export const types = {
   SET_POWER_SAVER: 'USER/SET_POWER_SAVER',
   SET_LAST_TILE: 'USER/SET_LAST_TILE',
   SET_PUSH_TOKEN: 'USER/SET_PUSH_TOKEN',
+  GET_FLIGHTS: 'USER/GET_FLIGHTS',
 };
 
 const setUserAsync = async (id) => {
@@ -152,6 +154,10 @@ export const actions = {
   setPowerSaver: powerSaver => ({ type: types.SET_POWER_SAVER, powerSaver }),
   setLastTile: lastTile => ({ type: types.SET_LAST_TILE, lastTile }),
   setPushToken: pushToken => ({ type: types.SET_PUSH_TOKEN, pushToken }),
+  getFlights: userId => ({
+    type: types.GET_FLIGHTS,
+    promise: getFlights(userId),
+  }),
 };
 
 const initialState = Map({
@@ -168,6 +174,7 @@ const initialState = Map({
   visitedLocations: [],
   friendLocations: [],
   holes: [],
+  flights: [],
   emailError: '',
   passwordError: '',
   mapType: 'hybrid',
@@ -351,6 +358,12 @@ export default (state = initialState, action = {}) => {
     }
     case types.SET_PUSH_TOKEN: {
       return state.set('pushToken', action.pushToken);
+    }
+    case types.GET_FLIGHTS: {
+      return handle(state, action, {
+        success: prevState => prevState
+          .set('flights', payload.data),
+      });
     }
     default:
       return state;
