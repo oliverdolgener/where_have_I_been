@@ -31,6 +31,7 @@ import iconRemove from '../assets/iconRemove.png';
 import iconEdit from '../assets/iconEdit.png';
 import iconToggleOn from '../assets/iconToggleOn.png';
 import iconToggleOff from '../assets/iconToggleOff.png';
+import iconAirport from '../assets/iconAirport.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -198,6 +199,12 @@ class DrawerMenu extends React.Component {
     });
   };
 
+  toggleFlights = () => {
+    const { showFlights, setShowFlights } = this.props;
+    this.closeDrawer();
+    setShowFlights(!showFlights);
+  }
+
   toggleEditMode = () => {
     const { editMode, setEditMode } = this.props;
     this.closeDrawer();
@@ -268,7 +275,7 @@ class DrawerMenu extends React.Component {
 
   render() {
     const {
-      friends, countries, mapType, tilesToSave, theme, powerSaver, editMode,
+      friends, countries, mapType, tilesToSave, theme, powerSaver, editMode, showFlights,
     } = this.props;
     const {
       showFriendlist,
@@ -368,6 +375,11 @@ class DrawerMenu extends React.Component {
               <Text style={styles.menuLabel}>Sync Data</Text>
               <Text style={styles.menuBadge}>{tilesToSave.length}</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleFlights()}>
+              <Image style={styles.menuIcon} source={iconAirport} />
+              <Text style={styles.menuLabel}>Show Flights</Text>
+              <Image style={styles.menuIcon} source={showFlights ? iconToggleOn : iconToggleOff} />
+            </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleTheme()}>
               <Image style={styles.menuIcon} source={iconNight} />
               <Text style={styles.menuLabel}>Night Mode</Text>
@@ -406,6 +418,7 @@ const mapStateToProps = state => ({
   map: state.map.get('map'),
   countries: state.map.get('countries'),
   editMode: state.map.get('editMode'),
+  showFlights: state.map.get('showFlights'),
 });
 
 const mapDispatchToProps = {
@@ -421,6 +434,7 @@ const mapDispatchToProps = {
   getCountries: mapActions.getCountries,
   setFollowLocation: mapActions.setFollowLocation,
   setEditMode: mapActions.setEditMode,
+  setShowFlights: mapActions.setShowFlights,
 };
 
 export default connect(

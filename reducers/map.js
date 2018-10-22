@@ -13,6 +13,7 @@ export const types = {
   GET_AIRPORTS: 'MAP/GET_AIRPORTS',
   SET_EDIT_MODE: 'MAP/SET_EDIT_MODE',
   SET_EDIT_TYPE: 'MAP/SET_EDIT_TYPE',
+  SET_SHOW_FLIGHTS: 'MAP/SET_SHOW_FLIGHTS',
 };
 
 export const actions = {
@@ -30,6 +31,7 @@ export const actions = {
   }),
   setEditMode: editMode => ({ type: types.SET_EDIT_MODE, editMode }),
   setEditType: editType => ({ type: types.SET_EDIT_TYPE, editType }),
+  setShowFlights: showFlights => ({ type: types.SET_SHOW_FLIGHTS, showFlights }),
 };
 
 const initialState = Map({
@@ -46,6 +48,7 @@ const initialState = Map({
   airports: [],
   editMode: false,
   editType: 'buy',
+  showFlights: false,
 });
 
 export default (state = initialState, action = {}) => {
@@ -81,6 +84,8 @@ export default (state = initialState, action = {}) => {
       return state.set('editMode', action.editMode);
     case types.SET_EDIT_TYPE:
       return state.set('editType', action.editType);
+    case types.SET_SHOW_FLIGHTS:
+      return state.set('showFlights', action.showFlights);
     default:
       return state;
   }
