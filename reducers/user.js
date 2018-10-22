@@ -16,6 +16,7 @@ import {
   addFriend,
   removeFriend,
   getFlights,
+  addFlight,
 } from '../services/api';
 import { navigator } from '../App';
 
@@ -42,6 +43,7 @@ export const types = {
   SET_LAST_TILE: 'USER/SET_LAST_TILE',
   SET_PUSH_TOKEN: 'USER/SET_PUSH_TOKEN',
   GET_FLIGHTS: 'USER/GET_FLIGHTS',
+  ADD_FLIGHT: 'USER/ADD/FLIGHT',
 };
 
 const setUserAsync = async (id) => {
@@ -157,6 +159,10 @@ export const actions = {
   getFlights: userId => ({
     type: types.GET_FLIGHTS,
     promise: getFlights(userId),
+  }),
+  addFlight: (userId, from, to) => ({
+    type: types.ADD_FLIGHT,
+    promise: addFlight(userId, from, to),
   }),
 };
 
@@ -360,6 +366,12 @@ export default (state = initialState, action = {}) => {
       return state.set('pushToken', action.pushToken);
     }
     case types.GET_FLIGHTS: {
+      return handle(state, action, {
+        success: prevState => prevState
+          .set('flights', payload.data),
+      });
+    }
+    case types.ADD_FLIGHT: {
       return handle(state, action, {
         success: prevState => prevState
           .set('flights', payload.data),

@@ -148,7 +148,7 @@ class Map extends Component {
 
   render() {
     const {
-      isLoggedIn, mapType, holes, theme, lastTile, setMap, setFollowLocation, flights, showFlights,
+      isLoggedIn, mapType, holes, theme, lastTile, setMap, setFollowLocation, flights, showFlights, editMode,
     } = this.props;
 
     if (!isLoggedIn && this.positionListener) {
@@ -201,7 +201,7 @@ class Map extends Component {
           coordinates={Earth.FOG}
           holes={holes}
         />
-        {showFlights && flights.map(x => (
+        {(showFlights || editMode) && flights.map(x => (
           <MapView.Polyline
             key={x.id.toString()}
             coordinates={[

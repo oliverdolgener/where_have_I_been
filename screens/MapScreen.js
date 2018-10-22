@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, Image, TouchableOpacity,
+  View, Text, Image, TextInput, TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { DangerZone } from 'expo';
@@ -82,6 +82,27 @@ const styles = {
     width: 50,
     height: 50,
   },
+  flightBox: {
+    position: 'absolute',
+    top: 30,
+    right: 10,
+    width: 100,
+    backgroundColor: Colors.white,
+  },
+  flightInput: {
+    margin: 5,
+    paddingHorizontal: 5,
+    height: 40,
+  },
+  flightButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 5,
+    backgroundColor: Colors.blue,
+  },
+  flightButtonLabel: {
+    color: Colors.white,
+  },
 };
 
 class MapScreen extends Component {
@@ -89,6 +110,8 @@ class MapScreen extends Component {
     super();
     this.state = {
       showBatterySaver: false,
+      from: '',
+      to: '',
     };
   }
 
@@ -99,6 +122,24 @@ class MapScreen extends Component {
 
   componentWillUnmount() {
     this.motionListener.remove();
+  }
+
+  onAddFlight() {
+    const { addFlight, userId } = this.props;
+    const { from, to } = this.state;
+    if (!from) {
+      return;
+    }
+    if (!to) {
+      return;
+    }
+
+    addFlight(userId, from, to);
+
+    this.setState({
+      from: '',
+      to: '',
+    });
   }
 
   handleMotionEvent(result) {
@@ -128,9 +169,10 @@ class MapScreen extends Component {
       followLocation,
       setFollowLocation,
       powerSaver,
+      editMode,
     } = this.props;
 
-    const { showBatterySaver } = this.state;
+    const { showBatterySaver, from, to } = this.state;
 
     const locations = MathUtils.gridToArray(visitedLocations);
     const level = LevelUtils.getLevelFromExp(locations.length);
@@ -194,6 +236,40 @@ class MapScreen extends Component {
             </View>
           )
         )}
+        {editMode && (
+          <View style={styles.flightBox}>
+            <TextInput
+              style={styles.flightInput}
+              placeholder="From"
+              onChangeText={text => this.setState({ from: text })}
+              value={from}
+              selectionColor={Colors.blue}
+              underlineColorAndroid={Colors.blue}
+              returnKeyType="next"
+              onSubmitEditing={() => this.toInput.focus()}
+              autoCorrect={false}
+              autoCapitalize="characters"
+            />
+            <TextInput
+              ref={(ref) => {
+                this.toInput = ref;
+              }}
+              style={styles.flightInput}
+              placeholder="To"
+              onChangeText={text => this.setState({ to: text })}
+              value={to}
+              selectionColor={Colors.blue}
+              underlineColorAndroid={Colors.blue}
+              returnKeyType="send"
+              onSubmitEditing={() => this.onAddFlight()}
+              autoCorrect={false}
+              autoCapitalize="characters"
+            />
+            <TouchableOpacity style={styles.flightButton} onPress={() => this.onAddFlight()}>
+              <Text style={styles.flightButtonLabel}>Add Flight</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         {powerSaver === 'on' && showBatterySaver && <View style={styles.batterySaver} />}
       </View>
     );
@@ -201,6 +277,7 @@ class MapScreen extends Component {
 }
 
 const mapStateToProps = state => ({
+  userId: state.user.get('userId'),
   friendId: state.user.get('friendId'),
   visitedLocations: state.user.get('visitedLocations'),
   powerSaver: state.user.get('powerSaver'),
@@ -208,10 +285,12 @@ const mapStateToProps = state => ({
   geolocation: state.map.get('geolocation'),
   geocode: state.map.get('geocode'),
   followLocation: state.map.get('followLocation'),
+  editMode: state.map.get('editMode'),
 });
 
 const mapDispatchToProps = {
   resetFriend: userActions.resetFriend,
+  addFlight: userActions.addFlight,
   setFollowLocation: mapActions.setFollowLocation,
 };
 

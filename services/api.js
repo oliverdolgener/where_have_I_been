@@ -124,3 +124,18 @@ export const getFlights = (userId) => {
   url.segment(ENDPOINT_FLIGHT).segment(userId.toString());
   return fetchJson(url.href());
 };
+
+export const addFlight = (userId, from, to) => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_FLIGHT).segment(userId.toString());
+  const body = JSON.stringify({
+    from,
+    to,
+  });
+  const options = {
+    method: 'POST',
+    headers,
+    body,
+  };
+  return fetchJson(url.href(), options);
+};
