@@ -33,6 +33,9 @@ import iconToggleOn from '../assets/iconToggleOn.png';
 import iconToggleOff from '../assets/iconToggleOff.png';
 import iconAirport from '../assets/iconAirport.png';
 import iconUser from '../assets/iconLevel.png';
+import iconDone from '../assets/iconDone.png';
+import iconToDo from '../assets/iconToDo.png';
+import iconHeart from '../assets/iconHeart.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -131,7 +134,7 @@ class DrawerMenu extends React.Component {
   componentDidMount() {
     const { userId, getFriends, getCountries } = this.props;
     getFriends(userId);
-    getCountries();
+    getCountries(userId);
   }
 
   componentDidUpdate() {
@@ -236,6 +239,62 @@ class DrawerMenu extends React.Component {
     this.closeDrawer();
     setEditMode(!editMode);
   };
+
+  toggleVacation = (vacation) => {
+    const {
+      userId, setVacation, setCountries, countries,
+    } = this.props;
+    switch (vacation.status) {
+      case 0:
+        setVacation(userId, vacation.id, 1);
+        setCountries(countries.map((x) => {
+          if (x.id === vacation.id) {
+            return {
+              ...x,
+              status: 1,
+            };
+          }
+          return x;
+        }));
+        break;
+      case 1:
+        setVacation(userId, vacation.id, 2);
+        setCountries(countries.map((x) => {
+          if (x.id === vacation.id) {
+            return {
+              ...x,
+              status: 2,
+            };
+          }
+          return x;
+        }));
+        break;
+      case 2:
+        setVacation(userId, vacation.id, 0);
+        setCountries(countries.map((x) => {
+          if (x.id === vacation.id) {
+            return {
+              ...x,
+              status: 0,
+            };
+          }
+          return x;
+        }));
+        break;
+      default:
+        setVacation(userId, vacation.id, 1);
+        setCountries(countries.map((x) => {
+          if (x.id === vacation.id) {
+            return {
+              ...x,
+              status: 1,
+            };
+          }
+          return x;
+        }));
+        break;
+    }
+  }
 
   logout = async () => {
     const { logout } = this.props;
@@ -392,15 +451,36 @@ class DrawerMenu extends React.Component {
               </Animated.View>
             </TouchableOpacity>
             <Collapsible collapsed={!showCountries}>
-              {countries.map(x => (
-                <TouchableOpacity
-                  style={styles.listItem}
-                  key={x.id}
-                  onPress={() => this.showCountry(x.region)}
-                >
-                  <Text style={styles.listLabel}>{x.name}</Text>
-                </TouchableOpacity>
-              ))}
+              {countries.map((x) => {
+                let icon;
+                switch (x.status) {
+                  case 0:
+                    icon = iconToDo;
+                    break;
+                  case 1:
+                    icon = iconDone;
+                    break;
+                  case 2:
+                    icon = iconHeart;
+                    break;
+                  default:
+                    icon = iconToDo;
+                    break;
+                }
+
+                return (
+                  <TouchableOpacity
+                    style={styles.listItem}
+                    key={x.id}
+                    onPress={() => this.showCountry(x.region)}
+                  >
+                    <Text style={styles.listLabel} numberOfLines={1} ellipsizeMode="middle">{x.name}</Text>
+                    <TouchableOpacity onPress={() => this.toggleVacation(x)}>
+                      <Image style={styles.menuIcon} source={icon} />
+                    </TouchableOpacity>
+                  </TouchableOpacity>
+                );
+              })}
             </Collapsible>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.syncData()}>
               <Animated.View style={{ transform: [{ rotate: spin }] }}>
@@ -467,6 +547,8 @@ const mapDispatchToProps = {
   setMapType: mapActions.setMapType,
   setTheme: mapActions.setTheme,
   getCountries: mapActions.getCountries,
+  setCountries: mapActions.setCountries,
+  setVacation: mapActions.setVacation,
   setFollowLocation: mapActions.setFollowLocation,
   setEditMode: mapActions.setEditMode,
   setShowFlights: mapActions.setShowFlights,

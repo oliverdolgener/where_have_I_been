@@ -9,6 +9,7 @@ const ENDPOINT_FRIEND = 'friend';
 const ENDPOINT_COUNTRY = 'country';
 const ENDPOINT_AIRPORT = 'airport';
 const ENDPOINT_FLIGHT = 'flight';
+const ENDPOINT_VACATION = 'vacation';
 
 const headers = {
   Accept: 'application/json',
@@ -131,6 +132,27 @@ export const addFlight = (userId, from, to) => {
   const body = JSON.stringify({
     from,
     to,
+  });
+  const options = {
+    method: 'POST',
+    headers,
+    body,
+  };
+  return fetchJson(url.href(), options);
+};
+
+export const getVacations = (userId) => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_VACATION).segment(userId.toString());
+  return fetchJson(url.href());
+};
+
+export const setVacation = (userId, countryId, status) => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_VACATION).segment(userId.toString());
+  const body = JSON.stringify({
+    countryId,
+    status,
   });
   const options = {
     method: 'POST',

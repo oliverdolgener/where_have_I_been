@@ -2,7 +2,7 @@ import { Map } from 'immutable';
 import { handle } from 'redux-pack';
 import { AsyncStorage } from 'react-native';
 
-import { getCountries, getAirports } from '../services/api';
+import { getVacations, setVacation, getAirports } from '../services/api';
 import Coordinate from '../model/Coordinate';
 import * as EarthUtils from '../utils/EarthUtils';
 
@@ -12,6 +12,8 @@ export const types = {
   SET_GEOCODE: 'MAP/SET_GEOCODE',
   SET_FOLLOW_LOCATION: 'MAP/SET_FOLLOW_LOCATION',
   GET_COUNTRIES: 'MAP/GET_COUNTRIES',
+  SET_COUNTRIES: 'MAP/SET_COUNTRIES',
+  SET_VACATION: 'MAP/SET_VACATION',
   GET_AIRPORTS: 'MAP/GET_AIRPORTS',
   SET_EDIT_MODE: 'MAP/SET_EDIT_MODE',
   SET_SHOW_FLIGHTS: 'MAP/SET_SHOW_FLIGHTS',
@@ -42,9 +44,14 @@ export const actions = {
   setGeolocation: geolocation => ({ type: types.SET_GEOLOCATION, geolocation }),
   setGeocode: geocode => ({ type: types.SET_GEOCODE, geocode }),
   setFollowLocation: followLocation => ({ type: types.SET_FOLLOW_LOCATION, followLocation }),
-  getCountries: () => ({
+  getCountries: userId => ({
     type: types.GET_COUNTRIES,
-    promise: getCountries(),
+    promise: getVacations(userId),
+  }),
+  setCountries: countries => ({ type: types.SET_COUNTRIES, countries }),
+  setVacation: (userId, countryId, status) => ({
+    type: types.SET_VACATION,
+    promise: setVacation(userId, countryId, status),
   }),
   getAirports: () => ({
     type: types.GET_AIRPORTS,
@@ -100,10 +107,13 @@ export default (state = initialState, action = {}) => {
               { latitude: x.lat_min, longitude: x.long_min },
               { latitude: x.lat_max, longitude: x.long_max },
             ]),
+            status: x.status,
           }));
           return prevState.set('countries', countries);
         },
       });
+    case types.SET_COUNTRIES:
+      return state.set('countries', action.countries);
     case types.GET_AIRPORTS:
       return handle(state, action, {
         success: prevState => prevState.set('airports', payload.data),
