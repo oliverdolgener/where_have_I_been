@@ -32,6 +32,7 @@ import iconEdit from '../assets/iconEdit.png';
 import iconToggleOn from '../assets/iconToggleOn.png';
 import iconToggleOff from '../assets/iconToggleOff.png';
 import iconAirport from '../assets/iconAirport.png';
+import iconUser from '../assets/iconLevel.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -40,6 +41,31 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    paddingHorizontal: 5,
+    marginBottom: 20,
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+  },
+  geocodeContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  geocodeCountry: {
+    fontSize: 20,
+    textAlign: 'right',
+  },
+  geocodeRegion: {
+    fontSize: 18,
+    textAlign: 'right',
+  },
+  geocodeCity: {
+    fontSize: 16,
+    textAlign: 'right',
   },
   menuItem: {
     flexDirection: 'row',
@@ -275,7 +301,7 @@ class DrawerMenu extends React.Component {
 
   render() {
     const {
-      friends, countries, mapType, tilesToSave, theme, powerSaver, editMode, showFlights,
+      friends, countries, mapType, tilesToSave, theme, powerSaver, editMode, showFlights, geocode,
     } = this.props;
     const {
       showFriendlist,
@@ -308,6 +334,14 @@ class DrawerMenu extends React.Component {
       >
         <ScrollView>
           <View style={styles.menuContainer}>
+            <View style={styles.header}>
+              <Image style={styles.avatar} source={iconUser} />
+              <View style={styles.geocodeContainer}>
+                <Text style={styles.geocodeCountry} ellipsizeMode="middle" numberOfLines={1}>{geocode.country}</Text>
+                <Text style={styles.geocodeRegion} ellipsizeMode="middle" numberOfLines={1}>{geocode.region}</Text>
+                <Text style={styles.geocodeCity} ellipsizeMode="middle" numberOfLines={1}>{geocode.city}</Text>
+              </View>
+            </View>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleMapType()}>
               <Image style={styles.menuIcon} source={iconMap} />
               <Text style={styles.menuLabel}>Map Type</Text>
@@ -415,6 +449,7 @@ const mapStateToProps = state => ({
   map: state.map.get('map'),
   mapType: state.map.get('mapType'),
   theme: state.map.get('theme'),
+  geocode: state.map.get('geocode'),
   powerSaver: state.map.get('powerSaver'),
   countries: state.map.get('countries'),
   editMode: state.map.get('editMode'),
