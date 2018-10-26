@@ -1,7 +1,9 @@
 import { Map } from 'immutable';
 import { handle } from 'redux-pack';
+import { AsyncStorage } from 'react-native';
 
 import { getCountries, getAirports } from '../services/api';
+import Coordinate from '../model/Coordinate';
 import * as EarthUtils from '../utils/EarthUtils';
 
 export const types = {
@@ -12,8 +14,27 @@ export const types = {
   GET_COUNTRIES: 'MAP/GET_COUNTRIES',
   GET_AIRPORTS: 'MAP/GET_AIRPORTS',
   SET_EDIT_MODE: 'MAP/SET_EDIT_MODE',
-  SET_EDIT_TYPE: 'MAP/SET_EDIT_TYPE',
   SET_SHOW_FLIGHTS: 'MAP/SET_SHOW_FLIGHTS',
+  SET_MAPTYPE: 'MAP/SET_MAPTYPE',
+  SET_THEME: 'MAP/SET_THEME',
+  SET_LAST_TILE: 'USER/SET_LAST_TILE',
+  SET_POWER_SAVER: 'USER/SET_POWER_SAVER',
+};
+
+const setMapTypeAsync = async (mapType) => {
+  await AsyncStorage.setItem('mapType', mapType);
+};
+
+const setThemeAsync = async (theme) => {
+  await AsyncStorage.setItem('theme', theme);
+};
+
+const setLastTileAsync = async (tile) => {
+  await AsyncStorage.setItem('lastTile', JSON.stringify(tile));
+};
+
+const setPowerSaverAsync = async (powerSaver) => {
+  await AsyncStorage.setItem('powerSaver', powerSaver);
 };
 
 export const actions = {
@@ -30,8 +51,11 @@ export const actions = {
     promise: getAirports(),
   }),
   setEditMode: editMode => ({ type: types.SET_EDIT_MODE, editMode }),
-  setEditType: editType => ({ type: types.SET_EDIT_TYPE, editType }),
   setShowFlights: showFlights => ({ type: types.SET_SHOW_FLIGHTS, showFlights }),
+  setMapType: mapType => ({ type: types.SET_MAPTYPE, mapType }),
+  setTheme: theme => ({ type: types.SET_THEME, theme }),
+  setLastTile: lastTile => ({ type: types.SET_LAST_TILE, lastTile }),
+  setPowerSaver: powerSaver => ({ type: types.SET_POWER_SAVER, powerSaver }),
 };
 
 const initialState = Map({
@@ -47,8 +71,12 @@ const initialState = Map({
   countries: [],
   airports: [],
   editMode: false,
-  editType: 'buy',
   showFlights: false,
+  mapType: 'hybrid',
+  theme: 'light',
+  lastTile: new Coordinate(52.558, 13.206497),
+  powerSaver: 'off',
+
 });
 
 export default (state = initialState, action = {}) => {
@@ -82,10 +110,21 @@ export default (state = initialState, action = {}) => {
       });
     case types.SET_EDIT_MODE:
       return state.set('editMode', action.editMode);
-    case types.SET_EDIT_TYPE:
-      return state.set('editType', action.editType);
     case types.SET_SHOW_FLIGHTS:
       return state.set('showFlights', action.showFlights);
+    case types.SET_MAPTYPE:
+      setMapTypeAsync(action.mapType);
+      return state.set('mapType', action.mapType);
+    case types.SET_THEME:
+      setThemeAsync(action.theme);
+      return state.set('theme', action.theme);
+    case types.SET_LAST_TILE: {
+      setLastTileAsync(action.lastTile);
+      return state.set('lastTile', action.lastTile);
+    }
+    case types.SET_POWER_SAVER:
+      setPowerSaverAsync(action.powerSaver);
+      return state.set('powerSaver', action.powerSaver);
     default:
       return state;
   }

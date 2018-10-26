@@ -93,20 +93,15 @@ class SplashScreen extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({});
-
 const mapDispatchToProps = {
   relogUser: userActions.relogUser,
-  setMapType: userActions.setMapType,
   setTilesToSave: userActions.setTilesToSave,
-  setLastTile: userActions.setLastTile,
-  setTheme: userActions.setTheme,
-  setPowerSaver: userActions.setPowerSaver,
+  setLastTile: mapActions.setLastTile,
   setPushToken: userActions.setPushToken,
+  setPowerSaver: mapActions.setPowerSaver,
+  setMapType: mapActions.setMapType,
+  setTheme: mapActions.setTheme,
   getAirports: mapActions.getAirports,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(SplashScreen);
+export default connect(null, mapDispatchToProps)(SplashScreen);

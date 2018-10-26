@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { Platform } from 'react-native';
 import { connect } from 'react-redux';
-import { Location, Permissions, MapView } from 'expo';
+import { MapView } from 'expo';
 
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
-import Coordinate from '../model/Coordinate';
-import * as MathUtils from '../utils/MathUtils';
+import Fog from './Fog';
+import Flights from './Flights';
 import * as EarthUtils from '../utils/EarthUtils';
-import * as Earth from '../constants/Earth';
-import * as Colors from '../constants/Colors';
 import mapStyleLight from '../assets/mapStyleLight.json';
 import mapStyleDark from '../assets/mapStyleDark.json';
 
@@ -20,21 +18,6 @@ const styles = {
 };
 
 class Map extends Component {
-  componentDidMount() {
-    const { lastTile, getFlights, userId } = this.props;
-    this.watchPositionAsync();
-    this.getGeocodeAsync(lastTile);
-    getFlights(userId);
-  }
-
-  onTileChange(tile) {
-    const { setLastTile, geolocation, followLocation } = this.props;
-    setLastTile(tile);
-    this.addLocation(tile);
-    this.getGeocodeAsync(geolocation.location);
-    followLocation && this.moveToLocation(tile);
-  }
-
   onRegionChangeComplete(region) {
     const { setRegion, setFollowLocation, geolocation } = this.props;
 
@@ -43,93 +26,6 @@ class Map extends Component {
 
     if (Platform.OS === 'ios' && !EarthUtils.isCoordinateInRegion(geolocation.location, region)) {
       setFollowLocation(false);
-    }
-  }
-
-  onMapPress(coordinate) {
-    const { editMode, editType } = this.props;
-    if (!editMode) {
-      return;
-    }
-
-    const location = new Coordinate(coordinate.latitude, coordinate.longitude);
-    const timestamp = new Date().getTime();
-    const roundedLocation = new Coordinate(
-      location.getRoundedLatitude(),
-      location.getRoundedLongitude(),
-      timestamp,
-    );
-
-    if (editType === 'buy') {
-      this.addLocation(roundedLocation);
-    }
-  }
-
-  getGeocodeAsync = async (location) => {
-    const { setGeocode } = this.props;
-    await Permissions.askAsync(Permissions.LOCATION);
-    const geocode = await Location.reverseGeocodeAsync(location);
-    setGeocode(geocode[0]);
-  };
-
-  watchPositionAsync = async () => {
-    await Permissions.askAsync(Permissions.LOCATION);
-    this.positionListener = await Location.watchPositionAsync(
-      { enableHighAccuracy: true, timeInterval: 0, distanceInterval: 0 },
-      (result) => {
-        const { setGeolocation } = this.props;
-        const {
-          latitude, longitude, speed, altitude, accuracy,
-        } = result.coords;
-        const { timestamp } = result;
-
-        setGeolocation({
-          location: new Coordinate(latitude, longitude),
-          speed: Math.round(MathUtils.toKmh(speed)),
-          altitude: Math.round(altitude),
-          accuracy,
-          timestamp,
-        });
-
-        const location = new Coordinate(latitude, longitude);
-
-        if (accuracy < 50) {
-          const { lastTile } = this.props;
-          const roundedLocation = new Coordinate(
-            location.getRoundedLatitude(),
-            location.getRoundedLongitude(),
-            timestamp,
-          );
-
-          if (!Coordinate.isEqual(lastTile, roundedLocation)) {
-            this.onTileChange(roundedLocation);
-          }
-        }
-      },
-    );
-  };
-
-  addLocation(location) {
-    const {
-      userId,
-      tilesToSave,
-      setTilesToSave,
-      saveTiles,
-      visitedLocations,
-      setLocations,
-      isSaving,
-    } = this.props;
-
-    if (!MathUtils.isLocationInGrid(location, visitedLocations)) {
-      const unsaved = [...tilesToSave, location];
-      const locations = MathUtils.insertIntoGrid(visitedLocations, location);
-      const visited = MathUtils.gridToArray(locations);
-      setLocations(visited);
-      setTilesToSave(unsaved);
-
-      if (!isSaving) {
-        saveTiles(userId, unsaved);
-      }
     }
   }
 
@@ -148,12 +44,15 @@ class Map extends Component {
 
   render() {
     const {
-      isLoggedIn, mapType, holes, theme, lastTile, setMap, setFollowLocation, flights, showFlights, editMode,
+      mapType,
+      theme,
+      lastTile,
+      setMap,
+      setFollowLocation,
+      showFlights,
+      editMode,
+      onMapPress,
     } = this.props;
-
-    if (!isLoggedIn && this.positionListener) {
-      this.positionListener.remove();
-    }
 
     return (
       <MapView
@@ -192,61 +91,29 @@ class Map extends Component {
         loadingEnabled
         onRegionChangeComplete={newRegion => this.onRegionChangeComplete(newRegion)}
         onPanDrag={() => setFollowLocation(false)}
-        onLongPress={event => this.onMapPress(event.nativeEvent.coordinate)}
+        onLongPress={event => onMapPress(event.nativeEvent.coordinate)}
       >
-        <MapView.Polygon
-          fillColor={Colors.black80}
-          strokeWidth={0}
-          strokeColor={Colors.transparent}
-          coordinates={Earth.FOG}
-          holes={holes}
-        />
-        {(showFlights || editMode) && flights.map(x => (
-          <MapView.Polyline
-            key={x.id.toString()}
-            coordinates={[
-              { latitude: x.start_latitude, longitude: x.start_longitude },
-              { latitude: x.destination_latitude, longitude: x.destination_longitude },
-            ]}
-            strokeColor={Colors.blue}
-            strokeWidth={2}
-            geodesic
-          />
-        ))}
+        <Fog />
+        {(showFlights || editMode) && <Flights />}
       </MapView>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  userId: state.user.get('userId'),
   region: state.user.get('region'),
-  visitedLocations: state.user.get('visitedLocations'),
-  holes: state.user.get('holes'),
-  isLoggedIn: state.user.get('isLoggedIn'),
-  mapType: state.user.get('mapType'),
-  tilesToSave: state.user.get('tilesToSave'),
-  theme: state.user.get('theme'),
-  lastTile: state.user.get('lastTile'),
-  isSaving: state.user.get('isSaving'),
-  flights: state.user.get('flights'),
+  lastTile: state.map.get('lastTile'),
+  mapType: state.map.get('mapType'),
+  theme: state.map.get('theme'),
   followLocation: state.map.get('followLocation'),
   geolocation: state.map.get('geolocation'),
   editMode: state.map.get('editMode'),
-  editType: state.map.get('editType'),
   showFlights: state.map.get('showFlights'),
 });
 
 const mapDispatchToProps = {
-  setLocations: userActions.setLocations,
   setRegion: userActions.setRegion,
-  setTilesToSave: userActions.setTilesToSave,
-  saveTiles: userActions.saveTiles,
-  setLastTile: userActions.setLastTile,
-  getFlights: userActions.getFlights,
   setMap: mapActions.setMap,
-  setGeolocation: mapActions.setGeolocation,
-  setGeocode: mapActions.setGeocode,
   setFollowLocation: mapActions.setFollowLocation,
 };
 

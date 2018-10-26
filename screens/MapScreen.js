@@ -3,11 +3,12 @@ import {
   View, Text, Image, TextInput, TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { DangerZone } from 'expo';
+import { Location, DangerZone } from 'expo';
 import ProgressBar from 'react-native-progress/Bar';
 
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
+import Coordinate from '../model/Coordinate';
 import Map from '../components/Map';
 import * as LevelUtils from '../utils/LevelUtils';
 import * as MathUtils from '../utils/MathUtils';
@@ -116,12 +117,33 @@ class MapScreen extends Component {
   }
 
   componentDidMount() {
+    const { userId, getFlights, lastTile } = this.props;
     this.motionListener = DangerZone.DeviceMotion.addListener(result => this.handleMotionEvent(result));
     DangerZone.DeviceMotion.setUpdateInterval(1000);
+    this.watchPositionAsync();
+    getFlights(userId);
+    this.getGeocodeAsync(lastTile);
   }
 
   componentWillUnmount() {
     this.motionListener.remove();
+  }
+
+  onMapPress(coordinate) {
+    const { editMode } = this.props;
+    if (!editMode) {
+      return;
+    }
+
+    const location = new Coordinate(coordinate.latitude, coordinate.longitude);
+    const timestamp = new Date().getTime();
+    const roundedLocation = new Coordinate(
+      location.getRoundedLatitude(),
+      location.getRoundedLongitude(),
+      timestamp,
+    );
+
+    this.addLocation(roundedLocation);
   }
 
   onAddFlight() {
@@ -140,6 +162,82 @@ class MapScreen extends Component {
       from: '',
       to: '',
     });
+  }
+
+  onTileChange(tile) {
+    const {
+      setLastTile, geolocation, followLocation, map,
+    } = this.props;
+    setLastTile(tile);
+    this.addLocation(tile);
+    this.getGeocodeAsync(geolocation.location);
+    followLocation && map && map.moveToLocation(tile);
+  }
+
+  watchPositionAsync = async () => {
+    this.positionListener = await Location.watchPositionAsync(
+      { enableHighAccuracy: true, timeInterval: 0, distanceInterval: 0 },
+      (result) => {
+        const { setGeolocation } = this.props;
+        const {
+          latitude, longitude, speed, altitude, accuracy,
+        } = result.coords;
+        const { timestamp } = result;
+
+        setGeolocation({
+          location: new Coordinate(latitude, longitude),
+          speed: Math.round(MathUtils.toKmh(speed)),
+          altitude: Math.round(altitude),
+          accuracy,
+          timestamp,
+        });
+
+        const location = new Coordinate(latitude, longitude);
+
+        if (accuracy < 50) {
+          const { lastTile } = this.props;
+          const roundedLocation = new Coordinate(
+            location.getRoundedLatitude(),
+            location.getRoundedLongitude(),
+            timestamp,
+          );
+
+          if (!Coordinate.isEqual(lastTile, roundedLocation)) {
+            this.onTileChange(roundedLocation);
+          }
+        }
+      },
+    );
+  };
+
+  getGeocodeAsync = async (location) => {
+    const { setGeocode } = this.props;
+    const geocode = await Location.reverseGeocodeAsync(location);
+    setGeocode(geocode[0]);
+  };
+
+  addLocation(location) {
+    const {
+      userId,
+      tilesToSave,
+      setTilesToSave,
+      saveTiles,
+      visitedLocations,
+      setLocations,
+      isSaving,
+    } = this.props;
+
+    if (!MathUtils.isLocationInGrid(location, visitedLocations)) {
+      const unsaved = [...tilesToSave, location];
+      const locations = MathUtils.insertIntoGrid(visitedLocations, location);
+      const visited = MathUtils.gridToArray(locations);
+      setLocations(visited);
+      setTilesToSave(unsaved);
+
+      if (!isSaving) {
+        saveTiles(userId, unsaved);
+      }
+    }
   }
 
   handleMotionEvent(result) {
@@ -161,6 +259,7 @@ class MapScreen extends Component {
 
   render() {
     const {
+      isLoggedIn,
       visitedLocations,
       navigation,
       friendId,
@@ -178,9 +277,13 @@ class MapScreen extends Component {
     const level = LevelUtils.getLevelFromExp(locations.length);
     const progress = LevelUtils.getPercentToNextLevel(locations.length);
 
+    if (!isLoggedIn && this.positionListener) {
+      this.positionListener.remove();
+    }
+
     return (
       <View style={styles.container}>
-        <Map />
+        <Map onMapPress={coordinate => this.onMapPress(coordinate)} />
         <View style={styles.toolbar}>
           <View style={styles.toolbarItem}>
             <Image style={styles.toolbarIcon} source={iconLevel} />
@@ -277,11 +380,15 @@ class MapScreen extends Component {
 }
 
 const mapStateToProps = state => ({
+  isLoggedIn: state.user.get('isLoggedIn'),
   userId: state.user.get('userId'),
   friendId: state.user.get('friendId'),
   visitedLocations: state.user.get('visitedLocations'),
-  powerSaver: state.user.get('powerSaver'),
+  tilesToSave: state.user.get('tilesToSave'),
+  isSaving: state.user.get('isSaving'),
   map: state.map.get('map'),
+  lastTile: state.map.get('lastTile'),
+  powerSaver: state.map.get('powerSaver'),
   geolocation: state.map.get('geolocation'),
   geocode: state.map.get('geocode'),
   followLocation: state.map.get('followLocation'),
@@ -289,8 +396,15 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  resetFriend: userActions.resetFriend,
+  setLocations: userActions.setLocations,
+  setTilesToSave: userActions.setTilesToSave,
+  saveTiles: userActions.saveTiles,
+  getFlights: userActions.getFlights,
   addFlight: userActions.addFlight,
+  resetFriend: userActions.resetFriend,
+  setLastTile: mapActions.setLastTile,
+  setGeolocation: mapActions.setGeolocation,
+  setGeocode: mapActions.setGeocode,
   setFollowLocation: mapActions.setFollowLocation,
 };
 

@@ -35,12 +35,8 @@ export const types = {
   SET_PASSWORD_ERROR: 'USER/SET_PASSWORD_ERROR',
   SET_LOCATIONS: 'USER/SET_LOCATIONS',
   SET_REGION: 'USER/SET_REGION',
-  SET_MAPTYPE: 'USER/SET_MAPTYPE',
   SET_TILES_TO_SAVE: 'USER/SET_TILES_TO_SAVE',
   SAVE_TILES: 'USER/SAVE_TILES',
-  SET_THEME: 'USER/SET_THEME',
-  SET_POWER_SAVER: 'USER/SET_POWER_SAVER',
-  SET_LAST_TILE: 'USER/SET_LAST_TILE',
   SET_PUSH_TOKEN: 'USER/SET_PUSH_TOKEN',
   GET_FLIGHTS: 'USER/GET_FLIGHTS',
   ADD_FLIGHT: 'USER/ADD/FLIGHT',
@@ -56,22 +52,6 @@ const removeUserAsync = async () => {
 
 const setTilesToSaveAsync = async (tilesToSave) => {
   await AsyncStorage.setItem('tilesToSave', JSON.stringify(tilesToSave));
-};
-
-const setLastTileAsync = async (tile) => {
-  await AsyncStorage.setItem('lastTile', JSON.stringify(tile));
-};
-
-const setMapTypeAsync = async (mapType) => {
-  await AsyncStorage.setItem('mapType', mapType);
-};
-
-const setThemeAsync = async (theme) => {
-  await AsyncStorage.setItem('theme', theme);
-};
-
-const setPowerSaverAsync = async (powerSaver) => {
-  await AsyncStorage.setItem('powerSaver', powerSaver);
 };
 
 const prepareLocations = (locations) => {
@@ -146,15 +126,11 @@ export const actions = {
   setPasswordError: error => ({ type: types.SET_PASSWORD_ERROR, error }),
   setLocations: locations => ({ type: types.SET_LOCATIONS, locations }),
   setRegion: region => ({ type: types.SET_REGION, region }),
-  setMapType: mapType => ({ type: types.SET_MAPTYPE, mapType }),
   setTilesToSave: tilesToSave => ({ type: types.SET_TILES_TO_SAVE, tilesToSave }),
   saveTiles: (userId, tilesToSave) => ({
     type: types.SAVE_TILES,
     promise: saveTiles(userId.toString(), tilesToSave),
   }),
-  setTheme: theme => ({ type: types.SET_THEME, theme }),
-  setPowerSaver: powerSaver => ({ type: types.SET_POWER_SAVER, powerSaver }),
-  setLastTile: lastTile => ({ type: types.SET_LAST_TILE, lastTile }),
   setPushToken: pushToken => ({ type: types.SET_PUSH_TOKEN, pushToken }),
   getFlights: userId => ({
     type: types.GET_FLIGHTS,
@@ -183,13 +159,9 @@ const initialState = Map({
   flights: [],
   emailError: '',
   passwordError: '',
-  mapType: 'hybrid',
   tilesToSave: [],
-  theme: 'light',
-  lastTile: new Coordinate(52.558, 13.206497),
   isSaving: false,
   isLoggingIn: false,
-  powerSaver: 'off',
   pushToken: false,
 });
 
@@ -332,9 +304,6 @@ export default (state = initialState, action = {}) => {
       }
       return state.set('region', action.region).set('holes', holes);
     }
-    case types.SET_MAPTYPE:
-      setMapTypeAsync(action.mapType);
-      return state.set('mapType', action.mapType);
     case types.SET_TILES_TO_SAVE:
       setTilesToSaveAsync(action.tilesToSave);
       return state.set('tilesToSave', action.tilesToSave);
@@ -352,16 +321,6 @@ export default (state = initialState, action = {}) => {
         },
         finish: prevState => prevState.set('isSaving', false),
       });
-    case types.SET_THEME:
-      setThemeAsync(action.theme);
-      return state.set('theme', action.theme);
-    case types.SET_POWER_SAVER:
-      setPowerSaverAsync(action.powerSaver);
-      return state.set('powerSaver', action.powerSaver);
-    case types.SET_LAST_TILE: {
-      setLastTileAsync(action.lastTile);
-      return state.set('lastTile', action.lastTile);
-    }
     case types.SET_PUSH_TOKEN: {
       return state.set('pushToken', action.pushToken);
     }
