@@ -213,7 +213,7 @@ class MapScreen extends Component {
   getGeocodeAsync = async (location) => {
     const { setGeocode } = this.props;
     const geocode = await Location.reverseGeocodeAsync(location);
-    setGeocode(geocode[0]);
+    geocode[0] && setGeocode(geocode[0]);
   };
 
   addLocation(location) {
