@@ -458,10 +458,10 @@ class DrawerMenu extends React.Component {
                     icon = iconToDo;
                     break;
                   case 1:
-                    icon = iconDone;
+                    icon = iconHeart;
                     break;
                   case 2:
-                    icon = iconHeart;
+                    icon = iconDone;
                     break;
                   default:
                     icon = iconToDo;
