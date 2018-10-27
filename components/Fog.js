@@ -9,7 +9,7 @@ const Fog = (props) => {
   const { holes } = props;
   return (
     <MapView.Polygon
-      fillColor={Colors.black80}
+      fillColor={Colors.brown}
       strokeWidth={0}
       strokeColor={Colors.transparent}
       coordinates={Earth.FOG}

@@ -28,7 +28,7 @@ const styles = {
   toolbar: {
     width: '100%',
     height: 30,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.creme,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -88,7 +88,7 @@ const styles = {
     top: 30,
     right: 10,
     width: 100,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.creme,
   },
   flightInput: {
     margin: 5,
@@ -102,7 +102,7 @@ const styles = {
     backgroundColor: Colors.blue,
   },
   flightButtonLabel: {
-    color: Colors.white,
+    color: Colors.creme,
   },
 };
 
@@ -311,7 +311,7 @@ class MapScreen extends Component {
           height={5}
           borderRadius={0}
           borderWidth={0}
-          unfilledColor={Colors.white}
+          unfilledColor={Colors.creme}
           color={Colors.blue}
           useNativeDriver
         />

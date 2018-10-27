@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.creme,
   },
   header: {
     flex: 1,
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.blue,
   },
   loginButtonText: {
-    color: Colors.white,
+    color: Colors.creme,
   },
   signUpButton: {
     height: 50,
@@ -182,7 +182,7 @@ class LoginScreen extends React.Component {
         <Text style={styles.error}>{passwordError}</Text>
         <TouchableOpacity style={styles.loginButton} onPress={this.onLoginPress}>
           <Text style={styles.loginButtonText}>{isLoggingIn ? 'Logging in...' : 'Login'}</Text>
-          {isLoggingIn && <ActivityIndicator style={styles.indicator} color={Colors.white} />}
+          {isLoggingIn && <ActivityIndicator style={styles.indicator} color={Colors.creme} />}
         </TouchableOpacity>
         <TouchableOpacity style={styles.signUpButton} onPress={this.onSignUpPress}>
           <Text style={styles.signUpButtonText}>Sign Up</Text>

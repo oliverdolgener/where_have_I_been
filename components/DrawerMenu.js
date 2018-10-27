@@ -40,7 +40,7 @@ import iconHeart from '../assets/iconHeart.png';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.creme,
   },
   menuContainer: {
     flex: 1,
