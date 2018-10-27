@@ -4,54 +4,21 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, DangerZone } from 'expo';
-import ProgressBar from 'react-native-progress/Bar';
 
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import Coordinate from '../model/Coordinate';
+import Toolbar from '../components/Toolbar';
 import Map from '../components/Map';
-import * as LevelUtils from '../utils/LevelUtils';
 import * as MathUtils from '../utils/MathUtils';
 import * as Colors from '../constants/Colors';
 import iconMenu from '../assets/iconMenu.png';
-import iconLevel from '../assets/iconLevel.png';
 import iconLocation from '../assets/iconLocation.png';
-import iconSquare from '../assets/iconSquare.png';
-import iconSpeed from '../assets/iconSpeed.png';
-import iconAltitude from '../assets/iconAltitude.png';
 import iconClose from '../assets/iconRemove.png';
 
 const styles = {
   container: {
     flex: 1,
-  },
-  toolbar: {
-    width: '100%',
-    height: 30,
-    backgroundColor: Colors.creme,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  toolbarItem: {
-    flex: 3,
-    flexDirection: 'row',
-  },
-  toolbarIcon: {
-    width: 20,
-    height: 20,
-    marginLeft: 10,
-  },
-  toolbarLabel: {
-    flex: 1,
-    fontSize: 16,
-    textAlign: 'right',
-    marginRight: 10,
-  },
-  separator: {
-    height: '100%',
-    borderWidth: 0.5,
-    borderColor: Colors.black,
   },
   batterySaver: {
     position: 'absolute',
@@ -260,11 +227,9 @@ class MapScreen extends Component {
   render() {
     const {
       isLoggedIn,
-      visitedLocations,
       navigation,
       friendId,
       resetFriend,
-      geolocation,
       followLocation,
       setFollowLocation,
       powerSaver,
@@ -273,10 +238,6 @@ class MapScreen extends Component {
 
     const { showBatterySaver, from, to } = this.state;
 
-    const locations = MathUtils.gridToArray(visitedLocations);
-    const level = LevelUtils.getLevelFromExp(locations.length);
-    const progress = LevelUtils.getPercentToNextLevel(locations.length);
-
     if (!isLoggedIn && this.positionListener) {
       this.positionListener.remove();
     }
@@ -284,37 +245,7 @@ class MapScreen extends Component {
     return (
       <View style={styles.container}>
         <Map onMapPress={coordinate => this.onMapPress(coordinate)} />
-        <View style={styles.toolbar}>
-          <View style={styles.toolbarItem}>
-            <Image style={styles.toolbarIcon} source={iconLevel} />
-            <Text style={styles.toolbarLabel}>{level}</Text>
-          </View>
-          <View style={styles.separator} />
-          <View style={[styles.toolbarItem, { flex: 5 }]}>
-            <Image style={styles.toolbarIcon} source={iconSquare} />
-            <Text style={styles.toolbarLabel}>{locations.length}</Text>
-          </View>
-          <View style={styles.separator} />
-          <View style={styles.toolbarItem}>
-            <Image style={styles.toolbarIcon} source={iconSpeed} />
-            <Text style={styles.toolbarLabel}>{geolocation.speed || 0}</Text>
-          </View>
-          <View style={styles.separator} />
-          <View style={[styles.toolbarItem, { flex: 4 }]}>
-            <Image style={styles.toolbarIcon} source={iconAltitude} />
-            <Text style={styles.toolbarLabel}>{geolocation.altitude || 0}</Text>
-          </View>
-        </View>
-        <ProgressBar
-          progress={progress}
-          width={null}
-          height={5}
-          borderRadius={0}
-          borderWidth={0}
-          unfilledColor={Colors.creme}
-          color={Colors.blue}
-          useNativeDriver
-        />
+        <Toolbar />
         <TouchableOpacity style={styles.menuButton} onPress={() => navigation.openDrawer()}>
           <Image style={styles.menuImage} source={iconMenu} />
         </TouchableOpacity>
