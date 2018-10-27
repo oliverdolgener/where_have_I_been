@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import {
-  View, Text, Image, TextInput, TouchableOpacity,
-} from 'react-native';
+import { View, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, DangerZone } from 'expo';
 
@@ -10,6 +8,7 @@ import { actions as mapActions } from '../reducers/map';
 import Coordinate from '../model/Coordinate';
 import Toolbar from '../components/Toolbar';
 import Map from '../components/Map';
+import FlightBox from '../components/FlightBox';
 import * as MathUtils from '../utils/MathUtils';
 import * as Colors from '../constants/Colors';
 import iconMenu from '../assets/iconMenu.png';
@@ -50,27 +49,6 @@ const styles = {
     width: 50,
     height: 50,
   },
-  flightBox: {
-    position: 'absolute',
-    top: 30,
-    right: 10,
-    width: 100,
-    backgroundColor: Colors.creme,
-  },
-  flightInput: {
-    margin: 5,
-    paddingHorizontal: 5,
-    height: 40,
-  },
-  flightButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 5,
-    backgroundColor: Colors.blue,
-  },
-  flightButtonLabel: {
-    color: Colors.creme,
-  },
 };
 
 class MapScreen extends Component {
@@ -78,8 +56,6 @@ class MapScreen extends Component {
     super();
     this.state = {
       showBatterySaver: false,
-      from: '',
-      to: '',
     };
   }
 
@@ -111,24 +87,6 @@ class MapScreen extends Component {
     );
 
     this.addLocation(roundedLocation);
-  }
-
-  onAddFlight() {
-    const { addFlight, userId } = this.props;
-    const { from, to } = this.state;
-    if (!from) {
-      return;
-    }
-    if (!to) {
-      return;
-    }
-
-    addFlight(userId, from, to);
-
-    this.setState({
-      from: '',
-      to: '',
-    });
   }
 
   onTileChange(tile) {
@@ -236,7 +194,7 @@ class MapScreen extends Component {
       editMode,
     } = this.props;
 
-    const { showBatterySaver, from, to } = this.state;
+    const { showBatterySaver } = this.state;
 
     if (!isLoggedIn && this.positionListener) {
       this.positionListener.remove();
@@ -270,40 +228,7 @@ class MapScreen extends Component {
             </View>
           )
         )}
-        {editMode && (
-          <View style={styles.flightBox}>
-            <TextInput
-              style={styles.flightInput}
-              placeholder="From"
-              onChangeText={text => this.setState({ from: text })}
-              value={from}
-              selectionColor={Colors.blue}
-              underlineColorAndroid={Colors.blue}
-              returnKeyType="next"
-              onSubmitEditing={() => this.toInput.focus()}
-              autoCorrect={false}
-              autoCapitalize="characters"
-            />
-            <TextInput
-              ref={(ref) => {
-                this.toInput = ref;
-              }}
-              style={styles.flightInput}
-              placeholder="To"
-              onChangeText={text => this.setState({ to: text })}
-              value={to}
-              selectionColor={Colors.blue}
-              underlineColorAndroid={Colors.blue}
-              returnKeyType="send"
-              onSubmitEditing={() => this.onAddFlight()}
-              autoCorrect={false}
-              autoCapitalize="characters"
-            />
-            <TouchableOpacity style={styles.flightButton} onPress={() => this.onAddFlight()}>
-              <Text style={styles.flightButtonLabel}>Add Flight</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        {editMode && <FlightBox />}
         {powerSaver === 'on' && showBatterySaver && <View style={styles.batterySaver} />}
       </View>
     );
@@ -331,7 +256,6 @@ const mapDispatchToProps = {
   setTilesToSave: userActions.setTilesToSave,
   saveTiles: userActions.saveTiles,
   getFlights: userActions.getFlights,
-  addFlight: userActions.addFlight,
   resetFriend: userActions.resetFriend,
   setLastTile: mapActions.setLastTile,
   setGeolocation: mapActions.setGeolocation,
