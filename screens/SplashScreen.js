@@ -28,10 +28,8 @@ const styles = StyleSheet.create({
 
 class SplashScreen extends React.Component {
   componentWillMount() {
-    const { getAirports } = this.props;
     this.registerForPushAsync();
     this.getUserAsync();
-    getAirports();
   }
 
   registerForPushAsync = async () => {
@@ -39,7 +37,7 @@ class SplashScreen extends React.Component {
     await Permissions.askAsync(Permissions.NOTIFICATIONS);
     const token = await Notifications.getExpoPushTokenAsync();
     setPushToken(token);
-  }
+  };
 
   getUserAsync = async () => {
     const {
@@ -101,7 +99,9 @@ const mapDispatchToProps = {
   setPowerSaver: mapActions.setPowerSaver,
   setMapType: mapActions.setMapType,
   setTheme: mapActions.setTheme,
-  getAirports: mapActions.getAirports,
 };
 
-export default connect(null, mapDispatchToProps)(SplashScreen);
+export default connect(
+  null,
+  mapDispatchToProps,
+)(SplashScreen);
