@@ -10,6 +10,9 @@ import Flights from './Flights';
 import * as EarthUtils from '../utils/EarthUtils';
 import mapStyleLight from '../assets/mapStyleLight.json';
 import mapStyleDark from '../assets/mapStyleDark.json';
+import germany from '../countries/germany100';
+import france from '../countries/france';
+import * as Colors from '../constants/Colors';
 
 const styles = {
   container: {
@@ -95,6 +98,22 @@ class Map extends Component {
       >
         <Fog />
         {(showFlights || editMode) && <Flights />}
+        {germany.map(x => (
+          <MapView.Polygon
+            fillColor={Colors.green50}
+            strokeWidth={0}
+            strokeColor={Colors.transparent}
+            coordinates={x}
+          />
+        ))}
+        {france.map(x => (
+          <MapView.Polygon
+            fillColor={Colors.red50}
+            strokeWidth={0}
+            strokeColor={Colors.transparent}
+            coordinates={x}
+          />
+        ))}
       </MapView>
     );
   }

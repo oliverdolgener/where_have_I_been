@@ -5,3 +5,5 @@ export const creme = '#FCF4E8';
 export const brown = '#170E03';
 export const blue = '#1985A1';
 export const red = '#CC0000';
+export const red50 = 'rgba(255, 0, 0, 0.5)';
+export const green50 = 'rgba(0, 255, 0, 0.5)';
