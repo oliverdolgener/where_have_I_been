@@ -7,12 +7,10 @@ import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import Fog from './Fog';
 import Flights from './Flights';
+import Countries from './Countries';
 import * as EarthUtils from '../utils/EarthUtils';
 import mapStyleLight from '../assets/mapStyleLight.json';
 import mapStyleDark from '../assets/mapStyleDark.json';
-import germany from '../countries/germany100';
-import france from '../countries/france';
-import * as Colors from '../constants/Colors';
 
 const styles = {
   container: {
@@ -53,6 +51,7 @@ class Map extends Component {
       setMap,
       setFollowLocation,
       showFlights,
+      showCountries,
       editMode,
       onMapPress,
     } = this.props;
@@ -98,22 +97,7 @@ class Map extends Component {
       >
         <Fog />
         {(showFlights || editMode) && <Flights />}
-        {germany.map(x => (
-          <MapView.Polygon
-            fillColor={Colors.green50}
-            strokeWidth={0}
-            strokeColor={Colors.transparent}
-            coordinates={x}
-          />
-        ))}
-        {france.map(x => (
-          <MapView.Polygon
-            fillColor={Colors.red50}
-            strokeWidth={0}
-            strokeColor={Colors.transparent}
-            coordinates={x}
-          />
-        ))}
+        {showCountries && <Countries />}
       </MapView>
     );
   }
@@ -128,6 +112,7 @@ const mapStateToProps = state => ({
   geolocation: state.map.get('geolocation'),
   editMode: state.map.get('editMode'),
   showFlights: state.map.get('showFlights'),
+  showCountries: state.map.get('showCountries'),
 });
 
 const mapDispatchToProps = {
