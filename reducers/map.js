@@ -17,6 +17,7 @@ export const types = {
   GET_AIRPORTS: 'MAP/GET_AIRPORTS',
   SET_EDIT_MODE: 'MAP/SET_EDIT_MODE',
   SET_SHOW_FLIGHTS: 'MAP/SET_SHOW_FLIGHTS',
+  SET_SHOW_COUNTRIES: 'MAP/SET_SHOW_COUNTRIES',
   SET_MAPTYPE: 'MAP/SET_MAPTYPE',
   SET_THEME: 'MAP/SET_THEME',
   SET_LAST_TILE: 'USER/SET_LAST_TILE',
@@ -59,6 +60,7 @@ export const actions = {
   }),
   setEditMode: editMode => ({ type: types.SET_EDIT_MODE, editMode }),
   setShowFlights: showFlights => ({ type: types.SET_SHOW_FLIGHTS, showFlights }),
+  setShowCountries: showCountries => ({ type: types.SET_SHOW_COUNTRIES, showCountries }),
   setMapType: mapType => ({ type: types.SET_MAPTYPE, mapType }),
   setTheme: theme => ({ type: types.SET_THEME, theme }),
   setLastTile: lastTile => ({ type: types.SET_LAST_TILE, lastTile }),
@@ -79,11 +81,11 @@ const initialState = Map({
   airports: [],
   editMode: false,
   showFlights: false,
+  showCountries: false,
   mapType: 'hybrid',
   theme: 'light',
   lastTile: new Coordinate(52.558, 13.206497),
   powerSaver: 'off',
-
 });
 
 export default (state = initialState, action = {}) => {
@@ -122,6 +124,8 @@ export default (state = initialState, action = {}) => {
       return state.set('editMode', action.editMode);
     case types.SET_SHOW_FLIGHTS:
       return state.set('showFlights', action.showFlights);
+    case types.SET_SHOW_COUNTRIES:
+      return state.set('showCountries', action.showCountries);
     case types.SET_MAPTYPE:
       setMapTypeAsync(action.mapType);
       return state.set('mapType', action.mapType);

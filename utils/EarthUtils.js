@@ -66,10 +66,14 @@ export function getSquareCoordinates(location, gridDistance = Earth.GRID_DISTANC
 export function getSliceCoordinates(coordinates, gridDistance = Earth.GRID_DISTANCE) {
   const slices = [];
   const array = MathUtils.gridToArray(coordinates);
-  const resizedLocations = MathUtils.removeDuplicateLocations(array.map(x => new Coordinate(
-    Coordinate.getRoundedLatitude(x.latitude, gridDistance),
-    Coordinate.getRoundedLongitude(x.longitude, x.latitude, gridDistance),
-  )));
+  const resizedLocations = MathUtils.removeDuplicateLocations(
+    array.map(
+      x => new Coordinate(
+        Coordinate.getRoundedLatitude(x.latitude, gridDistance),
+        Coordinate.getRoundedLongitude(x.longitude, x.latitude, gridDistance),
+      ),
+    ),
+  );
   const locations = MathUtils.arrayToGrid(resizedLocations);
 
   for (let i = 0; i < locations.length; i++) {
@@ -194,7 +198,7 @@ export function coordinatesToRegion(coordinates) {
   return {
     latitude: (latMin + latMax) / 2,
     longitude: (longMin + longMax) / 2,
-    latitudeDelta: (latMax - latMin),
-    longitudeDelta: (longMax - longMin),
+    latitudeDelta: latMax - latMin,
+    longitudeDelta: longMax - longMin,
   };
 }

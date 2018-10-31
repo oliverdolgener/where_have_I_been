@@ -7,6 +7,7 @@ import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import Fog from './Fog';
 import Flights from './Flights';
+import Countries from './Countries';
 import * as EarthUtils from '../utils/EarthUtils';
 import mapStyleLight from '../assets/mapStyleLight.json';
 import mapStyleDark from '../assets/mapStyleDark.json';
@@ -94,6 +95,7 @@ class Map extends Component {
         onLongPress={event => onMapPress(event.nativeEvent.coordinate)}
       >
         <Fog />
+        <Countries />
         {(showFlights || editMode) && <Flights />}
       </MapView>
     );

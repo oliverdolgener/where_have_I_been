@@ -122,7 +122,7 @@ class DrawerMenu extends React.Component {
     super();
     this.state = {
       showFriendlist: false,
-      showCountries: false,
+      showCountryList: false,
       isSpinning: false,
       spinValue: new Animated.Value(0),
       friendlistIconValue: new Animated.Value(1),
@@ -172,7 +172,7 @@ class DrawerMenu extends React.Component {
     navigation.closeDrawer();
     this.setState({
       showFriendlist: false,
-      showCountries: false,
+      showCountryList: false,
     });
   };
 
@@ -212,18 +212,18 @@ class DrawerMenu extends React.Component {
     this.closeListAnimation(countriesIconValue);
     this.setState({
       showFriendlist: !showFriendlist,
-      showCountries: false,
+      showCountryList: false,
     });
   };
 
-  toggleCountries = () => {
-    const { showCountries, countriesIconValue, friendlistIconValue } = this.state;
-    showCountries
+  toggleCountryList = () => {
+    const { showCountryList, countriesIconValue, friendlistIconValue } = this.state;
+    showCountryList
       ? this.closeListAnimation(countriesIconValue)
       : this.openListAnimation(countriesIconValue);
     this.closeListAnimation(friendlistIconValue);
     this.setState({
-      showCountries: !showCountries,
+      showCountryList: !showCountryList,
       showFriendlist: false,
     });
   };
@@ -232,6 +232,12 @@ class DrawerMenu extends React.Component {
     const { showFlights, setShowFlights } = this.props;
     this.closeDrawer();
     setShowFlights(!showFlights);
+  }
+
+  toggleCountries = () => {
+    const { showCountries, setShowCountries } = this.props;
+    this.closeDrawer();
+    setShowCountries(!showCountries);
   }
 
   toggleEditMode = () => {
@@ -360,11 +366,11 @@ class DrawerMenu extends React.Component {
 
   render() {
     const {
-      friends, countries, mapType, tilesToSave, theme, powerSaver, editMode, showFlights, geocode,
+      friends, countries, mapType, tilesToSave, theme, powerSaver, editMode, showFlights, showCountries, geocode,
     } = this.props;
     const {
       showFriendlist,
-      showCountries,
+      showCountryList,
       spinValue,
       friendlistIconValue,
       countriesIconValue,
@@ -443,14 +449,14 @@ class DrawerMenu extends React.Component {
                 </TouchableOpacity>
               ))}
             </Collapsible>
-            <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountries()}>
+            <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountryList()}>
               <Image style={styles.menuIcon} source={iconWorld} />
               <Text style={styles.menuLabel}>Countries</Text>
               <Animated.View style={{ transform: [{ rotateX: countriesFlip }] }}>
                 <Image style={styles.menuIcon} source={iconCollapse} />
               </Animated.View>
             </TouchableOpacity>
-            <Collapsible collapsed={!showCountries}>
+            <Collapsible collapsed={!showCountryList}>
               {countries.map((x) => {
                 let icon;
                 switch (x.status) {
@@ -494,6 +500,11 @@ class DrawerMenu extends React.Component {
               <Text style={styles.menuLabel}>Show Flights</Text>
               <Image style={styles.menuIcon} source={showFlights ? iconToggleOn : iconToggleOff} />
             </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountries()}>
+              <Image style={styles.menuIcon} source={iconMap} />
+              <Text style={styles.menuLabel}>Show Countries</Text>
+              <Image style={styles.menuIcon} source={showCountries ? iconToggleOn : iconToggleOff} />
+            </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleTheme()}>
               <Image style={styles.menuIcon} source={iconNight} />
               <Text style={styles.menuLabel}>Night Mode</Text>
@@ -534,6 +545,7 @@ const mapStateToProps = state => ({
   countries: state.map.get('countries'),
   editMode: state.map.get('editMode'),
   showFlights: state.map.get('showFlights'),
+  showCountries: state.map.get('showCountries'),
 });
 
 const mapDispatchToProps = {
@@ -552,6 +564,7 @@ const mapDispatchToProps = {
   setFollowLocation: mapActions.setFollowLocation,
   setEditMode: mapActions.setEditMode,
   setShowFlights: mapActions.setShowFlights,
+  setShowCountries: mapActions.setShowCountries,
 };
 
 export default connect(
