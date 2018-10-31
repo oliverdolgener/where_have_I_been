@@ -501,7 +501,7 @@ class DrawerMenu extends React.Component {
               <Image style={styles.menuIcon} source={showFlights ? iconToggleOn : iconToggleOff} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountries()}>
-              <Image style={styles.menuIcon} source={iconWorld} />
+              <Image style={styles.menuIcon} source={iconMap} />
               <Text style={styles.menuLabel}>Show Countries</Text>
               <Image style={styles.menuIcon} source={showCountries ? iconToggleOn : iconToggleOff} />
             </TouchableOpacity>
