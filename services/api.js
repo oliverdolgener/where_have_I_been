@@ -1,6 +1,7 @@
 import URI from 'urijs';
 
 const API_URL = 'https://api.0llum.de/';
+const ELEVATION_URL = 'https://api.open-elevation.com/api/v1/lookup';
 
 const ENDPOINT_USER = 'user';
 const ENDPOINT_LOGIN = 'login';
@@ -160,4 +161,10 @@ export const setVacation = (userId, countryId, status) => {
     body,
   };
   return fetchJson(url.href(), options);
+};
+
+export const getElevation = (coordinate) => {
+  const url = new URI(ELEVATION_URL);
+  url.addQuery('locations', `${coordinate.latitude},${coordinate.longitude}`);
+  return fetchJson(url.href());
 };

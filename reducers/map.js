@@ -2,7 +2,9 @@ import { Map } from 'immutable';
 import { handle } from 'redux-pack';
 import { AsyncStorage } from 'react-native';
 
-import { getVacations, setVacation, getAirports } from '../services/api';
+import {
+  getVacations, setVacation, getAirports, getElevation,
+} from '../services/api';
 import Coordinate from '../model/Coordinate';
 import * as EarthUtils from '../utils/EarthUtils';
 
@@ -20,8 +22,9 @@ export const types = {
   SET_SHOW_COUNTRIES: 'MAP/SET_SHOW_COUNTRIES',
   SET_MAPTYPE: 'MAP/SET_MAPTYPE',
   SET_THEME: 'MAP/SET_THEME',
-  SET_LAST_TILE: 'USER/SET_LAST_TILE',
-  SET_POWER_SAVER: 'USER/SET_POWER_SAVER',
+  SET_LAST_TILE: 'MAP/SET_LAST_TILE',
+  SET_POWER_SAVER: 'MAP/SET_POWER_SAVER',
+  GET_ELEVATION: 'MAP/GET_ELEVATION',
 };
 
 const setMapTypeAsync = async (mapType) => {
@@ -65,6 +68,10 @@ export const actions = {
   setTheme: theme => ({ type: types.SET_THEME, theme }),
   setLastTile: lastTile => ({ type: types.SET_LAST_TILE, lastTile }),
   setPowerSaver: powerSaver => ({ type: types.SET_POWER_SAVER, powerSaver }),
+  getElevation: coordinate => ({
+    type: types.GET_ELEVATION,
+    promise: getElevation(coordinate),
+  }),
 };
 
 const initialState = Map({
@@ -86,6 +93,7 @@ const initialState = Map({
   theme: 'light',
   lastTile: new Coordinate(52.558, 13.206497),
   powerSaver: 'off',
+  elevation: 0,
 });
 
 export default (state = initialState, action = {}) => {
@@ -139,6 +147,16 @@ export default (state = initialState, action = {}) => {
     case types.SET_POWER_SAVER:
       setPowerSaverAsync(action.powerSaver);
       return state.set('powerSaver', action.powerSaver);
+    case types.GET_ELEVATION:
+      return handle(state, action, {
+        success: (prevState) => {
+          console.log(payload.data.results);
+          if (payload.data.results.length > 0) {
+            return prevState.set('elevation', payload.data.results[0].elevation);
+          }
+          return prevState;
+        },
+      });
     default:
       return state;
   }

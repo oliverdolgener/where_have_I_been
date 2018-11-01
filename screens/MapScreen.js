@@ -117,6 +117,8 @@ class MapScreen extends Component {
         } = result.coords;
         const { timestamp } = result;
 
+        const location = new Coordinate(latitude, longitude, timestamp);
+
         const currentPosition = { lat: latitude, lng: longitude, time: timestamp };
         const calculatedSpeed = geolib.getSpeed(this.lastPosition, currentPosition);
         if (calculatedSpeed >= 0 && calculatedSpeed <= 1000) {
@@ -132,14 +134,12 @@ class MapScreen extends Component {
           timestamp,
         });
 
-        const location = new Coordinate(latitude, longitude);
-
         if (accuracy < 50) {
           const { lastTile } = this.props;
           const roundedLocation = new Coordinate(
             location.getRoundedLatitude(),
             location.getRoundedLongitude(),
-            timestamp,
+            location.timestamp,
           );
 
           if (!Coordinate.isEqual(lastTile, roundedLocation)) {
