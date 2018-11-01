@@ -33,7 +33,7 @@ const Countries = (props) => {
         key={i.toString()}
         geojson={x}
         fillColor={color}
-        strokeWidth={1}
+        strokeWidth={0.5}
         strokeColor={Colors.creme}
       />
     );
