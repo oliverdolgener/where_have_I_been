@@ -30,13 +30,17 @@ export default class Coordinate {
   }
 
   static getNeighbours(coordinate, array, gridDistance = Earth.GRID_DISTANCE) {
-    const neighbouringRows = array.filter(x => x.latitude === coordinate.latitude
+    const neighbouringRows = array.filter(
+      x => x.latitude === coordinate.latitude
         || x.latitude === coordinate.latitude + gridDistance
-        || x.latitude === coordinate.latitude - gridDistance);
-    return MathUtils.gridToArray(neighbouringRows).filter(x => (x.longitude - coordinate.longitude) ** 2
+        || x.latitude === coordinate.latitude - gridDistance,
+    );
+    return MathUtils.gridToArray(neighbouringRows).filter(
+      x => (x.longitude - coordinate.longitude) ** 2
           / EarthUtils.gridDistanceAtLatitude(coordinate.latitude) ** 2
           <= Earth.NEIGHBOUR_BOUNDARY + Earth.NEIGHBOUR_OFFSET_LONG
-        && !Coordinate.isEqual(x, coordinate));
+        && !Coordinate.isEqual(x, coordinate),
+    );
   }
 
   static breadthFirstSearch(array, start) {
@@ -108,24 +112,6 @@ export default class Coordinate {
     }
 
     return coherentTiles;
-  }
-
-  static getDistance(pointA, pointB) {
-    const phi1 = MathUtils.toRadians(pointA.latitude);
-    const phi2 = MathUtils.toRadians(pointB.latitude);
-    const deltaPhi = MathUtils.toRadians(pointB.latitude - pointA.latitude);
-    const deltaLambda = MathUtils.toRadians(pointB.longitude - pointA.longitude);
-
-    const a = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2)
-      + Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    return Earth.EARTH_RADIUS * c;
-  }
-
-  getDistance(point) {
-    return Coordinate.getDistance(this, point);
   }
 
   getRoundedLatitude() {

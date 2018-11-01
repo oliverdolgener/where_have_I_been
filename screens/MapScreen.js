@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { View, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, DangerZone } from 'expo';
+import geolib from 'geolib';
 
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import Coordinate from '../model/Coordinate';
+import Speed from '../model/Speed';
 import Toolbar from '../components/Toolbar';
 import Map from '../components/Map';
 import FlightBox from '../components/FlightBox';
@@ -57,6 +59,12 @@ class MapScreen extends Component {
     this.state = {
       showBatterySaver: false,
     };
+    this.lastPosition = {
+      lat: 0,
+      lng: 0,
+      time: 0,
+    };
+    this.speed = new Speed(5);
   }
 
   componentDidMount() {
@@ -105,13 +113,20 @@ class MapScreen extends Component {
       (result) => {
         const { setGeolocation } = this.props;
         const {
-          latitude, longitude, speed, altitude, accuracy,
+          latitude, longitude, altitude, accuracy,
         } = result.coords;
         const { timestamp } = result;
 
+        const currentPosition = { lat: latitude, lng: longitude, time: timestamp };
+        const calculatedSpeed = geolib.getSpeed(this.lastPosition, currentPosition);
+        if (calculatedSpeed >= 0 && calculatedSpeed <= 1000) {
+          this.speed.addToBuffer(calculatedSpeed);
+        }
+        this.lastPosition = currentPosition;
+
         setGeolocation({
           location: new Coordinate(latitude, longitude),
-          speed: Math.round(MathUtils.toKmh(speed)),
+          speed: this.speed.getAverage(),
           altitude: Math.round(altitude),
           accuracy,
           timestamp,
