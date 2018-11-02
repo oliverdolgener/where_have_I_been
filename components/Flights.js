@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import * as Colors from '../constants/Colors';
 
 const Flights = (props) => {
-  const { flights } = props;
-  return flights.map(x => (
+  const { flights, friendFlights } = props;
+  const visibleFlights = friendFlights || flights;
+  return visibleFlights.map(x => (
     <MapView.Polyline
       key={x.id.toString()}
       coordinates={[
@@ -14,7 +15,7 @@ const Flights = (props) => {
         { latitude: x.destination_latitude, longitude: x.destination_longitude },
       ]}
       strokeColor={Colors.blue}
-      strokeWidth={2}
+      strokeWidth={1}
       geodesic
     />
   ));
@@ -22,6 +23,7 @@ const Flights = (props) => {
 
 const mapStateToProps = state => ({
   flights: state.user.get('flights'),
+  friendFlights: state.user.get('friendFlights'),
 });
 
 export default connect(mapStateToProps)(Flights);

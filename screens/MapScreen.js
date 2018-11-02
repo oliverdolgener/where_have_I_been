@@ -201,7 +201,7 @@ class MapScreen extends Component {
     const {
       isLoggedIn,
       navigation,
-      friendId,
+      friendLocations,
       resetFriend,
       followLocation,
       setFollowLocation,
@@ -222,7 +222,7 @@ class MapScreen extends Component {
         <TouchableOpacity style={styles.menuButton} onPress={() => navigation.openDrawer()}>
           <Image style={styles.menuImage} source={iconMenu} />
         </TouchableOpacity>
-        {friendId ? (
+        {friendLocations ? (
           <View style={styles.actionButton}>
             <TouchableOpacity onPress={() => resetFriend()}>
               <Image style={styles.actionIcon} source={iconClose} />
@@ -253,8 +253,8 @@ class MapScreen extends Component {
 const mapStateToProps = state => ({
   isLoggedIn: state.user.get('isLoggedIn'),
   userId: state.user.get('userId'),
-  friendId: state.user.get('friendId'),
   visitedLocations: state.user.get('visitedLocations'),
+  friendLocations: state.user.get('friendLocations'),
   tilesToSave: state.user.get('tilesToSave'),
   isSaving: state.user.get('isSaving'),
   map: state.map.get('map'),

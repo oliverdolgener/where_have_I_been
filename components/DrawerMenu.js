@@ -352,9 +352,10 @@ class DrawerMenu extends React.Component {
   }
 
   showFriend(id) {
-    const { getFriend } = this.props;
+    const { getFriendLocations, getFriendFlights } = this.props;
     this.closeDrawer();
-    getFriend(id);
+    getFriendLocations(id);
+    getFriendFlights(id);
   }
 
   showCountry(region) {
@@ -552,7 +553,8 @@ const mapDispatchToProps = {
   getFriends: userActions.getFriends,
   addFriend: userActions.addFriend,
   removeFriend: userActions.removeFriend,
-  getFriend: userActions.getFriend,
+  getFriendLocations: userActions.getFriendLocations,
+  getFriendFlights: userActions.getFriendFlights,
   logout: userActions.logout,
   saveTiles: userActions.saveTiles,
   setPowerSaver: mapActions.setPowerSaver,

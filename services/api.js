@@ -23,7 +23,7 @@ const fetchJson = (url, options) => fetch(url, options).then(response => respons
     json => (response.ok ? { headers: response.headers, data: json } : Promise.reject(json)),
   ));
 
-export const getUser = (userId) => {
+export const getLocations = (userId) => {
   const url = new URI(API_URL);
   url.segment(ENDPOINT_LOCATION).segment(userId.toString());
   return fetchJson(url.href());
