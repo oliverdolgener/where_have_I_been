@@ -1,3 +1,5 @@
+import Region2D from 'region2d';
+
 import Coordinate from '../model/Coordinate';
 import * as ConversionUtils from './ConversionUtils';
 import * as RoundUtils from './RoundUtils';
@@ -405,4 +407,33 @@ export function coordinatesToRegion(coordinates) {
     latitudeDelta: latMax - latMin,
     longitudeDelta: longMax - longMin,
   };
+}
+
+export function normalize(slice) {
+  const left = RoundUtils.roundToDecimals(slice[0].longitude + 180, 6);
+  const top = RoundUtils.roundToDecimals((slice[0].latitude - 90) * -1, 4);
+  const right = RoundUtils.roundToDecimals(slice[2].longitude + 180, 6);
+  const bottom = RoundUtils.roundToDecimals((slice[2].latitude - 90) * -1, 4);
+  return [left, top, right, bottom];
+}
+
+export function denormalize(array) {
+  const result = array.map(e => ({
+    latitude: RoundUtils.roundToDecimals((e.y - 90) * -1, 4),
+    longitude: RoundUtils.roundToDecimals(e.x - 180, 6),
+  }));
+  return result;
+}
+
+export function pathToPolygons(path) {
+  return path.map(x => denormalize(x));
+}
+
+export function getRegions(slices) {
+  let union = new Region2D(normalize(slices[0]));
+  for (let i = 1; i < slices.length; i++) {
+    union = union.union(new Region2D(normalize(slices[i])));
+  }
+  const polygons = pathToPolygons(union.getPath());
+  return polygons;
 }

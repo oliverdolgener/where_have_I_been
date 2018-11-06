@@ -6004,6 +6004,11 @@ regexpu-core@^4.1.3:
     unicode-match-property-ecmascript "^1.0.4"
     unicode-match-property-value-ecmascript "^1.0.2"
 
+region2d@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/region2d/-/region2d-1.0.0.tgz#aba95c0f059827822fad72d85d056d822bd1ee76"
+  integrity sha1-q6lcDwWYJ4IvrXLYXQVtgivR7nY=
+
 regjsgen@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/regjsgen/-/regjsgen-0.2.0.tgz#6c016adeac554f75823fe37ac05b92d5a4edb1f7"

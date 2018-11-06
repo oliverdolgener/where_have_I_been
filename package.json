@@ -41,6 +41,7 @@
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "redux-pack": "^0.1.5",
+    "region2d": "^1.0.0",
     "urijs": "^1.19.1"
   }
 }
