@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import ProgressBar from 'react-native-progress/Bar';
 
 import * as LevelUtils from '../utils/LevelUtils';
-import * as MathUtils from '../utils/MathUtils';
+import * as LocationUtils from '../utils/LocationUtils';
 import * as Colors from '../constants/Colors';
 import iconLevel from '../assets/iconLevel.png';
 import iconSquare from '../assets/iconSquare.png';
@@ -46,7 +46,7 @@ const styles = {
 const Toolbar = (props) => {
   const { visitedLocations, geolocation } = props;
 
-  const locations = MathUtils.gridToArray(visitedLocations);
+  const locations = LocationUtils.gridToArray(visitedLocations);
   const level = LevelUtils.getLevelFromExp(locations.length);
   const progress = LevelUtils.getPercentToNextLevel(locations.length);
 

@@ -11,7 +11,7 @@ import Speed from '../model/Speed';
 import Toolbar from '../components/Toolbar';
 import Map from '../components/Map';
 import FlightBox from '../components/FlightBox';
-import * as MathUtils from '../utils/MathUtils';
+import * as LocationUtils from '../utils/LocationUtils';
 import * as Colors from '../constants/Colors';
 import iconMenu from '../assets/iconMenu.png';
 import iconLocation from '../assets/iconLocation.png';
@@ -167,10 +167,10 @@ class MapScreen extends Component {
       isSaving,
     } = this.props;
 
-    if (!MathUtils.isLocationInGrid(location, visitedLocations)) {
+    if (!LocationUtils.isLocationInGrid(location, visitedLocations)) {
       const unsaved = [...tilesToSave, location];
-      const locations = MathUtils.insertIntoGrid(visitedLocations, location);
-      const visited = MathUtils.gridToArray(locations);
+      const locations = LocationUtils.insertIntoGrid(visitedLocations, location);
+      const visited = LocationUtils.gridToArray(locations);
       setLocations(visited);
       setTilesToSave(unsaved);
 

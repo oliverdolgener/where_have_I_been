@@ -8,7 +8,7 @@ import { actions as mapActions } from '../reducers/map';
 import Fog from './Fog';
 import Flights from './Flights';
 import Countries from './Countries';
-import * as EarthUtils from '../utils/EarthUtils';
+import * as LocationUtils from '../utils/LocationUtils';
 import mapStyleLight from '../assets/mapStyleLight.json';
 import mapStyleDark from '../assets/mapStyleDark.json';
 
@@ -25,7 +25,10 @@ class Map extends Component {
     region.longitudeDelta = region.longitudeDelta < 0 ? region.longitudeDelta + 360 : region.longitudeDelta;
     setRegion(region);
 
-    if (Platform.OS === 'ios' && !EarthUtils.isCoordinateInRegion(geolocation.location, region)) {
+    if (
+      Platform.OS === 'ios'
+      && !LocationUtils.isCoordinateInRegion(geolocation.location, region)
+    ) {
       setFollowLocation(false);
     }
   }

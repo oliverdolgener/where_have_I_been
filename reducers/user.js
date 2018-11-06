@@ -4,8 +4,7 @@ import { NavigationActions } from 'react-navigation';
 import { AsyncStorage } from 'react-native';
 
 import Coordinate from '../model/Coordinate';
-import * as MathUtils from '../utils/MathUtils';
-import * as EarthUtils from '../utils/EarthUtils';
+import * as LocationUtils from '../utils/LocationUtils';
 import * as LevelUtils from '../utils/LevelUtils';
 import {
   getLocations,
@@ -56,14 +55,14 @@ const setTilesToSaveAsync = async (tilesToSave) => {
 };
 
 const prepareLocations = (locations) => {
-  const grid = MathUtils.arrayToGrid(locations);
+  const grid = LocationUtils.arrayToGrid(locations);
   return grid;
 };
 
 const prepareHoles = (locations, region) => {
-  const visibleLocations = MathUtils.filterVisibleLocations(locations, region);
-  const gridDistance = EarthUtils.getGridDistanceByRegion(region);
-  const slices = EarthUtils.getSliceCoordinates(visibleLocations, gridDistance);
+  const visibleLocations = LocationUtils.filterVisibleLocations(locations, region);
+  const gridDistance = LocationUtils.getGridDistanceByRegion(region);
+  const slices = LocationUtils.getSliceCoordinates(visibleLocations, gridDistance);
   return slices;
 };
 

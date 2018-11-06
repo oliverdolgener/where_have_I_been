@@ -6,7 +6,7 @@ import {
   getVacations, setVacation, getAirports, getElevation,
 } from '../services/api';
 import Coordinate from '../model/Coordinate';
-import * as EarthUtils from '../utils/EarthUtils';
+import * as LocationUtils from '../utils/LocationUtils';
 
 export const types = {
   SET_MAP: 'MAP/SET_MAP',
@@ -113,7 +113,7 @@ export default (state = initialState, action = {}) => {
           const countries = payload.data.map(x => ({
             id: x.id.toString(),
             name: x.name,
-            region: EarthUtils.coordinatesToRegion([
+            region: LocationUtils.coordinatesToRegion([
               { latitude: x.lat_min, longitude: x.long_min },
               { latitude: x.lat_max, longitude: x.long_max },
             ]),
@@ -150,7 +150,6 @@ export default (state = initialState, action = {}) => {
     case types.GET_ELEVATION:
       return handle(state, action, {
         success: (prevState) => {
-          console.log(payload.data.results);
           if (payload.data.results.length > 0) {
             return prevState.set('elevation', payload.data.results[0].elevation);
           }
