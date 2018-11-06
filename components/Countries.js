@@ -7,7 +7,7 @@ import AllCountries from '../constants/Countries';
 import * as Colors from '../constants/Colors';
 
 const Countries = (props) => {
-  const { region, countries, showCountries } = props;
+  const { countries, showCountries } = props;
 
   // const regionLatitude = region.latitude * -1 + 90;
   // const regionLongitude = region.longitude + 180;
@@ -74,7 +74,6 @@ const Countries = (props) => {
 };
 
 const mapStateToProps = state => ({
-  region: state.user.get('region'),
   countries: state.map.get('countries'),
   showCountries: state.map.get('showCountries'),
 });
