@@ -5,6 +5,7 @@ import {
 import { connect } from 'react-redux';
 
 import { actions as mapActions } from '../reducers/map';
+import Flags from '../constants/Flags';
 import iconDone from '../assets/iconDone.png';
 import iconToDo from '../assets/iconToDo.png';
 import iconHeart from '../assets/iconHeart.png';
@@ -16,8 +17,7 @@ const styles = {
     height: ITEM_HEIGHT,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 20,
-    paddingRight: 10,
+    paddingHorizontal: 10,
   },
   label: {
     flex: 1,
@@ -56,6 +56,11 @@ const CountryList = (props) => {
     return icon;
   };
 
+  const getFlag = (id) => {
+    const match = Flags.find(x => x.id == id);
+    return match && match.flag;
+  };
+
   return (
     <FlatList
       data={countries}
@@ -65,6 +70,7 @@ const CountryList = (props) => {
           style={styles.item}
           onPress={() => onCountryPress(item.region)}
         >
+          <Image style={styles.icon} source={getFlag(item.id)} />
           <Text style={styles.label} numberOfLines={1} ellipsizeMode="middle">{item.name}</Text>
           <TouchableOpacity onPress={() => toggleStatus(item)}>
             <Image style={styles.icon} source={getIcon(item.status)} />
