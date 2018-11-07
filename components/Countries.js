@@ -6,12 +6,12 @@ import AllCountries from '../constants/Countries';
 import * as Colors from '../constants/Colors';
 
 const Countries = (props) => {
-  const { countries, showCountries } = props;
+  const { countries } = props;
 
   return AllCountries.map((x, i) => {
     const country = countries.find(y => y.id == x.id);
     let color = Colors.transparent;
-    if (country && showCountries) {
+    if (country) {
       switch (country.status) {
         case 0:
           color = Colors.transparent;

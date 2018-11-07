@@ -20,7 +20,7 @@ const Flights = (props) => {
         strokeWidth={1}
         geodesic
       />
-      <MapView.Marker
+      {/* <MapView.Marker
         coordinate={{ latitude: x.start_latitude, longitude: x.start_longitude }}
         title={x.start_code}
       >
@@ -31,7 +31,7 @@ const Flights = (props) => {
         title={x.destination_code}
       >
         <Image source={iconMarker} style={{ width: 40, height: 40 }} />
-      </MapView.Marker>
+      </MapView.Marker> */}
     </View>
   ));
 };

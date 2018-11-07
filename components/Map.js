@@ -54,6 +54,7 @@ class Map extends Component {
       setMap,
       setFollowLocation,
       showFlights,
+      showCountries,
       editMode,
       onMapPress,
     } = this.props;
@@ -98,7 +99,7 @@ class Map extends Component {
         onLongPress={event => onMapPress(event.nativeEvent.coordinate)}
       >
         <Fog />
-        <Countries />
+        {showCountries && <Countries />}
         {(showFlights || editMode) && <Flights />}
       </MapView>
     );
@@ -114,6 +115,7 @@ const mapStateToProps = state => ({
   geolocation: state.map.get('geolocation'),
   editMode: state.map.get('editMode'),
   showFlights: state.map.get('showFlights'),
+  showCountries: state.map.get('showCountries'),
 });
 
 const mapDispatchToProps = {
