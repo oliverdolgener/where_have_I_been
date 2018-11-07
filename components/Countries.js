@@ -11,21 +11,10 @@ const Countries = (props) => {
   return AllCountries.map((x, i) => {
     const country = countries.find(y => y.id == x.id);
     let color = Colors.transparent;
-    if (country) {
-      switch (country.status) {
-        case 0:
-          color = Colors.transparent;
-          break;
-        case 1:
-          color = Colors.rose;
-          break;
-        case 2:
-          color = Colors.green;
-          break;
-        default:
-          color = Colors.transparent;
-          break;
-      }
+    if (country && country.status === 1) {
+      color = Colors.rose;
+    } else if (country && country.status === 2) {
+      color = Colors.green;
     }
 
     return (
