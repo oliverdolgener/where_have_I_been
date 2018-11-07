@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import Collapsible from 'react-native-collapsible';
 
+import CountryList from './CountryList';
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import * as Colors from '../constants/Colors';
@@ -33,9 +34,6 @@ import iconToggleOn from '../assets/iconToggleOn.png';
 import iconToggleOff from '../assets/iconToggleOff.png';
 import iconAirport from '../assets/iconAirport.png';
 import iconUser from '../assets/iconLevel.png';
-import iconDone from '../assets/iconDone.png';
-import iconToDo from '../assets/iconToDo.png';
-import iconHeart from '../assets/iconHeart.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -246,62 +244,6 @@ class DrawerMenu extends React.Component {
     setEditMode(!editMode);
   };
 
-  toggleVacation = (vacation) => {
-    const {
-      userId, setVacation, setCountries, countries,
-    } = this.props;
-    switch (vacation.status) {
-      case 0:
-        setVacation(userId, vacation.id, 1);
-        setCountries(countries.map((x) => {
-          if (x.id === vacation.id) {
-            return {
-              ...x,
-              status: 1,
-            };
-          }
-          return x;
-        }));
-        break;
-      case 1:
-        setVacation(userId, vacation.id, 2);
-        setCountries(countries.map((x) => {
-          if (x.id === vacation.id) {
-            return {
-              ...x,
-              status: 2,
-            };
-          }
-          return x;
-        }));
-        break;
-      case 2:
-        setVacation(userId, vacation.id, 0);
-        setCountries(countries.map((x) => {
-          if (x.id === vacation.id) {
-            return {
-              ...x,
-              status: 0,
-            };
-          }
-          return x;
-        }));
-        break;
-      default:
-        setVacation(userId, vacation.id, 1);
-        setCountries(countries.map((x) => {
-          if (x.id === vacation.id) {
-            return {
-              ...x,
-              status: 1,
-            };
-          }
-          return x;
-        }));
-        break;
-    }
-  }
-
   logout = async () => {
     const { logout } = this.props;
     this.closeDrawer();
@@ -367,7 +309,7 @@ class DrawerMenu extends React.Component {
 
   render() {
     const {
-      friends, countries, mapType, tilesToSave, theme, powerSaver, editMode, showFlights, showCountries, geocode,
+      friends, mapType, tilesToSave, theme, powerSaver, editMode, showFlights, showCountries, geocode,
     } = this.props;
     const {
       showFriendlist,
@@ -458,36 +400,10 @@ class DrawerMenu extends React.Component {
               </Animated.View>
             </TouchableOpacity>
             <Collapsible collapsed={!showCountryList}>
-              {countries.map((x) => {
-                let icon;
-                switch (x.status) {
-                  case 0:
-                    icon = iconToDo;
-                    break;
-                  case 1:
-                    icon = iconHeart;
-                    break;
-                  case 2:
-                    icon = iconDone;
-                    break;
-                  default:
-                    icon = iconToDo;
-                    break;
-                }
-
-                return (
-                  <TouchableOpacity
-                    style={styles.listItem}
-                    key={x.id}
-                    onPress={() => this.showCountry(x.region)}
-                  >
-                    <Text style={styles.listLabel} numberOfLines={1} ellipsizeMode="middle">{x.name}</Text>
-                    <TouchableOpacity onPress={() => this.toggleVacation(x)}>
-                      <Image style={styles.menuIcon} source={icon} />
-                    </TouchableOpacity>
-                  </TouchableOpacity>
-                );
-              })}
+              <CountryList
+                onCountryPress={region => this.showCountry(region)}
+                onStatusPress={country => this.toggleVacation(country)}
+              />
             </Collapsible>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.syncData()}>
               <Animated.View style={{ transform: [{ rotate: spin }] }}>
@@ -543,7 +459,6 @@ const mapStateToProps = state => ({
   theme: state.map.get('theme'),
   geocode: state.map.get('geocode'),
   powerSaver: state.map.get('powerSaver'),
-  countries: state.map.get('countries'),
   editMode: state.map.get('editMode'),
   showFlights: state.map.get('showFlights'),
   showCountries: state.map.get('showCountries'),
@@ -562,7 +477,6 @@ const mapDispatchToProps = {
   setTheme: mapActions.setTheme,
   getCountries: mapActions.getCountries,
   setCountries: mapActions.setCountries,
-  setVacation: mapActions.setVacation,
   setFollowLocation: mapActions.setFollowLocation,
   setEditMode: mapActions.setEditMode,
   setShowFlights: mapActions.setShowFlights,
