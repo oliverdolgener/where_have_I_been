@@ -94,6 +94,7 @@ class Map extends Component {
         pitchEnabled={false}
         toolbarEnabled={false}
         loadingEnabled
+        moveOnMarkerPress={false}
         onRegionChangeComplete={newRegion => this.onRegionChangeComplete(newRegion)}
         onPanDrag={() => setFollowLocation(false)}
         onLongPress={event => onMapPress(event.nativeEvent.coordinate)}
