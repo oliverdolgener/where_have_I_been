@@ -5,18 +5,18 @@ import {
 import { connect } from 'react-redux';
 
 import { actions as userActions } from '../reducers/user';
+import * as Colors from '../constants/Colors';
 import iconAdd from '../assets/iconAdd.png';
 import iconRemove from '../assets/iconRemove.png';
 
-const ITEM_HEIGHT = 50;
+const ITEM_HEIGHT = 40;
 
 const styles = {
   item: {
     height: ITEM_HEIGHT,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 20,
-    paddingRight: 10,
+    paddingHorizontal: 10,
   },
   label: {
     flex: 1,
@@ -28,17 +28,20 @@ const styles = {
     height: 25,
   },
   badge: {
+    justifyContent: 'center',
     height: 25,
     width: 30,
-    fontSize: 16,
     borderWidth: 1,
     borderRadius: 5,
+  },
+  badgeLabel: {
     textAlign: 'center',
+    fontSize: 16,
   },
   textInput: {
     height: 40,
     flex: 1,
-    marginLeft: 20,
+    marginLeft: 40,
     fontSize: 20,
   },
 };
@@ -70,12 +73,13 @@ class Friendlist extends Component {
         data={friends}
         keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() => onFriendPress(item.id)}
-          >
-            <Text style={styles.badge}>{item.level}</Text>
-            <Text style={styles.label} numberOfLines={1} ellipsizeMode="middle">{item.username}</Text>
+          <TouchableOpacity style={styles.item} onPress={() => onFriendPress(item.id)}>
+            <View style={styles.badge}>
+              <Text style={styles.badgeLabel}>{item.level}</Text>
+            </View>
+            <Text style={styles.label} numberOfLines={1} ellipsizeMode="middle">
+              {item.username}
+            </Text>
             <TouchableOpacity onPress={() => removeFriend(userId, item.id)}>
               <Image style={styles.icon} source={iconRemove} />
             </TouchableOpacity>
@@ -89,15 +93,19 @@ class Friendlist extends Component {
               onChangeText={input => this.setState({ friendName: input })}
               value={friendName}
               onSubmitEditing={() => this.onAddFriend()}
+              selectionColor={Colors.black}
+              underlineColorAndroid={Colors.black}
             />
             <TouchableOpacity onPress={() => this.onAddFriend()}>
               <Image style={styles.icon} source={iconAdd} />
             </TouchableOpacity>
           </View>
-        )}
-        getItemLayout={(data, index) => (
-          { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
-        )}
+)}
+        getItemLayout={(data, index) => ({
+          length: ITEM_HEIGHT,
+          offset: ITEM_HEIGHT * index,
+          index,
+        })}
       />
     );
   }
@@ -113,4 +121,7 @@ const mapDispatchToProps = {
   removeFriend: userActions.removeFriend,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Friendlist);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Friendlist);

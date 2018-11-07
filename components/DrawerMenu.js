@@ -67,10 +67,10 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   menuItem: {
+    height: 50,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 5,
-    marginBottom: 20,
   },
   menuIcon: {
     width: 30,
@@ -81,13 +81,16 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     fontSize: 24,
   },
-  menuBadge: {
+  badge: {
+    justifyContent: 'center',
     height: 25,
     width: 30,
-    fontSize: 16,
     borderWidth: 1,
     borderRadius: 5,
+  },
+  badgeLabel: {
     textAlign: 'center',
+    fontSize: 16,
   },
 });
 
@@ -335,7 +338,9 @@ class DrawerMenu extends React.Component {
                 <Image style={styles.menuIcon} source={iconSync} />
               </Animated.View>
               <Text style={styles.menuLabel}>Sync Data</Text>
-              <Text style={styles.menuBadge}>{tilesToSave.length}</Text>
+              <View style={styles.badge}>
+                <Text style={styles.badgeLabel}>{tilesToSave.length}</Text>
+              </View>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleFlights()}>
               <Image style={styles.menuIcon} source={iconAirport} />

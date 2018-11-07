@@ -10,7 +10,7 @@ import iconDone from '../assets/iconDone.png';
 import iconToDo from '../assets/iconToDo.png';
 import iconHeart from '../assets/iconHeart.png';
 
-const ITEM_HEIGHT = 50;
+const ITEM_HEIGHT = 40;
 
 const styles = {
   item: {
@@ -66,20 +66,17 @@ const CountryList = (props) => {
       data={countries}
       keyExtractor={item => item.id.toString()}
       renderItem={({ item }) => (
-        <TouchableOpacity
-          style={styles.item}
-          onPress={() => onCountryPress(item.region)}
-        >
+        <TouchableOpacity style={styles.item} onPress={() => onCountryPress(item.region)}>
           <Image style={styles.icon} source={getFlag(item.id)} />
-          <Text style={styles.label} numberOfLines={1} ellipsizeMode="middle">{item.name}</Text>
+          <Text style={styles.label} numberOfLines={1} ellipsizeMode="middle">
+            {item.name}
+          </Text>
           <TouchableOpacity onPress={() => toggleStatus(item)}>
             <Image style={styles.icon} source={getIcon(item.status)} />
           </TouchableOpacity>
         </TouchableOpacity>
       )}
-      getItemLayout={(data, index) => (
-        { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
-      )}
+      getItemLayout={(data, index) => ({ length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index })}
     />
   );
 };
@@ -94,4 +91,7 @@ const mapDispatchToProps = {
   setCountries: mapActions.setCountries,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CountryList);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CountryList);
