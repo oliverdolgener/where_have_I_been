@@ -6,13 +6,13 @@ import {
   View,
   Text,
   Image,
-  TextInput,
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import Collapsible from 'react-native-collapsible';
 
+import Friendlist from './Friendlist';
 import CountryList from './CountryList';
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
@@ -27,8 +27,6 @@ import iconSync from '../assets/iconSync.png';
 import iconNight from '../assets/iconNight.png';
 import iconLogout from '../assets/iconLogout.png';
 import iconPowerSaver from '../assets/iconPowerSaver.png';
-import iconAdd from '../assets/iconAdd.png';
-import iconRemove from '../assets/iconRemove.png';
 import iconEdit from '../assets/iconEdit.png';
 import iconToggleOn from '../assets/iconToggleOn.png';
 import iconToggleOff from '../assets/iconToggleOff.png';
@@ -83,22 +81,6 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     fontSize: 24,
   },
-  listItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 20,
-    paddingRight: 10,
-    marginBottom: 15,
-  },
-  listIcon: {
-    width: 25,
-    height: 25,
-  },
-  listLabel: {
-    flex: 1,
-    marginLeft: 10,
-    fontSize: 20,
-  },
   menuBadge: {
     height: 25,
     width: 30,
@@ -106,12 +88,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     textAlign: 'center',
-  },
-  addFriend: {
-    height: 40,
-    flex: 1,
-    marginLeft: 20,
-    fontSize: 20,
   },
 });
 
@@ -125,7 +101,6 @@ class DrawerMenu extends React.Component {
       spinValue: new Animated.Value(0),
       friendlistIconValue: new Animated.Value(1),
       countriesIconValue: new Animated.Value(1),
-      friendName: '',
     };
   }
 
@@ -141,28 +116,6 @@ class DrawerMenu extends React.Component {
     if (isSaving && !isSpinning) {
       this.spin();
     }
-  }
-
-  onAddFriend() {
-    const { userId, addFriend } = this.props;
-    const { friendName } = this.state;
-    if (friendName) {
-      addFriend(userId, friendName);
-      this.setState({
-        friendName: '',
-      });
-    }
-  }
-
-  onRemoveFriend(friendId) {
-    const { userId, removeFriend } = this.props;
-    removeFriend(userId, friendId);
-  }
-
-  onChangeFriendName(friendName) {
-    this.setState({
-      friendName,
-    });
   }
 
   closeDrawer = () => {
@@ -309,7 +262,7 @@ class DrawerMenu extends React.Component {
 
   render() {
     const {
-      friends, mapType, tilesToSave, theme, powerSaver, editMode, showFlights, showCountries, geocode,
+      mapType, tilesToSave, theme, powerSaver, editMode, showFlights, showCountries, geocode,
     } = this.props;
     const {
       showFriendlist,
@@ -317,7 +270,6 @@ class DrawerMenu extends React.Component {
       spinValue,
       friendlistIconValue,
       countriesIconValue,
-      friendName,
     } = this.state;
 
     const spin = spinValue.interpolate({
@@ -363,34 +315,7 @@ class DrawerMenu extends React.Component {
               </Animated.View>
             </TouchableOpacity>
             <Collapsible collapsed={!showFriendlist}>
-              <View style={styles.listItem}>
-                <TextInput
-                  style={styles.addFriend}
-                  placeholder="Add Friend"
-                  onChangeText={text => this.onChangeFriendName(text)}
-                  value={friendName}
-                  onSubmitEditing={() => this.onAddFriend()}
-                />
-                <TouchableOpacity onPress={() => this.onAddFriend()}>
-                  <Image style={styles.listIcon} source={iconAdd} />
-                </TouchableOpacity>
-              </View>
-              {friends.map(x => (
-                <TouchableOpacity
-                  style={styles.listItem}
-                  key={x.id}
-                  onPress={() => this.showFriend(x.id)}
-                >
-                  <Text style={styles.menuBadge}>{x.level}</Text>
-                  <Text style={styles.listLabel}>{x.username}</Text>
-                  <TouchableOpacity onPress={() => this.onRemoveFriend(x.id)}>
-                    <Image
-                      style={styles.listIcon}
-                      source={iconRemove}
-                    />
-                  </TouchableOpacity>
-                </TouchableOpacity>
-              ))}
+              <Friendlist onFriendPress={id => this.showFriend(id)} />
             </Collapsible>
             <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountryList()}>
               <Image style={styles.menuIcon} source={iconWorld} />
@@ -450,10 +375,8 @@ class DrawerMenu extends React.Component {
 
 const mapStateToProps = state => ({
   userId: state.user.get('userId'),
-  friends: state.user.get('friends'),
   tilesToSave: state.user.get('tilesToSave'),
   isSaving: state.user.get('isSaving'),
-  friendError: state.user.get('friendError'),
   map: state.map.get('map'),
   mapType: state.map.get('mapType'),
   theme: state.map.get('theme'),
@@ -466,8 +389,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   getFriends: userActions.getFriends,
-  addFriend: userActions.addFriend,
-  removeFriend: userActions.removeFriend,
   getFriendLocations: userActions.getFriendLocations,
   getFriendFlights: userActions.getFriendFlights,
   logout: userActions.logout,
@@ -476,7 +397,6 @@ const mapDispatchToProps = {
   setMapType: mapActions.setMapType,
   setTheme: mapActions.setTheme,
   getCountries: mapActions.getCountries,
-  setCountries: mapActions.setCountries,
   setFollowLocation: mapActions.setFollowLocation,
   setEditMode: mapActions.setEditMode,
   setShowFlights: mapActions.setShowFlights,
