@@ -156,6 +156,21 @@ export const addFlight = (userId, from, to) => {
   return fetchJson(url.href(), options);
 };
 
+export const removeFlight = (userId, from, to) => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_FLIGHT).segment(userId.toString());
+  const body = JSON.stringify({
+    from,
+    to,
+  });
+  const options = {
+    method: 'DELETE',
+    headers,
+    body,
+  };
+  return fetchJson(url.href(), options);
+};
+
 export const getVacations = (userId) => {
   const url = new URI(API_URL);
   url.segment(ENDPOINT_VACATION).segment(userId.toString());

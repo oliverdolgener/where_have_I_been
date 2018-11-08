@@ -9,18 +9,19 @@ import * as Colors from '../constants/Colors';
 
 const styles = {
   flightBox: {
+    width: 120,
     position: 'absolute',
     top: 30,
     right: 10,
-    width: 100,
     backgroundColor: Colors.creme,
   },
   flightInput: {
+    height: 40,
     margin: 5,
     paddingHorizontal: 5,
-    height: 40,
   },
   flightButton: {
+    height: 30,
     justifyContent: 'center',
     alignItems: 'center',
     margin: 5,
@@ -58,6 +59,24 @@ class FlightBox extends Component {
     });
   }
 
+  onRemoveFlight() {
+    const { removeFlight, userId } = this.props;
+    const { from, to } = this.state;
+    if (!from) {
+      return;
+    }
+    if (!to) {
+      return;
+    }
+
+    removeFlight(userId, from, to);
+
+    this.setState({
+      from: '',
+      to: '',
+    });
+  }
+
   render() {
     const { from, to } = this.state;
     return (
@@ -84,13 +103,15 @@ class FlightBox extends Component {
           value={to}
           selectionColor={Colors.blue}
           underlineColorAndroid={Colors.blue}
-          returnKeyType="send"
-          onSubmitEditing={() => this.onAddFlight()}
+          returnKeyType="done"
           autoCorrect={false}
           autoCapitalize="characters"
         />
         <TouchableOpacity style={styles.flightButton} onPress={() => this.onAddFlight()}>
           <Text style={styles.flightButtonLabel}>Add Flight</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.flightButton} onPress={() => this.onRemoveFlight()}>
+          <Text style={styles.flightButtonLabel}>Remove Flight</Text>
         </TouchableOpacity>
       </View>
     );
@@ -103,6 +124,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   addFlight: userActions.addFlight,
+  removeFlight: userActions.removeFlight,
 };
 
 export default connect(

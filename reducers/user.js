@@ -18,6 +18,7 @@ import {
   removeFriend,
   getFlights,
   addFlight,
+  removeFlight,
 } from '../services/api';
 import { navigator } from '../App';
 
@@ -42,7 +43,8 @@ export const types = {
   REMOVE_TILE: 'USER/REMOVE_TILE',
   SET_PUSH_TOKEN: 'USER/SET_PUSH_TOKEN',
   GET_FLIGHTS: 'USER/GET_FLIGHTS',
-  ADD_FLIGHT: 'USER/ADD/FLIGHT',
+  ADD_FLIGHT: 'USER/ADD_FLIGHT',
+  REMOVE_FLIGHT: 'USER/REMOVE_FLIGHT',
 };
 
 const setUserAsync = async (id) => {
@@ -150,6 +152,10 @@ export const actions = {
   addFlight: (userId, from, to) => ({
     type: types.ADD_FLIGHT,
     promise: addFlight(userId, from, to),
+  }),
+  removeFlight: (userId, from, to) => ({
+    type: types.REMOVE_FLIGHT,
+    promise: removeFlight(userId, from, to),
   }),
 };
 
@@ -342,6 +348,11 @@ export default (state = initialState, action = {}) => {
       });
     }
     case types.ADD_FLIGHT: {
+      return handle(state, action, {
+        success: prevState => prevState.set('flights', payload.data),
+      });
+    }
+    case types.REMOVE_FLIGHT: {
       return handle(state, action, {
         success: prevState => prevState.set('flights', payload.data),
       });
