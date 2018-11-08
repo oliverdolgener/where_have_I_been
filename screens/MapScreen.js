@@ -81,7 +81,7 @@ class MapScreen extends Component {
   }
 
   onMapPress(coordinate) {
-    const { editMode } = this.props;
+    const { editMode, visitedLocations } = this.props;
     if (!editMode) {
       return;
     }
@@ -94,7 +94,11 @@ class MapScreen extends Component {
       timestamp,
     );
 
-    this.addLocation(roundedLocation);
+    if (LocationUtils.isLocationInGrid(roundedLocation, visitedLocations)) {
+      this.removeLocation(roundedLocation);
+    } else {
+      this.addLocation(roundedLocation);
+    }
   }
 
   onTileChange(tile) {
@@ -176,6 +180,29 @@ class MapScreen extends Component {
 
       if (!isSaving) {
         saveTiles(userId, unsaved);
+      }
+    }
+  }
+
+  removeLocation(location) {
+    const {
+      userId,
+      tilesToSave,
+      setTilesToSave,
+      visitedLocations,
+      setLocations,
+      removeTile,
+    } = this.props;
+
+    if (LocationUtils.isLocationInGrid(location, visitedLocations)) {
+      const locations = LocationUtils.removeFromGrid(visitedLocations, location);
+      const visited = LocationUtils.gridToArray(locations);
+      setLocations(visited);
+
+      if (LocationUtils.containsLocation(location, tilesToSave)) {
+        setTilesToSave(LocationUtils.removeLocationFromArray(location, tilesToSave));
+      } else {
+        removeTile(userId, location);
       }
     }
   }
@@ -270,6 +297,7 @@ const mapDispatchToProps = {
   setLocations: userActions.setLocations,
   setTilesToSave: userActions.setTilesToSave,
   saveTiles: userActions.saveTiles,
+  removeTile: userActions.removeTile,
   getFlights: userActions.getFlights,
   resetFriend: userActions.resetFriend,
   setLastTile: mapActions.setLastTile,

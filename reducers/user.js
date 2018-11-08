@@ -12,6 +12,7 @@ import {
   login,
   signup,
   saveTiles,
+  removeTile,
   getFriends,
   addFriend,
   removeFriend,
@@ -38,6 +39,7 @@ export const types = {
   SET_REGION: 'USER/SET_REGION',
   SET_TILES_TO_SAVE: 'USER/SET_TILES_TO_SAVE',
   SAVE_TILES: 'USER/SAVE_TILES',
+  REMOVE_TILE: 'USER/REMOVE_TILE',
   SET_PUSH_TOKEN: 'USER/SET_PUSH_TOKEN',
   GET_FLIGHTS: 'USER/GET_FLIGHTS',
   ADD_FLIGHT: 'USER/ADD/FLIGHT',
@@ -135,6 +137,10 @@ export const actions = {
   saveTiles: (userId, tilesToSave) => ({
     type: types.SAVE_TILES,
     promise: saveTiles(userId.toString(), tilesToSave),
+  }),
+  removeTile: (userId, tile) => ({
+    type: types.REMOVE_TILE,
+    promise: removeTile(userId.toString(), tile),
   }),
   setPushToken: pushToken => ({ type: types.SET_PUSH_TOKEN, pushToken }),
   getFlights: userId => ({

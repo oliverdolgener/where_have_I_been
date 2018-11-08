@@ -75,6 +75,20 @@ export const saveTiles = (userId, tilesToSave) => {
   return fetchJson(url.href(), options);
 };
 
+export const removeTile = (userId, tile) => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_LOCATION).segment(userId.toString());
+  const body = JSON.stringify({
+    location: tile,
+  });
+  const options = {
+    method: 'DELETE',
+    headers,
+    body,
+  };
+  return fetchJson(url.href(), options);
+};
+
 export const getFriends = (userId) => {
   const url = new URI(API_URL);
   url.segment(ENDPOINT_FRIEND).segment(userId.toString());

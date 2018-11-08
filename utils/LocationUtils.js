@@ -22,6 +22,16 @@ export function isLocationInGrid(location, grid) {
   return false;
 }
 
+export function removeLocationFromArray(location, array) {
+  for (let i = 0; i < array.length; i++) {
+    if (isEqual(location, array[i])) {
+      array.splice(i, 1);
+      return array;
+    }
+  }
+  return array;
+}
+
 export function containsDuplicateLocations(array) {
   if (array < 2) {
     return false;
@@ -231,6 +241,21 @@ export function insertIntoGrid(grid, location) {
     latitude: location.latitude,
     locations: [location],
   });
+  return grid;
+}
+
+export function removeFromGrid(grid, location) {
+  for (let i = 0; i < grid.length; i++) {
+    if (grid[i].latitude === location.latitude) {
+      const row = grid[i].locations;
+      for (let k = 0; k < row.length; k++) {
+        if (row[k].longitude === location.longitude) {
+          grid[i].locations.splice(k, 1);
+          return grid;
+        }
+      }
+    }
+  }
   return grid;
 }
 
