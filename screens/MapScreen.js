@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, TouchableOpacity } from 'react-native';
+import { View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, DangerZone } from 'expo';
 import geolib from 'geolib';
@@ -8,6 +8,7 @@ import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import Coordinate from '../model/Coordinate';
 import Speed from '../model/Speed';
+import TouchableScale from '../components/TouchableScale';
 import Toolbar from '../components/Toolbar';
 import Map from '../components/Map';
 import FlightBox from '../components/FlightBox';
@@ -246,27 +247,32 @@ class MapScreen extends Component {
       <View style={styles.container}>
         <Map onMapPress={coordinate => this.onMapPress(coordinate)} />
         <Toolbar />
-        <TouchableOpacity style={styles.menuButton} onPress={() => navigation.openDrawer()}>
+        <TouchableScale
+          style={styles.menuButton}
+          onPress={() => navigation.openDrawer()}
+          scaleTo={1.1}
+        >
           <Image style={styles.menuImage} source={iconMenu} />
-        </TouchableOpacity>
+        </TouchableScale>
         {friendLocations ? (
           <View style={styles.actionButton}>
-            <TouchableOpacity onPress={() => resetFriend()}>
+            <TouchableScale onPress={() => resetFriend()}>
               <Image style={styles.actionIcon} source={iconClose} />
-            </TouchableOpacity>
+            </TouchableScale>
           </View>
         ) : (
           !followLocation && (
             <View style={styles.actionButton}>
-              <TouchableOpacity
+              <TouchableScale
                 onPress={() => {
                   const { map } = this.props;
                   map && map.moveToCurrentLocation();
                   setFollowLocation(true);
                 }}
+                scaleTo={1.1}
               >
                 <Image style={styles.actionIcon} source={iconLocation} />
-              </TouchableOpacity>
+              </TouchableScale>
             </View>
           )
         )}

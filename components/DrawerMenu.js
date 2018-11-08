@@ -6,12 +6,12 @@ import {
   View,
   Text,
   Image,
-  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import Collapsible from 'react-native-collapsible';
 
+import TouchableScale from './TouchableScale';
 import Friendlist from './Friendlist';
 import CountryList from './CountryList';
 import { actions as userActions } from '../reducers/user';
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     paddingHorizontal: 5,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   avatar: {
     width: 80,
@@ -305,35 +305,35 @@ class DrawerMenu extends React.Component {
                 <Text style={styles.geocodeCity} ellipsizeMode="middle" numberOfLines={1}>{geocode.city}</Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleMapType()}>
+            <TouchableScale style={styles.menuItem} onPress={() => this.toggleMapType()}>
               <Image style={styles.menuIcon} source={iconMap} />
               <Text style={styles.menuLabel}>Map Type</Text>
               <Image style={styles.menuIcon} source={mapType === 'standard' ? iconStreetView : iconSatellite} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleFriendlist()}>
+            </TouchableScale>
+            <TouchableScale style={styles.menuItem} onPress={() => this.toggleFriendlist()}>
               <Image style={styles.menuIcon} source={iconFriendlist} />
               <Text style={styles.menuLabel}>Friendlist</Text>
               <Animated.View style={{ transform: [{ rotateX: friendlistFlip }] }}>
                 <Image style={styles.menuIcon} source={iconCollapse} />
               </Animated.View>
-            </TouchableOpacity>
+            </TouchableScale>
             <Collapsible collapsed={!showFriendlist}>
               <Friendlist onFriendPress={id => this.showFriend(id)} />
             </Collapsible>
-            <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountryList()}>
+            <TouchableScale style={styles.menuItem} onPress={() => this.toggleCountryList()}>
               <Image style={styles.menuIcon} source={iconWorld} />
               <Text style={styles.menuLabel}>Countries</Text>
               <Animated.View style={{ transform: [{ rotateX: countriesFlip }] }}>
                 <Image style={styles.menuIcon} source={iconCollapse} />
               </Animated.View>
-            </TouchableOpacity>
+            </TouchableScale>
             <Collapsible collapsed={!showCountryList}>
               <CountryList
                 onCountryPress={region => this.showCountry(region)}
                 onStatusPress={country => this.toggleVacation(country)}
               />
             </Collapsible>
-            <TouchableOpacity style={styles.menuItem} onPress={() => this.syncData()}>
+            <TouchableScale style={styles.menuItem} onPress={() => this.syncData()}>
               <Animated.View style={{ transform: [{ rotate: spin }] }}>
                 <Image style={styles.menuIcon} source={iconSync} />
               </Animated.View>
@@ -341,36 +341,36 @@ class DrawerMenu extends React.Component {
               <View style={styles.badge}>
                 <Text style={styles.badgeLabel}>{tilesToSave.length}</Text>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleFlights()}>
+            </TouchableScale>
+            <TouchableScale style={styles.menuItem} onPress={() => this.toggleFlights()}>
               <Image style={styles.menuIcon} source={iconAirport} />
               <Text style={styles.menuLabel}>Show Flights</Text>
               <Image style={styles.menuIcon} source={showFlights ? iconToggleOn : iconToggleOff} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleCountries()}>
+            </TouchableScale>
+            <TouchableScale style={styles.menuItem} onPress={() => this.toggleCountries()}>
               <Image style={styles.menuIcon} source={iconMap} />
               <Text style={styles.menuLabel}>Show Countries</Text>
               <Image style={styles.menuIcon} source={showCountries ? iconToggleOn : iconToggleOff} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleTheme()}>
+            </TouchableScale>
+            <TouchableScale style={styles.menuItem} onPress={() => this.toggleTheme()}>
               <Image style={styles.menuIcon} source={iconNight} />
               <Text style={styles.menuLabel}>Night Mode</Text>
               <Image style={styles.menuIcon} source={theme === 'dark' ? iconToggleOn : iconToggleOff} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => this.togglePowerSaver()}>
+            </TouchableScale>
+            <TouchableScale style={styles.menuItem} onPress={() => this.togglePowerSaver()}>
               <Image style={styles.menuIcon} source={iconPowerSaver} />
               <Text style={styles.menuLabel}>Power Saver</Text>
               <Image style={styles.menuIcon} source={powerSaver === 'on' ? iconToggleOn : iconToggleOff} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => this.toggleEditMode()}>
+            </TouchableScale>
+            <TouchableScale style={styles.menuItem} onPress={() => this.toggleEditMode()}>
               <Image style={styles.menuIcon} source={iconEdit} />
               <Text style={styles.menuLabel}>Edit Mode</Text>
               <Image style={styles.menuIcon} source={editMode ? iconToggleOn : iconToggleOff} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => this.logout()}>
+            </TouchableScale>
+            <TouchableScale style={styles.menuItem} onPress={() => this.logout()}>
               <Image style={styles.menuIcon} source={iconLogout} />
               <Text style={styles.menuLabel}>Logout</Text>
-            </TouchableOpacity>
+            </TouchableScale>
           </View>
         </ScrollView>
       </SafeAreaView>

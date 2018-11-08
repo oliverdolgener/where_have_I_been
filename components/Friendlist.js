@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import {
-  FlatList, Text, Image, TouchableOpacity, View, TextInput,
+  FlatList, Text, Image, View, TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as userActions } from '../reducers/user';
+import TouchableScale from './TouchableScale';
 import * as Colors from '../constants/Colors';
 import iconAdd from '../assets/iconAdd.png';
 import iconRemove from '../assets/iconRemove.png';
@@ -73,17 +74,17 @@ class Friendlist extends Component {
         data={friends}
         keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.item} onPress={() => onFriendPress(item.id)}>
+          <TouchableScale style={styles.item} onPress={() => onFriendPress(item.id)}>
             <View style={styles.badge}>
               <Text style={styles.badgeLabel}>{item.level}</Text>
             </View>
             <Text style={styles.label} numberOfLines={1} ellipsizeMode="middle">
               {item.username}
             </Text>
-            <TouchableOpacity onPress={() => removeFriend(userId, item.id)}>
+            <TouchableScale onPress={() => removeFriend(userId, item.id)}>
               <Image style={styles.icon} source={iconRemove} />
-            </TouchableOpacity>
-          </TouchableOpacity>
+            </TouchableScale>
+          </TouchableScale>
         )}
         ListHeaderComponent={(
           <View style={styles.item}>
@@ -96,9 +97,9 @@ class Friendlist extends Component {
               selectionColor={Colors.black}
               underlineColorAndroid={Colors.black}
             />
-            <TouchableOpacity onPress={() => this.onAddFriend()}>
+            <TouchableScale onPress={() => this.onAddFriend()} scaleTo={1.1}>
               <Image style={styles.icon} source={iconAdd} />
-            </TouchableOpacity>
+            </TouchableScale>
           </View>
 )}
         getItemLayout={(data, index) => ({

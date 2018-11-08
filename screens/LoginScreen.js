@@ -6,11 +6,11 @@ import {
   TextInput,
   View,
   Text,
-  TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as userActions } from '../reducers/user';
+import TouchableScale from '../components/TouchableScale';
 import * as Colors from '../constants/Colors';
 
 const styles = StyleSheet.create({
@@ -180,13 +180,13 @@ class LoginScreen extends React.Component {
           autoCorrect={false}
         />
         <Text style={styles.error}>{passwordError}</Text>
-        <TouchableOpacity style={styles.loginButton} onPress={this.onLoginPress}>
+        <TouchableScale style={styles.loginButton} onPress={this.onLoginPress}>
           <Text style={styles.loginButtonText}>{isLoggingIn ? 'Logging in...' : 'Login'}</Text>
           {isLoggingIn && <ActivityIndicator style={styles.indicator} color={Colors.creme} />}
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.signUpButton} onPress={this.onSignUpPress}>
+        </TouchableScale>
+        <TouchableScale style={styles.signUpButton} onPress={this.onSignUpPress}>
           <Text style={styles.signUpButtonText}>Sign Up</Text>
-        </TouchableOpacity>
+        </TouchableScale>
       </KeyboardAvoidingView>
     );
   }

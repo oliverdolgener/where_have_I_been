@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity,
+  View, Text, TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as userActions } from '../reducers/user';
+import TouchableScale from './TouchableScale';
 import * as Colors from '../constants/Colors';
 
 const styles = {
@@ -107,12 +108,12 @@ class FlightBox extends Component {
           autoCorrect={false}
           autoCapitalize="characters"
         />
-        <TouchableOpacity style={styles.flightButton} onPress={() => this.onAddFlight()}>
+        <TouchableScale style={styles.flightButton} onPress={() => this.onAddFlight()}>
           <Text style={styles.flightButtonLabel}>Add Flight</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.flightButton} onPress={() => this.onRemoveFlight()}>
+        </TouchableScale>
+        <TouchableScale style={styles.flightButton} onPress={() => this.onRemoveFlight()}>
           <Text style={styles.flightButtonLabel}>Remove Flight</Text>
-        </TouchableOpacity>
+        </TouchableScale>
       </View>
     );
   }

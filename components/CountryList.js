@@ -1,10 +1,11 @@
 import React from 'react';
 import {
-  FlatList, Text, Image, TouchableOpacity,
+  FlatList, Text, Image,
 } from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as mapActions } from '../reducers/map';
+import TouchableScale from './TouchableScale';
 import Flags from '../constants/Flags';
 import iconDone from '../assets/iconDone.png';
 import iconToDo from '../assets/iconToDo.png';
@@ -66,15 +67,15 @@ const CountryList = (props) => {
       data={countries}
       keyExtractor={item => item.id.toString()}
       renderItem={({ item }) => (
-        <TouchableOpacity style={styles.item} onPress={() => onCountryPress(item.region)}>
+        <TouchableScale style={styles.item} onPress={() => onCountryPress(item.region)}>
           <Image style={styles.icon} source={getFlag(item.id)} />
           <Text style={styles.label} numberOfLines={1} ellipsizeMode="middle">
             {item.name}
           </Text>
-          <TouchableOpacity onPress={() => toggleStatus(item)}>
+          <TouchableScale onPress={() => toggleStatus(item)} scaleTo={1.1}>
             <Image style={styles.icon} source={getIcon(item.status)} />
-          </TouchableOpacity>
-        </TouchableOpacity>
+          </TouchableScale>
+        </TouchableScale>
       )}
       getItemLayout={(data, index) => ({ length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index })}
     />
