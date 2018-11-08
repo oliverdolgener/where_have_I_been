@@ -277,7 +277,9 @@ export default (state = initialState, action = {}) => {
         success: (prevState) => {
           const friendLocations = prepareLocations(payload.data.locations);
           const holes = prepareHoles(friendLocations, state.get('region'));
-          return prevState.set('friendLocations', friendLocations).set('holes', holes);
+          return prevState
+            .set('friendLocations', friendLocations)
+            .set('holes', holes);
         },
       });
     case types.GET_FRIEND_FLIGHTS:
