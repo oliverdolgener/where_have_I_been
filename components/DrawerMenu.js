@@ -202,8 +202,9 @@ class DrawerMenu extends React.Component {
   };
 
   logout = async () => {
-    const { logout } = this.props;
+    const { logout, resetFriend } = this.props;
     this.closeDrawer();
+    resetFriend();
     logout();
   };
 
@@ -398,6 +399,7 @@ const mapDispatchToProps = {
   getFriends: friendActions.getFriends,
   getFriendLocations: friendActions.getFriendLocations,
   getFriendFlights: friendActions.getFriendFlights,
+  resetFriend: friendActions.resetFriend,
   setPowerSaver: mapActions.setPowerSaver,
   setMapType: mapActions.setMapType,
   setTheme: mapActions.setTheme,
