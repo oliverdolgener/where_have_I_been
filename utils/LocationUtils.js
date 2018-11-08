@@ -462,3 +462,14 @@ export function getRegions(slices) {
   const polygons = pathToPolygons(union.getPath());
   return polygons;
 }
+
+export function isSolidPolygon(polygon) {
+  let sum = 0;
+  for (let i = 0; i < polygon.length; i++) {
+    const next = i + 1 >= polygon.length ? 0 : i + 1;
+    sum
+      += (polygon[next].longitude - polygon[i].longitude)
+      * (polygon[next].latitude + polygon[i].latitude);
+  }
+  return sum > 0;
+}

@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  FlatList, Text, Image,
-} from 'react-native';
+import { FlatList, Text, Image } from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as mapActions } from '../reducers/map';
