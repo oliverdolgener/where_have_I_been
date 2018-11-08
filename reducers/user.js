@@ -6,6 +6,7 @@ import { AsyncStorage } from 'react-native';
 import Coordinate from '../model/Coordinate';
 import * as LocationUtils from '../utils/LocationUtils';
 import * as LevelUtils from '../utils/LevelUtils';
+import * as Earth from '../constants/Earth';
 import {
   getLocations,
   login,
@@ -153,8 +154,8 @@ const initialState = Map({
   region: {
     latitude: 52.558,
     longitude: 13.206497,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
+    latitudeDelta: Earth.DELTA,
+    longitudeDelta: Earth.DELTA,
   },
   visitedLocations: [],
   friendLocations: false,

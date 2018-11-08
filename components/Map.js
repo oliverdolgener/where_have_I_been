@@ -9,6 +9,7 @@ import Fog from './Fog';
 import Flights from './Flights';
 import Countries from './Countries';
 import * as LocationUtils from '../utils/LocationUtils';
+import * as Earth from '../constants/Earth';
 import mapStyleLight from '../assets/mapStyleLight.json';
 import mapStyleDark from '../assets/mapStyleDark.json';
 
@@ -39,7 +40,12 @@ class Map extends Component {
 
   moveToCurrentLocation() {
     const { geolocation } = this.props;
-    this.moveToLocation(geolocation.location);
+    this.moveToRegion({
+      latitude: geolocation.location.latitude,
+      longitude: geolocation.location.longitude,
+      latitudeDelta: Earth.DELTA,
+      longitudeDelta: Earth.DELTA,
+    });
   }
 
   moveToRegion(region) {
@@ -71,8 +77,8 @@ class Map extends Component {
         initialRegion={{
           latitude: lastTile.latitude,
           longitude: lastTile.longitude,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
+          latitudeDelta: Earth.DELTA,
+          longitudeDelta: Earth.DELTA,
         }}
         mapType={mapType}
         customMapStyle={theme === 'dark' ? mapStyleDark : mapStyleLight}
