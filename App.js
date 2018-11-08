@@ -5,6 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { middleware as reduxPackMiddleware } from 'redux-pack';
 import { Permissions, KeepAwake } from 'expo';
 import UserReducer from './reducers/user';
+import FriendReducer from './reducers/friend';
 import MapReducer from './reducers/map';
 import AppNavigation from './navigation/AppNavigation';
 
@@ -17,6 +18,7 @@ const styles = StyleSheet.create({
 const store = createStore(
   combineReducers({
     user: UserReducer,
+    friend: FriendReducer,
     map: MapReducer,
   }),
   applyMiddleware(reduxPackMiddleware),
@@ -34,7 +36,7 @@ class App extends Component {
   askPermissionsAsync = async () => {
     await Permissions.askAsync(Permissions.LOCATION);
     await Permissions.askAsync(Permissions.NOTIFICATIONS);
-  }
+  };
 
   render() {
     return (

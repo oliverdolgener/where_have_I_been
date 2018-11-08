@@ -5,6 +5,7 @@ import { Location, DangerZone } from 'expo';
 import geolib from 'geolib';
 
 import { actions as userActions } from '../reducers/user';
+import { actions as friendActions } from '../reducers/friend';
 import { actions as mapActions } from '../reducers/map';
 import Coordinate from '../model/Coordinate';
 import Speed from '../model/Speed';
@@ -287,7 +288,7 @@ const mapStateToProps = state => ({
   isLoggedIn: state.user.get('isLoggedIn'),
   userId: state.user.get('userId'),
   visitedLocations: state.user.get('visitedLocations'),
-  friendLocations: state.user.get('friendLocations'),
+  friendLocations: state.friend.get('friendLocations'),
   tilesToSave: state.user.get('tilesToSave'),
   isSaving: state.user.get('isSaving'),
   map: state.map.get('map'),
@@ -305,7 +306,7 @@ const mapDispatchToProps = {
   saveTiles: userActions.saveTiles,
   removeTile: userActions.removeTile,
   getFlights: userActions.getFlights,
-  resetFriend: userActions.resetFriend,
+  resetFriend: friendActions.resetFriend,
   setLastTile: mapActions.setLastTile,
   setGeolocation: mapActions.setGeolocation,
   setGeocode: mapActions.setGeocode,

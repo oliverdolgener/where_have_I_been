@@ -454,15 +454,6 @@ export function pathToPolygons(path) {
   return path.map(x => denormalize(x));
 }
 
-export function getRegions(slices) {
-  let union = new Region2D(normalize(slices[0]));
-  for (let i = 1; i < slices.length; i++) {
-    union = union.union(new Region2D(normalize(slices[i])));
-  }
-  const polygons = pathToPolygons(union.getPath());
-  return polygons;
-}
-
 export function isSolidPolygon(polygon) {
   let sum = 0;
   for (let i = 0; i < polygon.length; i++) {
@@ -472,4 +463,12 @@ export function isSolidPolygon(polygon) {
       * (polygon[next].latitude + polygon[i].latitude);
   }
   return sum > 0;
+}
+
+export function getPolygons(slices) {
+  let union = new Region2D(normalize(slices[0]));
+  for (let i = 1; i < slices.length; i++) {
+    union = union.union(new Region2D(normalize(slices[i])));
+  }
+  return pathToPolygons(union.getPath());
 }

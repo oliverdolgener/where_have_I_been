@@ -35,7 +35,7 @@ const Flights = (props) => {
 
 const mapStateToProps = state => ({
   flights: state.user.get('flights'),
-  friendFlights: state.user.get('friendFlights'),
+  friendFlights: state.friend.get('friendFlights'),
 });
 
 export default connect(mapStateToProps)(Flights);

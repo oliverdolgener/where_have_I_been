@@ -5,17 +5,12 @@ import { AsyncStorage } from 'react-native';
 
 import Coordinate from '../model/Coordinate';
 import * as LocationUtils from '../utils/LocationUtils';
-import * as LevelUtils from '../utils/LevelUtils';
-import * as Earth from '../constants/Earth';
 import {
   getLocations,
   login,
   signup,
   saveTiles,
   removeTile,
-  getFriends,
-  addFriend,
-  removeFriend,
   getFlights,
   addFlight,
   removeFlight,
@@ -27,17 +22,10 @@ export const types = {
   LOGOUT: 'USER/LOGOUT',
   SIGNUP: 'USER/SIGNUP',
   GET_USER: 'USER/GET_USER',
-  GET_FRIENDS: 'USER/GET_FRIENDS',
-  ADD_FRIEND: 'USER/ADD_FRIEND',
-  REMOVE_FRIEND: 'USER/REMOVE_FRIEND',
-  GET_FRIEND_LOCATIONS: 'USER/GET_FRIEND_LOCATION',
-  GET_FRIEND_FLIGHTS: 'USER/GET_FRIEND_FLIGHTS',
-  RESET_FRIEND: 'USER/RESET_FRIEND',
   RELOG_USER: 'USER/RELOG_USER',
   SET_EMAIL_ERROR: 'USER/SET_EMAIL_ERROR',
   SET_PASSWORD_ERROR: 'USER/SET_PASSWORD_ERROR',
   SET_LOCATIONS: 'USER/SET_LOCATIONS',
-  SET_REGION: 'USER/SET_REGION',
   SET_TILES_TO_SAVE: 'USER/SET_TILES_TO_SAVE',
   SAVE_TILES: 'USER/SAVE_TILES',
   REMOVE_TILE: 'USER/REMOVE_TILE',
@@ -62,13 +50,6 @@ const setTilesToSaveAsync = async (tilesToSave) => {
 const prepareLocations = (locations) => {
   const grid = LocationUtils.arrayToGrid(locations);
   return grid;
-};
-
-const prepareHoles = (locations, region) => {
-  const visibleLocations = LocationUtils.filterVisibleLocations(locations, region);
-  const gridDistance = LocationUtils.getGridDistanceByRegion(region);
-  const slices = LocationUtils.getSliceCoordinates(visibleLocations, gridDistance);
-  return slices;
 };
 
 export const actions = {
@@ -97,27 +78,6 @@ export const actions = {
     type: types.GET_USER,
     promise: getLocations(userId),
   }),
-  getFriends: userId => ({
-    type: types.GET_FRIENDS,
-    promise: getFriends(userId),
-  }),
-  addFriend: (userId, friendName) => ({
-    type: types.ADD_FRIEND,
-    promise: addFriend(userId, friendName),
-  }),
-  removeFriend: (userId, friendId) => ({
-    type: types.REMOVE_FRIEND,
-    promise: removeFriend(userId, friendId),
-  }),
-  getFriendLocations: friendId => ({
-    type: types.GET_FRIEND_LOCATIONS,
-    promise: getLocations(friendId),
-  }),
-  getFriendFlights: friendId => ({
-    type: types.GET_FRIEND_FLIGHTS,
-    promise: getFlights(friendId),
-  }),
-  resetFriend: () => ({ type: types.RESET_FRIEND }),
   relogUser: userId => ({
     type: types.RELOG_USER,
     promise: getLocations(userId),
@@ -134,7 +94,6 @@ export const actions = {
   setEmailError: error => ({ type: types.SET_EMAIL_ERROR, error }),
   setPasswordError: error => ({ type: types.SET_PASSWORD_ERROR, error }),
   setLocations: locations => ({ type: types.SET_LOCATIONS, locations }),
-  setRegion: region => ({ type: types.SET_REGION, region }),
   setTilesToSave: tilesToSave => ({ type: types.SET_TILES_TO_SAVE, tilesToSave }),
   saveTiles: (userId, tilesToSave) => ({
     type: types.SAVE_TILES,
@@ -162,18 +121,8 @@ export const actions = {
 const initialState = Map({
   isLoggedIn: false,
   userId: false,
-  friends: [],
-  region: {
-    latitude: 52.558,
-    longitude: 13.206497,
-    latitudeDelta: Earth.DELTA,
-    longitudeDelta: Earth.DELTA,
-  },
   visitedLocations: [],
-  friendLocations: false,
-  holes: [],
   flights: [],
-  friendFlights: false,
   emailError: '',
   passwordError: '',
   tilesToSave: [],
@@ -190,12 +139,10 @@ export default (state = initialState, action = {}) => {
         start: prevState => prevState.set('isLoggingIn', true),
         success: (prevState) => {
           const visitedLocations = prepareLocations(payload.data.locations);
-          const holes = prepareHoles(visitedLocations, state.get('region'));
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data.id)
             .set('visitedLocations', visitedLocations)
-            .set('holes', holes)
             .set('emailError', '')
             .set('passwordError', '');
         },
@@ -209,17 +156,13 @@ export default (state = initialState, action = {}) => {
         .set('isLoggedIn', false)
         .set('userId', false)
         .set('visitedLocations', [])
-        .set('friendLocations', false)
-        .set('flights', [])
-        .set('friendFlights', false)
-        .set('holes', []);
+        .set('flights', []);
     case types.SIGNUP:
       return handle(state, action, {
         success: prevState => prevState
           .set('isLoggedIn', true)
           .set('userId', payload.data.id)
           .set('visitedLocations', [])
-          .set('holes', [])
           .set('emailError', '')
           .set('passwordError', ''),
         failure: prevState => prevState
@@ -230,78 +173,20 @@ export default (state = initialState, action = {}) => {
       return handle(state, action, {
         success: (prevState) => {
           const visitedLocations = prepareLocations(payload.data.locations);
-          const holes = prepareHoles(visitedLocations, state.get('region'));
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data.id)
-            .set('visitedLocations', visitedLocations)
-            .set('holes', holes);
+            .set('visitedLocations', visitedLocations);
         },
       });
-    case types.GET_FRIENDS:
-      return handle(state, action, {
-        success: (prevState) => {
-          const friends = payload.data.map(x => ({
-            id: x.id.toString(),
-            username: x.username,
-            level: LevelUtils.getLevelFromExp(x.locations),
-          }));
-          return prevState.set('friends', friends);
-        },
-      });
-    case types.ADD_FRIEND:
-      return handle(state, action, {
-        failure: prevState => prevState.set('friendError', 'User not found'),
-        success: (prevState) => {
-          const friends = payload.data.map(x => ({
-            id: x.id.toString(),
-            username: x.username,
-            level: LevelUtils.getLevelFromExp(x.locations),
-          }));
-          return prevState.set('friends', friends).set('friendError', '');
-        },
-      });
-    case types.REMOVE_FRIEND:
-      return handle(state, action, {
-        success: (prevState) => {
-          const friends = payload.data.map(x => ({
-            id: x.id.toString(),
-            username: x.username,
-            level: LevelUtils.getLevelFromExp(x.locations),
-          }));
-          return prevState.set('friends', friends);
-        },
-      });
-    case types.GET_FRIEND_LOCATIONS:
-      return handle(state, action, {
-        success: (prevState) => {
-          const friendLocations = prepareLocations(payload.data.locations);
-          const holes = prepareHoles(friendLocations, state.get('region'));
-          return prevState.set('friendLocations', friendLocations).set('holes', holes);
-        },
-      });
-    case types.GET_FRIEND_FLIGHTS:
-      return handle(state, action, {
-        success: prevState => prevState.set('friendFlights', payload.data),
-      });
-    case types.RESET_FRIEND: {
-      const visitedLocations = state.get('visitedLocations');
-      const holes = prepareHoles(visitedLocations, state.get('region'));
-      return state
-        .set('friendLocations', false)
-        .set('friendFlights', false)
-        .set('holes', holes);
-    }
     case types.RELOG_USER:
       return handle(state, action, {
         success: (prevState) => {
           const visitedLocations = prepareLocations(payload.data.locations);
-          const holes = prepareHoles(visitedLocations, state.get('region'));
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data.id)
-            .set('visitedLocations', visitedLocations)
-            .set('holes', holes);
+            .set('visitedLocations', visitedLocations);
         },
       });
     case types.SET_EMAIL_ERROR:
@@ -310,17 +195,7 @@ export default (state = initialState, action = {}) => {
       return state.set('passwordError', action.error);
     case types.SET_LOCATIONS: {
       const visitedLocations = prepareLocations(action.locations);
-      const locations = state.get('friendLocations') || visitedLocations;
-      const holes = prepareHoles(locations, state.get('region'));
-      return state.set('visitedLocations', visitedLocations).set('holes', holes);
-    }
-    case types.SET_REGION: {
-      const locations = state.get('friendLocations') || state.get('visitedLocations');
-      const holes = prepareHoles(locations, action.region);
-      if (JSON.stringify(holes) === JSON.stringify(state.get('holes'))) {
-        return state.set('region', action.region);
-      }
-      return state.set('region', action.region).set('holes', holes);
+      return state.set('visitedLocations', visitedLocations);
     }
     case types.SET_TILES_TO_SAVE:
       setTilesToSaveAsync(action.tilesToSave);

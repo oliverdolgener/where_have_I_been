@@ -15,6 +15,7 @@ import TouchableScale from './TouchableScale';
 import Friendlist from './Friendlist';
 import CountryList from './CountryList';
 import { actions as userActions } from '../reducers/user';
+import { actions as friendActions } from '../reducers/friend';
 import { actions as mapActions } from '../reducers/map';
 import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
@@ -330,7 +331,6 @@ class DrawerMenu extends React.Component {
             <Collapsible collapsed={!showCountryList}>
               <CountryList
                 onCountryPress={region => this.showCountry(region)}
-                onStatusPress={country => this.toggleVacation(country)}
               />
             </Collapsible>
             <TouchableScale style={styles.menuItem} onPress={() => this.syncData()}>
@@ -393,11 +393,11 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  getFriends: userActions.getFriends,
-  getFriendLocations: userActions.getFriendLocations,
-  getFriendFlights: userActions.getFriendFlights,
   logout: userActions.logout,
   saveTiles: userActions.saveTiles,
+  getFriends: friendActions.getFriends,
+  getFriendLocations: friendActions.getFriendLocations,
+  getFriendFlights: friendActions.getFriendFlights,
   setPowerSaver: mapActions.setPowerSaver,
   setMapType: mapActions.setMapType,
   setTheme: mapActions.setTheme,

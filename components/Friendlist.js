@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import { actions as userActions } from '../reducers/user';
+import { actions as friendActions } from '../reducers/friend';
 import TouchableScale from './TouchableScale';
 import * as Colors from '../constants/Colors';
 import iconAdd from '../assets/iconAdd.png';
@@ -114,12 +114,12 @@ class Friendlist extends Component {
 
 const mapStateToProps = state => ({
   userId: state.user.get('userId'),
-  friends: state.user.get('friends'),
+  friends: state.friend.get('friends'),
 });
 
 const mapDispatchToProps = {
-  addFriend: userActions.addFriend,
-  removeFriend: userActions.removeFriend,
+  addFriend: friendActions.addFriend,
+  removeFriend: friendActions.removeFriend,
 };
 
 export default connect(

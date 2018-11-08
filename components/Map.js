@@ -3,7 +3,6 @@ import { Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { MapView } from 'expo';
 
-import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import Fog from './Fog';
 import Flights from './Flights';
@@ -114,7 +113,7 @@ class Map extends Component {
 }
 
 const mapStateToProps = state => ({
-  region: state.user.get('region'),
+  region: state.map.get('region'),
   lastTile: state.map.get('lastTile'),
   mapType: state.map.get('mapType'),
   theme: state.map.get('theme'),
@@ -126,7 +125,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  setRegion: userActions.setRegion,
+  setRegion: mapActions.setRegion,
   setMap: mapActions.setMap,
   setFollowLocation: mapActions.setFollowLocation,
 };

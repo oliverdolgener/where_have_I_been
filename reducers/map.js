@@ -7,6 +7,7 @@ import {
 } from '../services/api';
 import Coordinate from '../model/Coordinate';
 import * as LocationUtils from '../utils/LocationUtils';
+import * as Earth from '../constants/Earth';
 
 export const types = {
   SET_MAP: 'MAP/SET_MAP',
@@ -25,6 +26,7 @@ export const types = {
   SET_LAST_TILE: 'MAP/SET_LAST_TILE',
   SET_POWER_SAVER: 'MAP/SET_POWER_SAVER',
   GET_ELEVATION: 'MAP/GET_ELEVATION',
+  SET_REGION: 'MAP/SET_REGION',
 };
 
 const setMapTypeAsync = async (mapType) => {
@@ -72,6 +74,7 @@ export const actions = {
     type: types.GET_ELEVATION,
     promise: getElevation(coordinate),
   }),
+  setRegion: region => ({ type: types.SET_REGION, region }),
 };
 
 const initialState = Map({
@@ -94,6 +97,12 @@ const initialState = Map({
   lastTile: new Coordinate(52.558, 13.206497),
   powerSaver: 'off',
   elevation: 0,
+  region: {
+    latitude: 52.558,
+    longitude: 13.206497,
+    latitudeDelta: Earth.DELTA,
+    longitudeDelta: Earth.DELTA,
+  },
 });
 
 export default (state = initialState, action = {}) => {
@@ -156,6 +165,9 @@ export default (state = initialState, action = {}) => {
           return prevState;
         },
       });
+    case types.SET_REGION: {
+      return state.set('region', action.region);
+    }
     default:
       return state;
   }
