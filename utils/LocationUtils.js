@@ -190,17 +190,17 @@ export function isCoordinateInRegion(coordinate, region, factor = 1) {
   );
 }
 
-export function filterVisibleLocations(locations, region) {
+export function filterVisibleLocations(locations, region, factor = 1) {
   const visibleLocations = [];
   locations.forEach((x) => {
-    if (isLatitudeInRegion(x.latitude, region, 3)) {
+    if (isLatitudeInRegion(x.latitude, region, factor)) {
       const row = {
         latitude: x.latitude,
         locations: [],
       };
 
       x.locations.forEach((y) => {
-        if (isLongitudeInRegion(y.longitude, region, 3)) {
+        if (isLongitudeInRegion(y.longitude, region, factor)) {
           row.locations.push(y);
         }
       });
@@ -275,8 +275,7 @@ export function getRectangleCoordinates(topLeft, botRight, gridDistance = Earth.
   return [
     {
       latitude: RoundUtils.roundToDecimals(
-        topLeft.latitude + gridDistance / Earth.SQUARE_OFFSET,
-        6,
+        topLeft.latitude + gridDistance / 2, 4,
       ),
       longitude: RoundUtils.roundToDecimals(
         topLeft.longitude
@@ -287,8 +286,7 @@ export function getRectangleCoordinates(topLeft, botRight, gridDistance = Earth.
     },
     {
       latitude: RoundUtils.roundToDecimals(
-        topLeft.latitude + gridDistance / Earth.SQUARE_OFFSET,
-        6,
+        topLeft.latitude + gridDistance / 2, 4,
       ),
       longitude: RoundUtils.roundToDecimals(
         botRight.longitude
@@ -298,8 +296,7 @@ export function getRectangleCoordinates(topLeft, botRight, gridDistance = Earth.
     },
     {
       latitude: RoundUtils.roundToDecimals(
-        botRight.latitude - gridDistance / Earth.SQUARE_OFFSET,
-        6,
+        botRight.latitude - gridDistance / 2, 4,
       ),
       longitude: RoundUtils.roundToDecimals(
         botRight.longitude
@@ -309,8 +306,7 @@ export function getRectangleCoordinates(topLeft, botRight, gridDistance = Earth.
     },
     {
       latitude: RoundUtils.roundToDecimals(
-        botRight.latitude - gridDistance / Earth.SQUARE_OFFSET,
-        6,
+        botRight.latitude - gridDistance / 2, 4,
       ),
       longitude: RoundUtils.roundToDecimals(
         topLeft.longitude
@@ -466,6 +462,9 @@ export function isSolidPolygon(polygon) {
 }
 
 export function getPolygons(slices) {
+  if (slices.length < 1) {
+    return [];
+  }
   let union = new Region2D(normalize(slices[0]));
   for (let i = 1; i < slices.length; i++) {
     union = union.union(new Region2D(normalize(slices[i])));
