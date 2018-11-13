@@ -22,8 +22,8 @@ const Countries = (props) => {
         key={i.toString()}
         geojson={x}
         fillColor={color}
-        strokeWidth={0.5}
-        strokeColor={Colors.creme}
+        strokeWidth={0}
+        strokeColor={Colors.transparent}
       />
     );
   });
@@ -31,7 +31,6 @@ const Countries = (props) => {
 
 const mapStateToProps = state => ({
   countries: state.map.get('countries'),
-  showCountries: state.map.get('showCountries'),
 });
 
 export default connect(mapStateToProps)(Countries);
