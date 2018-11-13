@@ -24,11 +24,7 @@ const styles = {
     flex: 1,
   },
   batterySaver: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
+    flex: 1,
     backgroundColor: Colors.black,
   },
   menuButton: {
@@ -244,7 +240,9 @@ class MapScreen extends Component {
       this.positionListener.remove();
     }
 
-    return (
+    return powerSaver === 'on' && showBatterySaver ? (
+      <View style={styles.batterySaver} />
+    ) : (
       <View style={styles.container}>
         <Map onMapPress={coordinate => this.onMapPress(coordinate)} />
         <Toolbar />
@@ -278,7 +276,6 @@ class MapScreen extends Component {
           )
         )}
         {editMode && <FlightBox />}
-        {powerSaver === 'on' && showBatterySaver && <View style={styles.batterySaver} />}
       </View>
     );
   }
