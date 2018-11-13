@@ -193,14 +193,14 @@ export function isCoordinateInRegion(coordinate, region, factor = 1) {
 export function filterVisibleLocations(locations, region) {
   const visibleLocations = [];
   locations.forEach((x) => {
-    if (isLatitudeInRegion(x.latitude, region, 3)) {
+    if (isLatitudeInRegion(x.latitude, region, 2)) {
       const row = {
         latitude: x.latitude,
         locations: [],
       };
 
       x.locations.forEach((y) => {
-        if (isLongitudeInRegion(y.longitude, region, 3)) {
+        if (isLongitudeInRegion(y.longitude, region, 2)) {
           row.locations.push(y);
         }
       });
