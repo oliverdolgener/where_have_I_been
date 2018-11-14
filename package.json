@@ -6,7 +6,7 @@
     "babel-eslint": "^10.0.1",
     "babel-preset-airbnb": "^3.0.1",
     "babel-preset-react-native": "^4.0.1",
-    "eslint": "^5.8.0",
+    "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-import-resolver-reactnative": "^1.0.2",
     "eslint-plugin-import": "^2.11.0",
@@ -15,7 +15,7 @@
     "eslint-plugin-react-native": "^3.5.0",
     "jest-expo": "^31.0.0",
     "prettier-eslint": "^8.7.0",
-    "react-test-renderer": "^16.6.1"
+    "react-test-renderer": "^16.6.3"
   },
   "main": "./node_modules/expo/AppEntry.js",
   "scripts": {
@@ -29,7 +29,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "expo": "^31.0.4",
+    "expo": "^31.0.5",
     "geolib": "^2.0.24",
     "immutable": "^4.0.0-rc.12",
     "react": "16.5.0",
@@ -38,7 +38,7 @@
     "react-native-geojson": "^0.1.1",
     "react-native-progress": "^3.5.0",
     "react-navigation": "^2.18.2",
-    "react-redux": "^5.1.0",
+    "react-redux": "^5.1.1",
     "redux": "^4.0.1",
     "redux-pack": "^0.1.5",
     "region2d": "^1.0.0",
