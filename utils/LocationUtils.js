@@ -472,3 +472,22 @@ export function getPolygons(slices) {
   }
   return pathToPolygons(union.getPath());
 }
+
+export function getCircleCoordinates(point, radius, dir) {
+  const points = 32;
+  const rlat = ConversionUtils.toDegrees(radius / Earth.EARTH_RADIUS);
+  const rlng = rlat / Math.cos(ConversionUtils.toRadians(point.latitude));
+  const extp = [];
+
+  const start = dir === 1 ? 0 : points + 1;
+  const end = dir === 1 ? points + 1 : 0;
+
+  for (let i = start; (dir === 1 ? i < end : i > end); i += dir) {
+    const theta = Math.PI * (i / (points / 2));
+    const ey = point.longitude + (rlng * Math.cos(theta));
+    const ex = point.latitude + (rlat * Math.sin(theta));
+    extp.push({ latitude: ex, longitude: ey });
+  }
+
+  return extp;
+}
