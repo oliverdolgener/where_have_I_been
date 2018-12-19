@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  FlatList, Text, Image, View, TextInput,
+  StyleSheet, FlatList, Text, Image, View, TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -12,7 +12,7 @@ import iconRemove from '../assets/iconRemove.png';
 
 const ITEM_HEIGHT = 40;
 
-const styles = {
+const styles = StyleSheet.create({
   item: {
     height: ITEM_HEIGHT,
     flexDirection: 'row',
@@ -45,7 +45,7 @@ const styles = {
     marginLeft: 40,
     fontSize: 20,
   },
-};
+});
 
 class Friendlist extends Component {
   constructor() {

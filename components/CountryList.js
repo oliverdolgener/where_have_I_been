@@ -1,5 +1,7 @@
 import React from 'react';
-import { FlatList, Text, Image } from 'react-native';
+import {
+  StyleSheet, FlatList, Text, Image,
+} from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as mapActions } from '../reducers/map';
@@ -11,7 +13,7 @@ import iconHeart from '../assets/iconHeart.png';
 
 const ITEM_HEIGHT = 40;
 
-const styles = {
+const styles = StyleSheet.create({
   item: {
     height: ITEM_HEIGHT,
     flexDirection: 'row',
@@ -27,7 +29,7 @@ const styles = {
     width: 30,
     height: 30,
   },
-};
+});
 
 const CountryList = (props) => {
   const { countries, onCountryPress } = props;

@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput } from 'react-native';
+import {
+  StyleSheet, View, Text, TextInput,
+} from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as userActions } from '../reducers/user';
 import TouchableScale from './TouchableScale';
 import * as Colors from '../constants/Colors';
 
-const styles = {
+const styles = StyleSheet.create({
   flightBox: {
     width: 120,
     position: 'absolute',
@@ -29,7 +31,7 @@ const styles = {
   flightButtonLabel: {
     color: Colors.creme,
   },
-};
+});
 
 class FlightBox extends Component {
   constructor() {

@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import {
+  StyleSheet, View, Text, Image,
+} from 'react-native';
 import { connect } from 'react-redux';
 import ProgressBar from 'react-native-progress/Bar';
 
@@ -11,7 +13,7 @@ import iconSquare from '../assets/iconSquare.png';
 import iconSpeed from '../assets/iconSpeed.png';
 import iconAltitude from '../assets/iconAltitude.png';
 
-const styles = {
+const styles = StyleSheet.create({
   container: {},
   toolbar: {
     width: '100%',
@@ -41,7 +43,7 @@ const styles = {
     borderWidth: 0.5,
     borderColor: Colors.black,
   },
-};
+});
 
 const Toolbar = (props) => {
   const { visitedLocations, geolocation } = props;

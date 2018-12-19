@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Platform } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { MapView } from 'expo';
 
@@ -13,11 +13,11 @@ import * as Earth from '../constants/Earth';
 import mapStyleLight from '../assets/mapStyleLight.json';
 import mapStyleDark from '../assets/mapStyleDark.json';
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-};
+});
 
 class Map extends Component {
   onRegionChangeComplete(region) {

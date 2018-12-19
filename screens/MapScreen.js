@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, DangerZone } from 'expo';
 import geolib from 'geolib';
@@ -19,7 +19,7 @@ import iconMenu from '../assets/iconMenu.png';
 import iconLocation from '../assets/iconLocation.png';
 import iconClose from '../assets/iconRemove.png';
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -49,7 +49,7 @@ const styles = {
     width: 50,
     height: 50,
   },
-};
+});
 
 class MapScreen extends Component {
   constructor() {
