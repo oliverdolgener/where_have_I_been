@@ -61,6 +61,20 @@ export const signup = (email, password, pushToken) => {
   return fetchJson(url.href(), options);
 };
 
+export const setUserPushToken = (userId, pushToken) => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_USER).segment(userId.toString());
+  const body = JSON.stringify({
+    pushToken,
+  });
+  const options = {
+    method: 'POST',
+    headers,
+    body,
+  };
+  return fetchJson(url.href(), options);
+};
+
 export const saveTiles = (userId, tilesToSave) => {
   const url = new URI(API_URL);
   url.segment(ENDPOINT_LOCATION).segment(userId.toString());

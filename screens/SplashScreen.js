@@ -41,6 +41,7 @@ class SplashScreen extends React.Component {
 
   getUserAsync = async () => {
     const {
+      setUserPushToken,
       relogUser,
       setMapType,
       setTilesToSave,
@@ -59,6 +60,8 @@ class SplashScreen extends React.Component {
 
     setTimeout(() => {
       if (id) {
+        const { pushToken } = this.props;
+        pushToken && setUserPushToken(id, pushToken);
         if (tilesToSave) {
           setTilesToSave(JSON.parse(tilesToSave));
         }
@@ -91,17 +94,22 @@ class SplashScreen extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  pushToken: state.user.get('pushToken'),
+});
+
 const mapDispatchToProps = {
   relogUser: userActions.relogUser,
   setTilesToSave: userActions.setTilesToSave,
   setLastTile: mapActions.setLastTile,
   setPushToken: userActions.setPushToken,
+  setUserPushToken: userActions.setUserPushToken,
   setPowerSaver: mapActions.setPowerSaver,
   setMapType: mapActions.setMapType,
   setTheme: mapActions.setTheme,
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(SplashScreen);

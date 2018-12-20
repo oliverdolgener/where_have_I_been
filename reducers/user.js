@@ -9,6 +9,7 @@ import {
   getLocations,
   login,
   signup,
+  setUserPushToken,
   saveTiles,
   removeTile,
   getFlights,
@@ -30,6 +31,7 @@ export const types = {
   SAVE_TILES: 'USER/SAVE_TILES',
   REMOVE_TILE: 'USER/REMOVE_TILE',
   SET_PUSH_TOKEN: 'USER/SET_PUSH_TOKEN',
+  SET_USER_PUSH_TOKEN: 'USER/SET_USER_PUSH_TOKEN',
   GET_FLIGHTS: 'USER/GET_FLIGHTS',
   ADD_FLIGHT: 'USER/ADD_FLIGHT',
   REMOVE_FLIGHT: 'USER/REMOVE_FLIGHT',
@@ -104,6 +106,10 @@ export const actions = {
     promise: removeTile(userId.toString(), tile),
   }),
   setPushToken: pushToken => ({ type: types.SET_PUSH_TOKEN, pushToken }),
+  setUserPushToken: (userId, pushToken) => ({
+    type: types.SET_USER_PUSH_TOKEN,
+    promise: setUserPushToken(userId, pushToken),
+  }),
   getFlights: userId => ({
     type: types.GET_FLIGHTS,
     promise: getFlights(userId),
