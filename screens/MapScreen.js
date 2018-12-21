@@ -147,6 +147,8 @@ class MapScreen extends Component {
           if (!Coordinate.isEqual(lastTile, roundedLocation)) {
             this.onTileChange(roundedLocation);
           }
+
+          LocationUtils.removeDuplicateLocations(LocationUtils.getRoundedCircleCoordinates(location, 0.0001, 16)).forEach(x => this.addLocation(x));
         }
       },
     );

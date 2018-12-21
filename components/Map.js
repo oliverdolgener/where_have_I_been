@@ -10,6 +10,7 @@ import Countries from './Countries';
 import CountryBorders from './CountryBorders';
 import * as LocationUtils from '../utils/LocationUtils';
 import * as Earth from '../constants/Earth';
+import * as Colors from '../constants/Colors';
 import mapStyleLight from '../assets/mapStyleLight.json';
 import mapStyleDark from '../assets/mapStyleDark.json';
 
