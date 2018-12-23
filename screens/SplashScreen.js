@@ -3,11 +3,13 @@ import {
   AsyncStorage, View, StyleSheet, Text,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Permissions, Notifications } from 'expo';
+import { Permissions, Notifications, SQLite } from 'expo';
 
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
 import * as Colors from '../constants/Colors';
+
+const db = SQLite.openDatabase('db.db');
 
 const styles = StyleSheet.create({
   container: {
@@ -32,6 +34,15 @@ class SplashScreen extends React.Component {
     this.getUserAsync();
   }
 
+  componentDidMount() {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'create table if not exists location (id integer primary key not null, latitude int not null, longitude int not null, timestamp int);',
+      );
+      // tx.executeSql('delete from location', []);
+    });
+  }
+
   registerForPushAsync = async () => {
     const { setPushToken } = this.props;
     await Permissions.askAsync(Permissions.NOTIFICATIONS);
@@ -43,6 +54,7 @@ class SplashScreen extends React.Component {
     const {
       setUserPushToken,
       relogUser,
+      relogFromSQLite,
       setMapType,
       setTilesToSave,
       setLastTile,
@@ -77,7 +89,25 @@ class SplashScreen extends React.Component {
         if (powerSaver) {
           setPowerSaver(powerSaver);
         }
-        relogUser(id);
+        db.transaction(
+          (tx) => {
+            tx.executeSql(
+              'select * from location where user_id = ?',
+              [id],
+              (_, { rows: { _array } }) => {
+                console.log(_array);
+                if (_array.length > 0) {
+                  relogFromSQLite(id, _array);
+                } else {
+                  console.log('relogFromServer');
+                  relogUser(id);
+                }
+              },
+            );
+          },
+          null,
+          null,
+        );
       } else {
         navigation.navigate('Login');
       }
@@ -100,6 +130,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   relogUser: userActions.relogUser,
+  relogFromSQLite: userActions.relogFromSQLite,
   setTilesToSave: userActions.setTilesToSave,
   setLastTile: mapActions.setLastTile,
   setPushToken: userActions.setPushToken,
