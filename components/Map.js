@@ -108,7 +108,7 @@ class Map extends Component {
       >
         <Fog />
         {showCountries && <Countries />}
-        <CountryBorders />
+        {showCountries && <CountryBorders />}
         {(showFlights || editMode) && <Flights />}
       </MapView>
     );
