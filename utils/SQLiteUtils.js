@@ -5,7 +5,7 @@ const db = SQLite.openDatabase('whib.db');
 export function createDB() {
   db.transaction((tx) => {
     tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS location (id INTEGER PRIMARY KEY NOT NULL, user_id INTEGER NOT NULL, latitude BLOB NOT NULL, longitude BLOB NOT NULL, timestamp BLOB);',
+      'CREATE TABLE IF NOT EXISTS location (id INTEGER PRIMARY KEY NOT NULL, latitude BLOB NOT NULL, longitude BLOB NOT NULL)',
     );
   });
 }
@@ -16,35 +16,30 @@ export function deleteLocations() {
   });
 }
 
-export function getLocations(userId) {
+export function getLocations() {
   return new Promise((resolve) => {
     db.transaction((tx) => {
-      tx.executeSql(
-        'SELECT * FROM location WHERE user_id = ?',
-        [userId],
-        (_, { rows: { _array } }) => {
-          resolve(_array);
-        },
-      );
+      tx.executeSql('SELECT * FROM location', [], (_, { rows: { _array } }) => {
+        resolve(_array);
+      });
     });
   });
 }
 
-export function insertLocations(userId, locations) {
+export function insertLocations(locations) {
   db.transaction((tx) => {
     locations.forEach((x) => {
-      tx.executeSql(
-        'INSERT INTO location (user_id, latitude, longitude, timestamp) VALUES (?, ?, ?, ?)',
-        [userId, x.latitude, x.longitude, x.timestamp],
-      );
+      tx.executeSql('INSERT INTO location (latitude, longitude, timestamp) VALUES (?, ?)', [
+        x.latitude,
+        x.longitude,
+      ]);
     });
   });
 }
 
-export function deleteLocation(userId, location) {
+export function deleteLocation(location) {
   db.transaction((tx) => {
-    tx.executeSql('DELETE FROM location WHERE user_id = ? AND latitude = ? And longitude = ?', [
-      userId,
+    tx.executeSql('DELETE FROM location WHERE latitude = ? And longitude = ?', [
       location.latitude,
       location.longitude,
     ]);

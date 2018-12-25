@@ -144,7 +144,7 @@ export default (state = initialState, action = {}) => {
       return handle(state, action, {
         start: prevState => prevState.set('isLoggingIn', true),
         success: (prevState) => {
-          SQLiteUtils.insertLocations(payload.data.id, payload.data.locations);
+          SQLiteUtils.insertLocations(payload.data.locations);
           const visitedLocations = prepareLocations(payload.data.locations);
           return prevState
             .set('isLoggedIn', true)
@@ -190,7 +190,7 @@ export default (state = initialState, action = {}) => {
     case types.RELOG_USER:
       return handle(state, action, {
         success: (prevState) => {
-          SQLiteUtils.insertLocations(payload.data.id, payload.data.locations);
+          SQLiteUtils.insertLocations(payload.data.locations);
           const visitedLocations = prepareLocations(payload.data.locations);
           return prevState
             .set('isLoggedIn', true)
@@ -223,7 +223,7 @@ export default (state = initialState, action = {}) => {
         start: prevState => prevState.set('isSaving', true),
         success: (prevState) => {
           const savedLocations = action.payload.data;
-          SQLiteUtils.insertLocations(state.get('userId'), savedLocations);
+          SQLiteUtils.insertLocations(savedLocations);
           const tilesToSave = state.get('tilesToSave');
           const difference = tilesToSave.filter(
             x => !savedLocations.find(y => Coordinate.isEqual(y, x)),
@@ -236,7 +236,7 @@ export default (state = initialState, action = {}) => {
     case types.REMOVE_TILE:
       return handle(state, action, {
         success: (prevState) => {
-          SQLiteUtils.deleteLocations(state.get('userId'), action.payload.data);
+          SQLiteUtils.deleteLocation(action.payload.data);
           return prevState;
         },
       });

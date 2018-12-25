@@ -81,7 +81,7 @@ class SplashScreen extends React.Component {
       }
 
       let visitedLocations = [];
-      SQLiteUtils.getLocations(id).then((locations) => {
+      SQLiteUtils.getLocations().then((locations) => {
         visitedLocations = locations;
       });
 
