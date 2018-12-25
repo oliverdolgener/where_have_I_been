@@ -3,13 +3,12 @@ import {
   AsyncStorage, View, StyleSheet, Text,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Permissions, Notifications, SQLite } from 'expo';
+import { Permissions, Notifications } from 'expo';
 
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
+import * as SQLiteUtils from '../utils/SQLiteUtils';
 import * as Colors from '../constants/Colors';
-
-const db = SQLite.openDatabase('db.db');
 
 const styles = StyleSheet.create({
   container: {
@@ -30,17 +29,9 @@ const styles = StyleSheet.create({
 
 class SplashScreen extends React.Component {
   componentWillMount() {
+    SQLiteUtils.createDB();
     this.registerForPushAsync();
     this.getUserAsync();
-  }
-
-  componentDidMount() {
-    db.transaction((tx) => {
-      tx.executeSql(
-        'create table if not exists location (id integer primary key not null, latitude int not null, longitude int not null, timestamp int);',
-      );
-      // tx.executeSql('delete from location', []);
-    });
   }
 
   registerForPushAsync = async () => {
@@ -70,48 +61,40 @@ class SplashScreen extends React.Component {
     const theme = await AsyncStorage.getItem('theme');
     const powerSaver = await AsyncStorage.getItem('powerSaver');
 
-    setTimeout(() => {
-      if (id) {
-        const { pushToken } = this.props;
-        pushToken && setUserPushToken(id, pushToken);
-        if (tilesToSave) {
-          setTilesToSave(JSON.parse(tilesToSave));
-        }
-        if (lastTile) {
-          setLastTile(JSON.parse(lastTile));
-        }
-        if (mapType) {
-          setMapType(mapType);
-        }
-        if (theme) {
-          setTheme(theme);
-        }
-        if (powerSaver) {
-          setPowerSaver(powerSaver);
-        }
-        db.transaction(
-          (tx) => {
-            tx.executeSql(
-              'select * from location where user_id = ?',
-              [id],
-              (_, { rows: { _array } }) => {
-                console.log(_array);
-                if (_array.length > 0) {
-                  relogFromSQLite(id, _array);
-                } else {
-                  console.log('relogFromServer');
-                  relogUser(id);
-                }
-              },
-            );
-          },
-          null,
-          null,
-        );
-      } else {
-        navigation.navigate('Login');
+    if (id) {
+      const { pushToken } = this.props;
+      pushToken && setUserPushToken(id, pushToken);
+      if (tilesToSave) {
+        setTilesToSave(JSON.parse(tilesToSave));
       }
-    }, 3000);
+      if (lastTile) {
+        setLastTile(JSON.parse(lastTile));
+      }
+      if (mapType) {
+        setMapType(mapType);
+      }
+      if (theme) {
+        setTheme(theme);
+      }
+      if (powerSaver) {
+        setPowerSaver(powerSaver);
+      }
+
+      let visitedLocations = [];
+      SQLiteUtils.getLocations(id).then((locations) => {
+        visitedLocations = locations;
+      });
+
+      setTimeout(() => {
+        if (visitedLocations.length > 0) {
+          relogFromSQLite(id, visitedLocations);
+        } else {
+          relogUser(id);
+        }
+      }, 3000);
+    } else {
+      navigation.navigate('Login');
+    }
   };
 
   render() {

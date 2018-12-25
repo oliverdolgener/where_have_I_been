@@ -2,10 +2,10 @@ import { Map } from 'immutable';
 import { handle } from 'redux-pack';
 import { NavigationActions } from 'react-navigation';
 import { AsyncStorage } from 'react-native';
-import { SQLite } from 'expo';
 
 import Coordinate from '../model/Coordinate';
 import * as LocationUtils from '../utils/LocationUtils';
+import * as SQLiteUtils from '../utils/SQLiteUtils';
 import {
   getLocations,
   login,
@@ -39,8 +39,6 @@ export const types = {
   REMOVE_FLIGHT: 'USER/REMOVE_FLIGHT',
 };
 
-const db = SQLite.openDatabase('db.db');
-
 const setUserAsync = async (id) => {
   await AsyncStorage.setItem('id', id.toString());
 };
@@ -53,24 +51,7 @@ const setTilesToSaveAsync = async (tilesToSave) => {
   await AsyncStorage.setItem('tilesToSave', JSON.stringify(tilesToSave));
 };
 
-const prepareLocations = (locations) => {
-  const grid = LocationUtils.arrayToGrid(locations);
-  return grid;
-};
-
-const insertIntoSQLite = (locations) => {
-  db.transaction((tx) => {
-    tx.executeSql(
-      'create table if not exists location (id integer primary key not null, latitude int not null, longitude int not null, timestamp int);',
-    );
-    locations.forEach((x) => {
-      tx.executeSql(
-        'insert into location (id, user_id, latitude, longitude, timestamp) values (?, ?, ?, ?, ?)',
-        [x.id, x.user_id, x.latitude, x.longitude, x.timestamp],
-      );
-    });
-  });
-};
+const prepareLocations = locations => LocationUtils.arrayToGrid(locations);
 
 export const actions = {
   login: (email, password, pushToken) => ({
@@ -163,7 +144,7 @@ export default (state = initialState, action = {}) => {
       return handle(state, action, {
         start: prevState => prevState.set('isLoggingIn', true),
         success: (prevState) => {
-          insertIntoSQLite(payload.data.locations);
+          SQLiteUtils.insertLocations(payload.data.id, payload.data.locations);
           const visitedLocations = prepareLocations(payload.data.locations);
           return prevState
             .set('isLoggedIn', true)
@@ -176,6 +157,7 @@ export default (state = initialState, action = {}) => {
         finish: prevState => prevState.set('isLoggingIn', false),
       });
     case types.LOGOUT:
+      SQLiteUtils.deleteLocations();
       removeUserAsync();
       navigator.dispatch(NavigationActions.navigate({ routeName: 'Login' }));
       return state
@@ -208,7 +190,7 @@ export default (state = initialState, action = {}) => {
     case types.RELOG_USER:
       return handle(state, action, {
         success: (prevState) => {
-          insertIntoSQLite(payload.data.locations);
+          SQLiteUtils.insertLocations(payload.data.id, payload.data.locations);
           const visitedLocations = prepareLocations(payload.data.locations);
           return prevState
             .set('isLoggedIn', true)
@@ -218,7 +200,6 @@ export default (state = initialState, action = {}) => {
       });
     case types.RELOG_FROM_SQLITE: {
       const visitedLocations = prepareLocations(action.locations);
-      // console.log(visitedLocations);
       setUserAsync(action.userId);
       setTimeout(() => navigator.dispatch(NavigationActions.navigate({ routeName: 'Map' })), 1000);
       return state
@@ -242,6 +223,7 @@ export default (state = initialState, action = {}) => {
         start: prevState => prevState.set('isSaving', true),
         success: (prevState) => {
           const savedLocations = action.payload.data;
+          SQLiteUtils.insertLocations(state.get('userId'), savedLocations);
           const tilesToSave = state.get('tilesToSave');
           const difference = tilesToSave.filter(
             x => !savedLocations.find(y => Coordinate.isEqual(y, x)),
@@ -250,6 +232,13 @@ export default (state = initialState, action = {}) => {
           return prevState.set('tilesToSave', difference);
         },
         finish: prevState => prevState.set('isSaving', false),
+      });
+    case types.REMOVE_TILE:
+      return handle(state, action, {
+        success: (prevState) => {
+          SQLiteUtils.deleteLocations(state.get('userId'), action.payload.data);
+          return prevState;
+        },
       });
     case types.SET_PUSH_TOKEN: {
       return state.set('pushToken', action.pushToken);
