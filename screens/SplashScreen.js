@@ -7,6 +7,7 @@ import { Permissions, Notifications } from 'expo';
 
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
+import * as SQLiteUtils from '../utils/SQLiteUtils';
 import * as Colors from '../constants/Colors';
 
 const styles = StyleSheet.create({
@@ -28,6 +29,7 @@ const styles = StyleSheet.create({
 
 class SplashScreen extends React.Component {
   componentWillMount() {
+    SQLiteUtils.createDB();
     this.registerForPushAsync();
     this.getUserAsync();
   }
@@ -43,6 +45,7 @@ class SplashScreen extends React.Component {
     const {
       setUserPushToken,
       relogUser,
+      relogFromSQLite,
       setMapType,
       setTilesToSave,
       setLastTile,
@@ -58,30 +61,40 @@ class SplashScreen extends React.Component {
     const theme = await AsyncStorage.getItem('theme');
     const powerSaver = await AsyncStorage.getItem('powerSaver');
 
-    setTimeout(() => {
-      if (id) {
-        const { pushToken } = this.props;
-        pushToken && setUserPushToken(id, pushToken);
-        if (tilesToSave) {
-          setTilesToSave(JSON.parse(tilesToSave));
-        }
-        if (lastTile) {
-          setLastTile(JSON.parse(lastTile));
-        }
-        if (mapType) {
-          setMapType(mapType);
-        }
-        if (theme) {
-          setTheme(theme);
-        }
-        if (powerSaver) {
-          setPowerSaver(powerSaver);
-        }
-        relogUser(id);
-      } else {
-        navigation.navigate('Login');
+    if (id) {
+      const { pushToken } = this.props;
+      pushToken && setUserPushToken(id, pushToken);
+      if (tilesToSave) {
+        setTilesToSave(JSON.parse(tilesToSave));
       }
-    }, 3000);
+      if (lastTile) {
+        setLastTile(JSON.parse(lastTile));
+      }
+      if (mapType) {
+        setMapType(mapType);
+      }
+      if (theme) {
+        setTheme(theme);
+      }
+      if (powerSaver) {
+        setPowerSaver(powerSaver);
+      }
+
+      let visitedLocations = [];
+      SQLiteUtils.getLocations(id).then((locations) => {
+        visitedLocations = locations;
+      });
+
+      setTimeout(() => {
+        if (visitedLocations.length > 0) {
+          relogFromSQLite(id, visitedLocations);
+        } else {
+          relogUser(id);
+        }
+      }, 3000);
+    } else {
+      navigation.navigate('Login');
+    }
   };
 
   render() {
@@ -100,6 +113,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   relogUser: userActions.relogUser,
+  relogFromSQLite: userActions.relogFromSQLite,
   setTilesToSave: userActions.setTilesToSave,
   setLastTile: mapActions.setLastTile,
   setPushToken: userActions.setPushToken,

@@ -7,7 +7,7 @@ import * as SortUtils from './SortUtils';
 import * as Earth from '../constants/Earth';
 
 export function isEqual(locationA, locationB) {
-  return locationA.latitude === locationB.latitude && locationA.longitude === locationB.longitude;
+  return locationA.latitude == locationB.latitude && locationA.longitude == locationB.longitude;
 }
 
 export function containsLocation(location, array) {
@@ -15,9 +15,9 @@ export function containsLocation(location, array) {
 }
 
 export function isLocationInGrid(location, grid) {
-  const row = grid.find(x => x.latitude === location.latitude);
+  const row = grid.find(x => x.latitude == location.latitude);
   if (row) {
-    return row.locations.find(x => x.longitude === location.longitude);
+    return row.locations.find(x => x.longitude == location.longitude);
   }
   return false;
 }
@@ -136,8 +136,8 @@ export function arrayToGrid(array) {
       break;
     }
 
-    if (current.latitude === next.latitude) {
-      if (current.longitude === next.longitude) {
+    if (current.latitude == next.latitude) {
+      if (current.longitude == next.longitude) {
         break;
       }
       row.locations.push(next);
@@ -216,7 +216,7 @@ export function filterVisibleLocations(locations, region) {
 
 export function insertIntoGrid(grid, location) {
   for (let i = 0; i < grid.length; i++) {
-    if (grid[i].latitude === location.latitude) {
+    if (grid[i].latitude == location.latitude) {
       const row = grid[i].locations;
       for (let k = 0; k < row.length; k++) {
         if (row[k].longitude > location.longitude) {
@@ -246,10 +246,10 @@ export function insertIntoGrid(grid, location) {
 
 export function removeFromGrid(grid, location) {
   for (let i = 0; i < grid.length; i++) {
-    if (grid[i].latitude === location.latitude) {
+    if (grid[i].latitude == location.latitude) {
       const row = grid[i].locations;
       for (let k = 0; k < row.length; k++) {
-        if (row[k].longitude === location.longitude) {
+        if (row[k].longitude == location.longitude) {
           grid[i].locations.splice(k, 1);
           return grid;
         }
