@@ -2,7 +2,7 @@ import * as LocationUtils from '../utils/LocationUtils';
 import * as RoundUtils from '../utils/RoundUtils';
 import * as Earth from '../constants/Earth';
 
-export default class Coordinate {
+export default class Geolocation {
   constructor(latitude, longitude, timestamp) {
     this.latitude = latitude;
     this.longitude = longitude;
@@ -21,7 +21,7 @@ export default class Coordinate {
   }
 
   static getRoundedLongitude(longitude, latitude, gridDistance = Earth.GRID_DISTANCE) {
-    const roundedLatitude = Coordinate.getRoundedLatitude(latitude, gridDistance);
+    const roundedLatitude = Geolocation.getRoundedLatitude(latitude, gridDistance);
     return RoundUtils.roundToDecimals(
       Math.round(longitude / LocationUtils.gridDistanceAtLatitude(roundedLatitude, gridDistance))
         * LocationUtils.gridDistanceAtLatitude(roundedLatitude, gridDistance),
@@ -39,7 +39,7 @@ export default class Coordinate {
       x => (x.longitude - coordinate.longitude) ** 2
           / LocationUtils.gridDistanceAtLatitude(coordinate.latitude) ** 2
           <= Earth.NEIGHBOUR_BOUNDARY + Earth.NEIGHBOUR_OFFSET_LONG
-        && !Coordinate.isEqual(x, coordinate),
+        && !Geolocation.isEqual(x, coordinate),
     );
   }
 
@@ -55,14 +55,14 @@ export default class Coordinate {
     array.forEach(x => (x.visited = false));
     const BFS = [];
     const queue = [];
-    const startTile = array.find(x => Coordinate.isEqual(x, start));
+    const startTile = array.find(x => Geolocation.isEqual(x, start));
     startTile.visited = true;
     queue.push(startTile);
     BFS.push(startTile);
 
     while (queue.length > 0) {
       const tile = queue.shift();
-      const neighbours = Coordinate.getNeighbours(tile, array);
+      const neighbours = Geolocation.getNeighbours(tile, array);
       neighbours.forEach((x) => {
         if (!x.visited) {
           x.visited = true;
@@ -91,14 +91,14 @@ export default class Coordinate {
       if (!array[i].visited) {
         const BFS = [];
         const queue = [];
-        const startTile = array.find(x => Coordinate.isEqual(x, array[i]));
+        const startTile = array.find(x => Geolocation.isEqual(x, array[i]));
         startTile.visited = true;
         queue.push(startTile);
         BFS.push(startTile);
 
         while (queue.length > 0) {
           const tile = queue.shift();
-          const neighbours = Coordinate.getNeighbours(tile, array);
+          const neighbours = Geolocation.getNeighbours(tile, array);
           neighbours.forEach((x) => {
             if (!x.visited) {
               x.visited = true;
@@ -115,16 +115,16 @@ export default class Coordinate {
   }
 
   getRoundedLatitude() {
-    return Coordinate.getRoundedLatitude(this.latitude);
+    return Geolocation.getRoundedLatitude(this.latitude);
   }
 
   getRoundedLongitude() {
-    return Coordinate.getRoundedLongitude(this.longitude, this.latitude);
+    return Geolocation.getRoundedLongitude(this.longitude, this.latitude);
   }
 
   getCorners(gridDistance = Earth.GRID_DISTANCE) {
     return [
-      new Coordinate(
+      new Geolocation(
         RoundUtils.roundToDecimals(this.latitude + gridDistance / Earth.SQUARE_OFFSET, 6),
         RoundUtils.roundToDecimals(
           this.longitude
@@ -133,7 +133,7 @@ export default class Coordinate {
           6,
         ),
       ),
-      new Coordinate(
+      new Geolocation(
         RoundUtils.roundToDecimals(this.latitude + gridDistance / Earth.SQUARE_OFFSET, 6),
         RoundUtils.roundToDecimals(
           this.longitude
@@ -141,7 +141,7 @@ export default class Coordinate {
           6,
         ),
       ),
-      new Coordinate(
+      new Geolocation(
         RoundUtils.roundToDecimals(this.latitude - gridDistance / Earth.SQUARE_OFFSET, 6),
         RoundUtils.roundToDecimals(
           this.longitude
@@ -149,7 +149,7 @@ export default class Coordinate {
           6,
         ),
       ),
-      new Coordinate(
+      new Geolocation(
         RoundUtils.roundToDecimals(this.latitude - gridDistance / Earth.SQUARE_OFFSET, 6),
         RoundUtils.roundToDecimals(
           this.longitude

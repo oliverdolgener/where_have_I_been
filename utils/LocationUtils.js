@@ -1,6 +1,6 @@
 import Region2D from 'region2d';
 
-import Coordinate from '../model/Coordinate';
+import Geolocation from '../model/Geolocation';
 import * as ConversionUtils from './ConversionUtils';
 import * as RoundUtils from './RoundUtils';
 import * as SortUtils from './SortUtils';
@@ -331,9 +331,9 @@ export function getSliceCoordinates(coordinates, gridDistance = Earth.GRID_DISTA
   const array = gridToArray(coordinates);
   const resizedLocations = removeDuplicateLocations(
     array.map(
-      x => new Coordinate(
-        Coordinate.getRoundedLatitude(x.latitude, gridDistance),
-        Coordinate.getRoundedLongitude(x.longitude, x.latitude, gridDistance),
+      x => new Geolocation(
+        Geolocation.getRoundedLatitude(x.latitude, gridDistance),
+        Geolocation.getRoundedLongitude(x.longitude, x.latitude, gridDistance),
       ),
     ),
   );
@@ -478,7 +478,7 @@ export function getCircleCoordinates(center, radius, count) {
   for (let i = 0; i < count; i++) {
     const latitude = center.latitude + radius * Math.sin((2 * Math.PI / count) * i);
     const longitude = center.longitude + gridDistanceAtLatitude(latitude, radius) * Math.cos((2 * Math.PI / count) * i);
-    points.push(new Coordinate(latitude, longitude, center.timestamp));
+    points.push(new Geolocation(latitude, longitude, center.timestamp));
   }
   return points;
 }
@@ -488,8 +488,8 @@ export function getRoundedCircleCoordinates(center, radius, count) {
   for (let i = 0; i < count; i++) {
     const latitude = center.latitude + radius * Math.sin((2 * Math.PI / count) * i);
     const longitude = center.longitude + gridDistanceAtLatitude(latitude, radius) * Math.cos((2 * Math.PI / count) * i);
-    const point = new Coordinate(latitude, longitude, center.timestamp);
-    points.push(new Coordinate(point.getRoundedLatitude(), point.getRoundedLongitude(), point.timestamp));
+    const point = new Geolocation(latitude, longitude, center.timestamp);
+    points.push(new Geolocation(point.getRoundedLatitude(), point.getRoundedLongitude(), point.timestamp));
   }
   return points;
 }

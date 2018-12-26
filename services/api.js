@@ -206,8 +206,8 @@ export const setVacation = (userId, countryId, status) => {
   return fetchJson(url.href(), options);
 };
 
-export const getElevation = (coordinate) => {
+export const getElevation = (location) => {
   const url = new URI(ELEVATION_URL);
-  url.addQuery('locations', `${coordinate.latitude},${coordinate.longitude}`);
+  url.addQuery('locations', `${location.latitude},${location.longitude}`);
   return fetchJson(url.href());
 };

@@ -3,7 +3,7 @@ import { handle } from 'redux-pack';
 import { NavigationActions } from 'react-navigation';
 import { AsyncStorage } from 'react-native';
 
-import Coordinate from '../model/Coordinate';
+import Geolocation from '../model/Geolocation';
 import * as LocationUtils from '../utils/LocationUtils';
 import * as SQLiteUtils from '../utils/SQLiteUtils';
 import {
@@ -226,7 +226,7 @@ export default (state = initialState, action = {}) => {
           SQLiteUtils.insertLocations(savedLocations);
           const tilesToSave = state.get('tilesToSave');
           const difference = tilesToSave.filter(
-            x => !savedLocations.find(y => Coordinate.isEqual(y, x)),
+            x => !savedLocations.find(y => Geolocation.isEqual(y, x)),
           );
           setTilesToSaveAsync(difference);
           return prevState.set('tilesToSave', difference);

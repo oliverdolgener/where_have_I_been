@@ -7,7 +7,7 @@ import geolib from 'geolib';
 import { actions as userActions } from '../reducers/user';
 import { actions as friendActions } from '../reducers/friend';
 import { actions as mapActions } from '../reducers/map';
-import Coordinate from '../model/Coordinate';
+import Geolocation from '../model/Geolocation';
 import Speed from '../model/Speed';
 import TouchableScale from '../components/TouchableScale';
 import Toolbar from '../components/Toolbar';
@@ -84,9 +84,9 @@ class MapScreen extends Component {
       return;
     }
 
-    const location = new Coordinate(coordinate.latitude, coordinate.longitude);
+    const location = new Geolocation(coordinate.latitude, coordinate.longitude);
     const timestamp = new Date().getTime();
-    const roundedLocation = new Coordinate(
+    const roundedLocation = new Geolocation(
       location.getRoundedLatitude(),
       location.getRoundedLongitude(),
       timestamp,
@@ -119,7 +119,7 @@ class MapScreen extends Component {
         } = result.coords;
         const { timestamp } = result;
 
-        const location = new Coordinate(latitude, longitude, timestamp);
+        const location = new Geolocation(latitude, longitude, timestamp);
 
         const currentPosition = { lat: latitude, lng: longitude, time: timestamp };
         const calculatedSpeed = geolib.getSpeed(this.lastPosition, currentPosition);
@@ -139,13 +139,13 @@ class MapScreen extends Component {
 
         if (accuracy < 50) {
           const { lastTile } = this.props;
-          const roundedLocation = new Coordinate(
+          const roundedLocation = new Geolocation(
             location.getRoundedLatitude(),
             location.getRoundedLongitude(),
             location.timestamp,
           );
 
-          if (!Coordinate.isEqual(lastTile, roundedLocation)) {
+          if (!Geolocation.isEqual(lastTile, roundedLocation)) {
             this.onTileChange(roundedLocation);
           }
 

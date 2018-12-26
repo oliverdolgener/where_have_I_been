@@ -5,7 +5,7 @@ import { AsyncStorage } from 'react-native';
 import {
   getVacations, setVacation, getAirports, getElevation,
 } from '../services/api';
-import Coordinate from '../model/Coordinate';
+import Geolocation from '../model/Geolocation';
 import * as LocationUtils from '../utils/LocationUtils';
 import * as Earth from '../constants/Earth';
 
@@ -96,7 +96,7 @@ const initialState = Map({
   showCountries: false,
   mapType: 'hybrid',
   theme: 'light',
-  lastTile: new Coordinate(Earth.INITIAL_LOCATION.latitude, Earth.INITIAL_LOCATION.longitude),
+  lastTile: new Geolocation(Earth.INITIAL_LOCATION.latitude, Earth.INITIAL_LOCATION.longitude),
   powerSaver: 'off',
   elevation: 0,
   region: {
