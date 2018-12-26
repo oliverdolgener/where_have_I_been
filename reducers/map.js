@@ -80,10 +80,12 @@ export const actions = {
 const initialState = Map({
   map: false,
   geolocation: {
-    location: {
-      latitude: 52.558,
-      longitude: 13.206497,
-    },
+    latitude: Earth.INITIAL_LOCATION.latitude,
+    longitude: Earth.INITIAL_LOCATION.longitude,
+    altitude: false,
+    speed: false,
+    accuracy: false,
+    timestamp: false,
   },
   geocode: {},
   followLocation: true,
@@ -94,12 +96,12 @@ const initialState = Map({
   showCountries: false,
   mapType: 'hybrid',
   theme: 'light',
-  lastTile: new Coordinate(52.558, 13.206497),
+  lastTile: new Coordinate(Earth.INITIAL_LOCATION.latitude, Earth.INITIAL_LOCATION.longitude),
   powerSaver: 'off',
   elevation: 0,
   region: {
-    latitude: 52.558,
-    longitude: 13.206497,
+    latitude: Earth.INITIAL_LOCATION.latitude,
+    longitude: Earth.INITIAL_LOCATION.longitude,
     latitudeDelta: Earth.DELTA,
     longitudeDelta: Earth.DELTA,
   },

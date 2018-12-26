@@ -10,7 +10,6 @@ import Countries from './Countries';
 import CountryBorders from './CountryBorders';
 import * as LocationUtils from '../utils/LocationUtils';
 import * as Earth from '../constants/Earth';
-import * as Colors from '../constants/Colors';
 import mapStyleLight from '../assets/mapStyleLight.json';
 import mapStyleDark from '../assets/mapStyleDark.json';
 
@@ -27,10 +26,7 @@ class Map extends Component {
     region.longitudeDelta = region.longitudeDelta < 0 ? region.longitudeDelta + 360 : region.longitudeDelta;
     setRegion(region);
 
-    if (
-      Platform.OS === 'ios'
-      && !LocationUtils.isCoordinateInRegion(geolocation.location, region)
-    ) {
+    if (Platform.OS === 'ios' && !LocationUtils.isCoordinateInRegion(geolocation, region)) {
       setFollowLocation(false);
     }
   }
@@ -42,8 +38,8 @@ class Map extends Component {
   moveToCurrentLocation() {
     const { geolocation } = this.props;
     this.moveToRegion({
-      latitude: geolocation.location.latitude,
-      longitude: geolocation.location.longitude,
+      latitude: geolocation.latitude,
+      longitude: geolocation.longitude,
       latitudeDelta: Earth.DELTA,
       longitudeDelta: Earth.DELTA,
     });

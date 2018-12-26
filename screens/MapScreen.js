@@ -105,7 +105,7 @@ class MapScreen extends Component {
     } = this.props;
     setLastTile(tile);
     this.addLocation(tile);
-    this.getGeocodeAsync(geolocation.location);
+    this.getGeocodeAsync(geolocation);
     followLocation && map && map.moveToLocation(tile);
   }
 
@@ -129,7 +129,8 @@ class MapScreen extends Component {
         this.lastPosition = currentPosition;
 
         setGeolocation({
-          location: new Coordinate(latitude, longitude),
+          latitude,
+          longitude,
           speed: this.speed.getAverage(),
           altitude: Math.round(altitude),
           accuracy,

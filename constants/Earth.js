@@ -1,5 +1,9 @@
 export const EARTH_RADIUS = 6371008;
 export const GRID_DISTANCE = 0.001;
+export const INITIAL_LOCATION = {
+  latitude: 52.558,
+  longitude: 13.206497,
+};
 export const DELTA = 0.005;
 export const SQUARE_OFFSET = 2.01;
 export const ROUND_OFFSET_LONG = 0.000001;
