@@ -43,58 +43,77 @@ export default class GeoLocation {
   }
 
   static getRectangle(topLeft, botRight, gridDistance = Earth.GRID_DISTANCE) {
-    return [
-      {
-        latitude: RoundUtils.roundToDecimals(
-          topLeft.latitude + gridDistance / Earth.SQUARE_OFFSET,
-          6,
-        ),
-        longitude: RoundUtils.roundToDecimals(
-          topLeft.longitude
-            - GeoLocation.gridDistanceAtLatitude(topLeft.latitude, gridDistance)
-              / Earth.SQUARE_OFFSET
-            - Earth.ROUND_OFFSET_LONG,
-          6,
-        ),
-      },
-      {
-        latitude: RoundUtils.roundToDecimals(
-          topLeft.latitude + gridDistance / Earth.SQUARE_OFFSET,
-          6,
-        ),
-        longitude: RoundUtils.roundToDecimals(
-          botRight.longitude
-            + GeoLocation.gridDistanceAtLatitude(botRight.latitude, gridDistance)
-              / Earth.SQUARE_OFFSET,
-          6,
-        ),
-      },
-      {
-        latitude: RoundUtils.roundToDecimals(
-          botRight.latitude - gridDistance / Earth.SQUARE_OFFSET,
-          6,
-        ),
-        longitude: RoundUtils.roundToDecimals(
-          botRight.longitude
-            + GeoLocation.gridDistanceAtLatitude(botRight.latitude, gridDistance)
-              / Earth.SQUARE_OFFSET,
-          6,
-        ),
-      },
-      {
-        latitude: RoundUtils.roundToDecimals(
-          botRight.latitude - gridDistance / Earth.SQUARE_OFFSET,
-          6,
-        ),
-        longitude: RoundUtils.roundToDecimals(
-          topLeft.longitude
-            - GeoLocation.gridDistanceAtLatitude(topLeft.latitude, gridDistance)
-              / Earth.SQUARE_OFFSET
-            - Earth.ROUND_OFFSET_LONG,
-          6,
-        ),
-      },
-    ];
+    const { latitude } = topLeft;
+    const topTopLatitude = GeoLocation.getRoundedLatitude(latitude + gridDistance, gridDistance);
+    const botBotLatitude = GeoLocation.getRoundedLatitude(latitude - gridDistance, gridDistance);
+    const topLatitude = RoundUtils.roundToDecimals(
+      topLeft.latitude + gridDistance / Earth.SQUARE_OFFSET,
+      6,
+    );
+    const botLatitude = RoundUtils.roundToDecimals(
+      botRight.latitude - gridDistance / Earth.SQUARE_OFFSET,
+      6,
+    );
+    const topLeftLongitude = GeoLocation.getRoundedLongitude(
+      topLeft.longitude,
+      topTopLatitude,
+      gridDistance,
+    );
+    const topRightLongitude = GeoLocation.getRoundedLongitude(
+      botRight.longitude,
+      topTopLatitude,
+      gridDistance,
+    );
+    const botRightLongitude = GeoLocation.getRoundedLongitude(
+      botRight.longitude,
+      botBotLatitude,
+      gridDistance,
+    );
+    const botLeftLongitude = GeoLocation.getRoundedLongitude(
+      topLeft.longitude,
+      botBotLatitude,
+      gridDistance,
+    );
+    const topLongitude = GeoLocation.getRoundedLongitude(
+      topLeft.longitude + GeoLocation.gridDistanceAtLatitude(topLatitude, gridDistance),
+      topLatitude,
+      gridDistance,
+    );
+    const topLeftCorner = {
+      latitude: topLatitude,
+      longitude: RoundUtils.roundToDecimals(
+        topLeftLongitude
+          - GeoLocation.gridDistanceAtLatitude(topLeft.latitude, gridDistance) / Earth.SQUARE_OFFSET
+          - Earth.ROUND_OFFSET_LONG,
+        6,
+      ),
+    };
+    const topRightCorner = {
+      latitude: topLatitude,
+      longitude: RoundUtils.roundToDecimals(
+        topRightLongitude
+          + GeoLocation.gridDistanceAtLatitude(botRight.latitude, gridDistance) / Earth.SQUARE_OFFSET,
+        6,
+      ),
+    };
+    const botRightCorner = {
+      latitude: botLatitude,
+      longitude: RoundUtils.roundToDecimals(
+        botRight.longitude
+          + GeoLocation.gridDistanceAtLatitude(botRight.latitude, gridDistance) / Earth.SQUARE_OFFSET,
+        6,
+      ),
+    };
+    const botLeftCorner = {
+      latitude: botLatitude,
+      longitude: RoundUtils.roundToDecimals(
+        topLeft.longitude
+          - GeoLocation.gridDistanceAtLatitude(topLeft.latitude, gridDistance) / Earth.SQUARE_OFFSET
+          - Earth.ROUND_OFFSET_LONG,
+        6,
+      ),
+    };
+    return [topLeftCorner, topRightCorner, botRightCorner, botLeftCorner];
   }
 
   static getSquare = (location, gridDistance = Earth.GRID_DISTANCE) => GeoLocation.getRectangle(location, location, gridDistance);
