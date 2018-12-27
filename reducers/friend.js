@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import { handle } from 'redux-pack';
 
-import * as LocationUtils from '../utils/LocationUtils';
+import GeoArray from '../model/GeoArray';
 import * as LevelUtils from '../utils/LevelUtils';
 import {
   getLocations, getFriends, addFriend, removeFriend, getFlights,
@@ -86,7 +86,7 @@ export default (state = initialState, action = {}) => {
     case types.GET_FRIEND_LOCATIONS:
       return handle(state, action, {
         success: (prevState) => {
-          const friendLocations = LocationUtils.arrayToGrid(payload.data.locations);
+          const friendLocations = GeoArray.toGrid(payload.data.locations);
           return prevState.set('friendLocations', friendLocations);
         },
       });

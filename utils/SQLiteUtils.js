@@ -29,7 +29,7 @@ export function getLocations() {
 export function insertLocations(locations) {
   db.transaction((tx) => {
     locations.forEach((x) => {
-      tx.executeSql('INSERT INTO location (latitude, longitude, timestamp) VALUES (?, ?)', [
+      tx.executeSql('INSERT INTO location (latitude, longitude) VALUES (?, ?)', [
         x.latitude,
         x.longitude,
       ]);

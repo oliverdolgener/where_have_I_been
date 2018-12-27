@@ -5,8 +5,8 @@ import { AsyncStorage } from 'react-native';
 import {
   getVacations, setVacation, getAirports, getElevation,
 } from '../services/api';
-import Geolocation from '../model/Geolocation';
-import * as LocationUtils from '../utils/LocationUtils';
+import GeoLocation from '../model/GeoLocation';
+import GeoArray from '../model/GeoArray';
 import * as Earth from '../constants/Earth';
 
 export const types = {
@@ -96,7 +96,7 @@ const initialState = Map({
   showCountries: false,
   mapType: 'hybrid',
   theme: 'light',
-  lastTile: new Geolocation(Earth.INITIAL_LOCATION.latitude, Earth.INITIAL_LOCATION.longitude),
+  lastTile: new GeoLocation(Earth.INITIAL_LOCATION.latitude, Earth.INITIAL_LOCATION.longitude),
   powerSaver: 'off',
   elevation: 0,
   region: {
@@ -124,7 +124,7 @@ export default (state = initialState, action = {}) => {
           const countries = payload.data.map(x => ({
             id: x.id.toString(),
             name: x.name,
-            region: LocationUtils.coordinatesToRegion([
+            region: GeoArray.toRegion([
               { latitude: x.lat_min, longitude: x.long_min },
               { latitude: x.lat_max, longitude: x.long_max },
             ]),

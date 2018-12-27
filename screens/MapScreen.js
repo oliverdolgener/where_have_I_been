@@ -7,13 +7,14 @@ import geolib from 'geolib';
 import { actions as userActions } from '../reducers/user';
 import { actions as friendActions } from '../reducers/friend';
 import { actions as mapActions } from '../reducers/map';
-import Geolocation from '../model/Geolocation';
+import GeoLocation from '../model/GeoLocation';
+import GeoArray from '../model/GeoArray';
+import GeoGrid from '../model/GeoGrid';
 import Speed from '../model/Speed';
 import TouchableScale from '../components/TouchableScale';
 import Toolbar from '../components/Toolbar';
 import Map from '../components/Map';
 import FlightBox from '../components/FlightBox';
-import * as LocationUtils from '../utils/LocationUtils';
 import * as Colors from '../constants/Colors';
 import iconMenu from '../assets/iconMenu.png';
 import iconLocation from '../assets/iconLocation.png';
@@ -84,15 +85,10 @@ class MapScreen extends Component {
       return;
     }
 
-    const location = new Geolocation(coordinate.latitude, coordinate.longitude);
-    const timestamp = new Date().getTime();
-    const roundedLocation = new Geolocation(
-      location.getRoundedLatitude(),
-      location.getRoundedLongitude(),
-      timestamp,
-    );
+    const location = new GeoLocation(coordinate.latitude, coordinate.longitude, new Date().getTime());
+    const roundedLocation = location.getRoundedLocation();
 
-    if (LocationUtils.isLocationInGrid(roundedLocation, visitedLocations)) {
+    if (GeoGrid.contains(roundedLocation, visitedLocations)) {
       this.removeLocation(roundedLocation);
     } else {
       this.addLocation(roundedLocation);
@@ -119,7 +115,7 @@ class MapScreen extends Component {
         } = result.coords;
         const { timestamp } = result;
 
-        const location = new Geolocation(latitude, longitude, timestamp);
+        const location = new GeoLocation(latitude, longitude, timestamp);
 
         const currentPosition = { lat: latitude, lng: longitude, time: timestamp };
         const calculatedSpeed = geolib.getSpeed(this.lastPosition, currentPosition);
@@ -139,21 +135,10 @@ class MapScreen extends Component {
 
         if (accuracy < 50) {
           const { lastTile } = this.props;
-          const roundedLocation = new Geolocation(
-            location.getRoundedLatitude(),
-            location.getRoundedLongitude(),
-            location.timestamp,
-          );
-
-          if (!Geolocation.isEqual(lastTile, roundedLocation)) {
+          const roundedLocation = location.getRoundedLocation();
+          if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
             this.onTileChange(roundedLocation);
           }
-
-          // LocationUtils.removeDuplicateLocations(
-          //   LocationUtils.getRoundedCircleCoordinates(
-          //     location, 0.0001, 16,
-          //   ),
-          // ).forEach(x => this.addLocation(x));
         }
       },
     );
@@ -176,10 +161,10 @@ class MapScreen extends Component {
       isSaving,
     } = this.props;
 
-    if (!LocationUtils.isLocationInGrid(location, visitedLocations)) {
+    if (!GeoGrid.contains(location, visitedLocations)) {
       const unsaved = [...tilesToSave, location];
-      const locations = LocationUtils.insertIntoGrid(visitedLocations, location);
-      const visited = LocationUtils.gridToArray(locations);
+      const locations = GeoGrid.insert(location, visitedLocations);
+      const visited = GeoGrid.toArray(locations);
       setLocations(visited);
       setTilesToSave(unsaved);
 
@@ -199,13 +184,13 @@ class MapScreen extends Component {
       removeTile,
     } = this.props;
 
-    if (LocationUtils.isLocationInGrid(location, visitedLocations)) {
-      const locations = LocationUtils.removeFromGrid(visitedLocations, location);
-      const visited = LocationUtils.gridToArray(locations);
+    if (GeoGrid.contains(location, visitedLocations)) {
+      const locations = GeoGrid.remove(location, visitedLocations);
+      const visited = GeoGrid.toArray(locations);
       setLocations(visited);
 
-      if (LocationUtils.containsLocation(location, tilesToSave)) {
-        setTilesToSave(LocationUtils.removeLocationFromArray(location, tilesToSave));
+      if (GeoArray.contains(location, tilesToSave)) {
+        setTilesToSave(GeoArray.remove(location, tilesToSave));
       } else {
         removeTile(userId, location);
       }

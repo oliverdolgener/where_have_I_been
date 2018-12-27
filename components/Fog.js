@@ -2,6 +2,7 @@ import React from 'react';
 import { MapView } from 'expo';
 import { connect } from 'react-redux';
 
+import GeoGrid from '../model/GeoGrid';
 import * as LocationUtils from '../utils/LocationUtils';
 import * as Colors from '../constants/Colors';
 import * as Earth from '../constants/Earth';
@@ -9,12 +10,9 @@ import * as Earth from '../constants/Earth';
 const Fog = (props) => {
   const { region, visitedLocations, friendLocations } = props;
 
-  const visibleLocations = LocationUtils.filterVisibleLocations(
-    friendLocations || visitedLocations,
-    region,
-  );
+  const visibleLocations = GeoGrid.getVisibleLocations(friendLocations || visitedLocations, region);
   const gridDistance = LocationUtils.getGridDistanceByRegion(region);
-  const slices = LocationUtils.getSliceCoordinates(visibleLocations, gridDistance);
+  const slices = GeoGrid.getSlices(visibleLocations, gridDistance);
 
   return (
     <MapView.Polygon

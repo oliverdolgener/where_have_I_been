@@ -8,7 +8,7 @@ import Fog from './Fog';
 import Flights from './Flights';
 import Countries from './Countries';
 import CountryBorders from './CountryBorders';
-import * as LocationUtils from '../utils/LocationUtils';
+import GeoLocation from '../model/GeoLocation';
 import * as Earth from '../constants/Earth';
 import mapStyleLight from '../assets/mapStyleLight.json';
 import mapStyleDark from '../assets/mapStyleDark.json';
@@ -26,7 +26,7 @@ class Map extends Component {
     region.longitudeDelta = region.longitudeDelta < 0 ? region.longitudeDelta + 360 : region.longitudeDelta;
     setRegion(region);
 
-    if (Platform.OS === 'ios' && !LocationUtils.isCoordinateInRegion(geolocation, region)) {
+    if (Platform.OS === 'ios' && !GeoLocation.isInRegion(geolocation, region)) {
       setFollowLocation(false);
     }
   }

@@ -3,8 +3,8 @@ import { handle } from 'redux-pack';
 import { NavigationActions } from 'react-navigation';
 import { AsyncStorage } from 'react-native';
 
-import Geolocation from '../model/Geolocation';
-import * as LocationUtils from '../utils/LocationUtils';
+import GeoLocation from '../model/GeoLocation';
+import GeoArray from '../model/GeoArray';
 import * as SQLiteUtils from '../utils/SQLiteUtils';
 import {
   getLocations,
@@ -50,8 +50,6 @@ const removeUserAsync = async () => {
 const setTilesToSaveAsync = async (tilesToSave) => {
   await AsyncStorage.setItem('tilesToSave', JSON.stringify(tilesToSave));
 };
-
-const prepareLocations = locations => LocationUtils.arrayToGrid(locations);
 
 export const actions = {
   login: (email, password, pushToken) => ({
@@ -145,7 +143,7 @@ export default (state = initialState, action = {}) => {
         start: prevState => prevState.set('isLoggingIn', true),
         success: (prevState) => {
           SQLiteUtils.insertLocations(payload.data.locations);
-          const visitedLocations = prepareLocations(payload.data.locations);
+          const visitedLocations = GeoArray.toGrid(payload.data.locations);
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data.id)
@@ -180,7 +178,7 @@ export default (state = initialState, action = {}) => {
     case types.GET_USER:
       return handle(state, action, {
         success: (prevState) => {
-          const visitedLocations = prepareLocations(payload.data.locations);
+          const visitedLocations = GeoArray.toGrid(payload.data.locations);
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data.id)
@@ -191,7 +189,7 @@ export default (state = initialState, action = {}) => {
       return handle(state, action, {
         success: (prevState) => {
           SQLiteUtils.insertLocations(payload.data.locations);
-          const visitedLocations = prepareLocations(payload.data.locations);
+          const visitedLocations = GeoArray.toGrid(payload.data.locations);
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data.id)
@@ -199,7 +197,7 @@ export default (state = initialState, action = {}) => {
         },
       });
     case types.RELOG_FROM_SQLITE: {
-      const visitedLocations = prepareLocations(action.locations);
+      const visitedLocations = GeoArray.toGrid(action.locations);
       setUserAsync(action.userId);
       setTimeout(() => navigator.dispatch(NavigationActions.navigate({ routeName: 'Map' })), 1000);
       return state
@@ -212,7 +210,7 @@ export default (state = initialState, action = {}) => {
     case types.SET_PASSWORD_ERROR:
       return state.set('passwordError', action.error);
     case types.SET_LOCATIONS: {
-      const visitedLocations = prepareLocations(action.locations);
+      const visitedLocations = GeoArray.toGrid(action.locations);
       return state.set('visitedLocations', visitedLocations);
     }
     case types.SET_TILES_TO_SAVE:
@@ -226,7 +224,7 @@ export default (state = initialState, action = {}) => {
           SQLiteUtils.insertLocations(savedLocations);
           const tilesToSave = state.get('tilesToSave');
           const difference = tilesToSave.filter(
-            x => !savedLocations.find(y => Geolocation.isEqual(y, x)),
+            x => !savedLocations.find(y => GeoLocation.isEqual(y, x)),
           );
           setTilesToSaveAsync(difference);
           return prevState.set('tilesToSave', difference);

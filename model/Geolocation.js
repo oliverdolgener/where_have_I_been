@@ -1,163 +1,163 @@
-import * as LocationUtils from '../utils/LocationUtils';
+import * as ConversionUtils from '../utils/ConversionUtils';
 import * as RoundUtils from '../utils/RoundUtils';
 import * as Earth from '../constants/Earth';
 
-export default class Geolocation {
-  constructor(latitude, longitude, timestamp) {
+export default class GeoLocation {
+  constructor(latitude, longitude, timestamp = null) {
     this.latitude = latitude;
     this.longitude = longitude;
     this.timestamp = timestamp;
   }
 
-  static isEqual(coordinateA, coordinateB) {
-    return (
-      coordinateA.latitude === coordinateB.latitude
-      && coordinateA.longitude === coordinateB.longitude
-    );
+  static circumferenceAtLatitude(latitude) {
+    return 2 * Math.PI * Earth.EARTH_RADIUS * Math.cos(ConversionUtils.toRadians(latitude));
   }
+
+  static pointsAtLatitude(latitude, gridDistance = Earth.GRID_DISTANCE) {
+    return Math.round((360 / gridDistance) * Math.cos(ConversionUtils.toRadians(latitude)));
+  }
+
+  static gridDistanceAtLatitude(latitude, gridDistance = Earth.GRID_DISTANCE) {
+    return 360 / GeoLocation.pointsAtLatitude(latitude, gridDistance);
+  }
+
+  static isEqual = (a, b) => a.latitude == b.latitude && a.longitude == b.longitude;
 
   static getRoundedLatitude(latitude, gridDistance = Earth.GRID_DISTANCE) {
     return RoundUtils.roundToDecimals(Math.round(latitude / gridDistance) * gridDistance, 6);
   }
 
   static getRoundedLongitude(longitude, latitude, gridDistance = Earth.GRID_DISTANCE) {
-    const roundedLatitude = Geolocation.getRoundedLatitude(latitude, gridDistance);
+    const roundedLatitude = GeoLocation.getRoundedLatitude(latitude, gridDistance);
     return RoundUtils.roundToDecimals(
-      Math.round(longitude / LocationUtils.gridDistanceAtLatitude(roundedLatitude, gridDistance))
-        * LocationUtils.gridDistanceAtLatitude(roundedLatitude, gridDistance),
+      Math.round(longitude / GeoLocation.gridDistanceAtLatitude(roundedLatitude, gridDistance))
+        * GeoLocation.gridDistanceAtLatitude(roundedLatitude, gridDistance),
       6,
     );
   }
 
-  static getNeighbours(coordinate, array, gridDistance = Earth.GRID_DISTANCE) {
-    const neighbouringRows = array.filter(
-      x => x.latitude === coordinate.latitude
-        || x.latitude === coordinate.latitude + gridDistance
-        || x.latitude === coordinate.latitude - gridDistance,
-    );
-    return LocationUtils.gridToArray(neighbouringRows).filter(
-      x => (x.longitude - coordinate.longitude) ** 2
-          / LocationUtils.gridDistanceAtLatitude(coordinate.latitude) ** 2
-          <= Earth.NEIGHBOUR_BOUNDARY + Earth.NEIGHBOUR_OFFSET_LONG
-        && !Geolocation.isEqual(x, coordinate),
-    );
+  static getRoundedLocation(location, gridDistance = Earth.gridDistance) {
+    const latitude = GeoLocation.getRoundedLatitude(location.latitude, gridDistance);
+    const longitude = GeoLocation.getRoundedLongitude(location.longitude, latitude, gridDistance);
+    return new GeoLocation(latitude, longitude, location.timestamp);
   }
 
-  static breadthFirstSearch(array, start) {
-    if (array.length < 1) {
-      return [];
-    }
-
-    if (array.length === 1) {
-      return array;
-    }
-
-    array.forEach(x => (x.visited = false));
-    const BFS = [];
-    const queue = [];
-    const startTile = array.find(x => Geolocation.isEqual(x, start));
-    startTile.visited = true;
-    queue.push(startTile);
-    BFS.push(startTile);
-
-    while (queue.length > 0) {
-      const tile = queue.shift();
-      const neighbours = Geolocation.getNeighbours(tile, array);
-      neighbours.forEach((x) => {
-        if (!x.visited) {
-          x.visited = true;
-          queue.push(x);
-          BFS.push(x);
-        }
-      });
-    }
-
-    return BFS;
-  }
-
-  static getCoherentTiles(array) {
-    if (array.length < 1) {
-      return [];
-    }
-
-    if (array.length === 1) {
-      return array;
-    }
-
-    const coherentTiles = [];
-    array.forEach(x => (x.visited = false));
-
-    for (let i = 0; i < array.length; i++) {
-      if (!array[i].visited) {
-        const BFS = [];
-        const queue = [];
-        const startTile = array.find(x => Geolocation.isEqual(x, array[i]));
-        startTile.visited = true;
-        queue.push(startTile);
-        BFS.push(startTile);
-
-        while (queue.length > 0) {
-          const tile = queue.shift();
-          const neighbours = Geolocation.getNeighbours(tile, array);
-          neighbours.forEach((x) => {
-            if (!x.visited) {
-              x.visited = true;
-              queue.push(x);
-              BFS.push(x);
-            }
-          });
-        }
-        coherentTiles.push(BFS);
-      }
-    }
-
-    return coherentTiles;
-  }
-
-  getRoundedLatitude() {
-    return Geolocation.getRoundedLatitude(this.latitude);
-  }
-
-  getRoundedLongitude() {
-    return Geolocation.getRoundedLongitude(this.longitude, this.latitude);
-  }
-
-  getCorners(gridDistance = Earth.GRID_DISTANCE) {
+  static getRectangle(topLeft, botRight, gridDistance = Earth.GRID_DISTANCE) {
     return [
-      new Geolocation(
-        RoundUtils.roundToDecimals(this.latitude + gridDistance / Earth.SQUARE_OFFSET, 6),
-        RoundUtils.roundToDecimals(
-          this.longitude
-            - LocationUtils.gridDistanceAtLatitude(this.latitude) / Earth.SQUARE_OFFSET
+      {
+        latitude: RoundUtils.roundToDecimals(
+          topLeft.latitude + gridDistance / Earth.SQUARE_OFFSET,
+          6,
+        ),
+        longitude: RoundUtils.roundToDecimals(
+          topLeft.longitude
+            - GeoLocation.gridDistanceAtLatitude(topLeft.latitude, gridDistance)
+              / Earth.SQUARE_OFFSET
             - Earth.ROUND_OFFSET_LONG,
           6,
         ),
-      ),
-      new Geolocation(
-        RoundUtils.roundToDecimals(this.latitude + gridDistance / Earth.SQUARE_OFFSET, 6),
-        RoundUtils.roundToDecimals(
-          this.longitude
-            + LocationUtils.gridDistanceAtLatitude(this.latitude) / Earth.SQUARE_OFFSET,
+      },
+      {
+        latitude: RoundUtils.roundToDecimals(
+          topLeft.latitude + gridDistance / Earth.SQUARE_OFFSET,
           6,
         ),
-      ),
-      new Geolocation(
-        RoundUtils.roundToDecimals(this.latitude - gridDistance / Earth.SQUARE_OFFSET, 6),
-        RoundUtils.roundToDecimals(
-          this.longitude
-            + LocationUtils.gridDistanceAtLatitude(this.latitude) / Earth.SQUARE_OFFSET,
+        longitude: RoundUtils.roundToDecimals(
+          botRight.longitude
+            + GeoLocation.gridDistanceAtLatitude(botRight.latitude, gridDistance)
+              / Earth.SQUARE_OFFSET,
           6,
         ),
-      ),
-      new Geolocation(
-        RoundUtils.roundToDecimals(this.latitude - gridDistance / Earth.SQUARE_OFFSET, 6),
-        RoundUtils.roundToDecimals(
-          this.longitude
-            - LocationUtils.gridDistanceAtLatitude(this.latitude) / Earth.SQUARE_OFFSET
+      },
+      {
+        latitude: RoundUtils.roundToDecimals(
+          botRight.latitude - gridDistance / Earth.SQUARE_OFFSET,
+          6,
+        ),
+        longitude: RoundUtils.roundToDecimals(
+          botRight.longitude
+            + GeoLocation.gridDistanceAtLatitude(botRight.latitude, gridDistance)
+              / Earth.SQUARE_OFFSET,
+          6,
+        ),
+      },
+      {
+        latitude: RoundUtils.roundToDecimals(
+          botRight.latitude - gridDistance / Earth.SQUARE_OFFSET,
+          6,
+        ),
+        longitude: RoundUtils.roundToDecimals(
+          topLeft.longitude
+            - GeoLocation.gridDistanceAtLatitude(topLeft.latitude, gridDistance)
+              / Earth.SQUARE_OFFSET
             - Earth.ROUND_OFFSET_LONG,
           6,
         ),
-      ),
+      },
     ];
   }
+
+  static getSquare = (location, gridDistance = Earth.GRID_DISTANCE) => GeoLocation.getRectangle(location, location, gridDistance);
+
+  static getCircle(center, radius, count) {
+    const points = [];
+    for (let i = 0; i < count; i++) {
+      const latitude = center.latitude + radius * Math.sin(((2 * Math.PI) / count) * i);
+      const longitude = center.longitude
+        + GeoLocation.gridDistanceAtLatitude(latitude, radius)
+          * Math.cos(((2 * Math.PI) / count) * i);
+      points.push(new GeoLocation(latitude, longitude, center.timestamp));
+    }
+    return points;
+  }
+
+  static isLatitudeInRegion(latitude, region, factor = 1) {
+    const borderTop = region.latitude + region.latitudeDelta / (2 / factor);
+    const borderTopBottom = region.latitude - region.latitudeDelta / (2 / factor);
+    return latitude <= borderTop && latitude >= borderTopBottom;
+  }
+
+  static isLongitudeInRegion(longitude, region, factor = 1) {
+    const borderRight = region.longitude + region.longitudeDelta / (2 / factor);
+    const borderLeft = region.longitude - region.longitudeDelta / (2 / factor);
+
+    if (borderRight > 180) {
+      const isInLeftHalf = longitude >= borderLeft && longitude <= 180;
+      const isInRightHalf = longitude <= borderRight - 360 && longitude >= -180;
+      return isInLeftHalf || isInRightHalf;
+    }
+
+    if (borderLeft < -180) {
+      const isInLeftHalf = longitude >= borderLeft + 360 && longitude <= 180;
+      const isInRightHalf = longitude <= borderRight && longitude >= -180;
+      return isInLeftHalf || isInRightHalf;
+    }
+
+    return longitude <= borderRight && longitude >= borderLeft;
+  }
+
+  static isInRegion(location, region, factor = 1) {
+    return (
+      GeoLocation.isLatitudeInRegion(location.latitude, region, factor)
+      && GeoLocation.isLongitudeInRegion(location.longitude, region, factor)
+    );
+  }
+
+  isEqual = geolocation => GeoLocation.isEqual(this, geolocation);
+
+  getRoundedLatitude = (gridDistance = Earth.GRID_DISTANCE) => GeoLocation.getRoundedLatitude(this.latitude, gridDistance);
+
+  getRoundedLongitude = (gridDistance = Earth.GRID_DISTANCE) => GeoLocation.getRoundedLongitude(this.longitude, this.latitude, gridDistance);
+
+  getRoundedLocation = (gridDistance = Earth.GRID_DISTANCE) => GeoLocation.getRoundedLocation(this, gridDistance);
+
+  getSquare = (gridDistance = Earth.GRID_DISTANCE) => GeoLocation.getRectangle(this, this, gridDistance);
+
+  getCircle = (radius, count) => GeoLocation.getCircle(this, radius, count);
+
+  isLatitudeInRegion = (region, factor = 1) => GeoLocation.isLatitudeInRegion(this.latitude, region, factor);
+
+  isLongitudeInRegion = (region, factor = 1) => GeoLocation.isLongitudeInRegion(this.longitude, region, factor);
+
+  isInRegion = (region, factor = 1) => GeoLocation.isLatitudeInRegion(this, region, factor);
 }

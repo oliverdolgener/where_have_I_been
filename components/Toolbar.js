@@ -5,8 +5,8 @@ import {
 import { connect } from 'react-redux';
 import ProgressBar from 'react-native-progress/Bar';
 
+import GeoGrid from '../model/GeoGrid';
 import * as LevelUtils from '../utils/LevelUtils';
-import * as LocationUtils from '../utils/LocationUtils';
 import * as Colors from '../constants/Colors';
 import iconLevel from '../assets/iconLevel.png';
 import iconSquare from '../assets/iconSquare.png';
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 const Toolbar = (props) => {
   const { visitedLocations, geolocation } = props;
 
-  const locations = LocationUtils.gridToArray(visitedLocations);
+  const locations = GeoGrid.toArray(visitedLocations);
   const level = LevelUtils.getLevelFromExp(locations.length);
   const progress = LevelUtils.getPercentToNextLevel(locations.length);
 
