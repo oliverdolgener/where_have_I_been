@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import { actions as mapActions } from '../reducers/map';
 import TouchableScale from './TouchableScale';
+import * as SortUtils from '../utils/SortUtils';
 import Flags from '../constants/Flags';
 import iconDone from '../assets/iconDone.png';
 import iconToDo from '../assets/iconToDo.png';
@@ -18,12 +19,17 @@ const styles = StyleSheet.create({
     height: ITEM_HEIGHT,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingLeft: 10,
   },
   label: {
     flex: 1,
     marginLeft: 10,
     fontSize: 20,
+  },
+  status: {
+    height: ITEM_HEIGHT,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
   },
   icon: {
     width: 30,
@@ -64,7 +70,7 @@ const CountryList = (props) => {
 
   return (
     <FlatList
-      data={countries}
+      data={countries.sort(SortUtils.byStatusDesc)}
       keyExtractor={item => item.id.toString()}
       renderItem={({ item }) => (
         <TouchableScale style={styles.item} onPress={() => onCountryPress(item.region)}>
@@ -72,7 +78,7 @@ const CountryList = (props) => {
           <Text style={styles.label} numberOfLines={1} ellipsizeMode="middle">
             {item.name}
           </Text>
-          <TouchableScale onPress={() => toggleStatus(item)} scaleTo={1.1}>
+          <TouchableScale style={styles.status} onPress={() => toggleStatus(item)} scaleTo={1.1}>
             <Image style={styles.icon} source={getIcon(item.status)} />
           </TouchableScale>
         </TouchableScale>
