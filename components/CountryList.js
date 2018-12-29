@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 
 import { actions as mapActions } from '../reducers/map';
 import TouchableScale from './TouchableScale';
-import * as SortUtils from '../utils/SortUtils';
 import Flags from '../constants/Flags';
 import iconDone from '../assets/iconDone.png';
 import iconToDo from '../assets/iconToDo.png';
