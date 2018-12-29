@@ -66,7 +66,7 @@ export default class GeoGrid {
     return grid;
   }
 
-  static getSlices(grid, gridDistance = Earth.GRID_DISTANCE) {
+  static getRectangleSlices(grid, gridDistance = Earth.GRID_DISTANCE) {
     const slices = [];
     const array = GeoGrid.toArray(grid);
     const resizedLocations = GeoArray.removeDuplicates(
@@ -95,6 +95,42 @@ export default class GeoGrid {
           }
         } else {
           slices.push(GeoLocation.getRectangle(first, last, gridDistance));
+        }
+      }
+    }
+
+    return slices;
+  }
+
+  static getDiamondSlices(grid, gridDistance = Earth.GRID_DISTANCE) {
+    const slices = [];
+    const array = GeoGrid.toArray(grid);
+    const resizedLocations = GeoArray.removeDuplicates(
+      array.map(x => x.getRoundedLocation(gridDistance)),
+    );
+    const locations = GeoArray.toGrid(resizedLocations);
+
+    for (let i = 0; i < locations.length; i++) {
+      const row = locations[i].locations;
+      let first = row[0];
+      let last = row[0];
+      for (let k = 0; k < row.length; k++) {
+        const current = row[k];
+        const next = row[k + 1];
+
+        if (next) {
+          if (
+            next.longitude - current.longitude
+            < GeoLocation.gridDistanceAtLatitude(current.latitude, gridDistance) + Earth.SLICE_OFFSET
+          ) {
+            last = next;
+          } else {
+            slices.push(GeoLocation.getDiamond(first, last, gridDistance));
+            first = next;
+            last = next;
+          }
+        } else {
+          slices.push(GeoLocation.getDiamond(first, last, gridDistance));
         }
       }
     }
