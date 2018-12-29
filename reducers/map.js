@@ -7,6 +7,7 @@ import {
 } from '../services/api';
 import GeoLocation from '../model/GeoLocation';
 import GeoArray from '../model/GeoArray';
+import * as SortUtils from '../utils/SortUtils';
 import * as Earth from '../constants/Earth';
 
 export const types = {
@@ -128,20 +129,24 @@ export default (state = initialState, action = {}) => {
     case types.GET_COUNTRIES:
       return handle(state, action, {
         success: (prevState) => {
-          const countries = payload.data.map(x => ({
-            id: x.id.toString(),
-            name: x.name,
-            region: GeoArray.toRegion([
-              { latitude: x.lat_min, longitude: x.long_min },
-              { latitude: x.lat_max, longitude: x.long_max },
-            ]),
-            status: x.status,
-          }));
+          const countries = payload.data
+            .map(x => ({
+              id: x.id.toString(),
+              name: x.name,
+              region: GeoArray.toRegion([
+                { latitude: x.lat_min, longitude: x.long_min },
+                { latitude: x.lat_max, longitude: x.long_max },
+              ]),
+              status: x.status,
+            }))
+            .sort(SortUtils.byStatusDesc);
           return prevState.set('countries', countries);
         },
       });
-    case types.SET_COUNTRIES:
-      return state.set('countries', action.countries);
+    case types.SET_COUNTRIES: {
+      const countries = action.countries.sort(SortUtils.byStatusDesc);
+      return state.set('countries', countries);
+    }
     case types.GET_AIRPORTS:
       return handle(state, action, {
         success: prevState => prevState.set('airports', payload.data),

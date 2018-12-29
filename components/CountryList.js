@@ -70,7 +70,7 @@ const CountryList = (props) => {
 
   return (
     <FlatList
-      data={countries.sort(SortUtils.byStatusDesc)}
+      data={countries}
       keyExtractor={item => item.id.toString()}
       renderItem={({ item }) => (
         <TouchableScale style={styles.item} onPress={() => onCountryPress(item.region)}>
