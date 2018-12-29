@@ -23,6 +23,7 @@ export const types = {
   SET_SHOW_COUNTRIES: 'MAP/SET_SHOW_COUNTRIES',
   SET_MAPTYPE: 'MAP/SET_MAPTYPE',
   SET_THEME: 'MAP/SET_THEME',
+  SET_SHAPE: 'MAP/SET_SHAPE',
   SET_LAST_TILE: 'MAP/SET_LAST_TILE',
   SET_POWER_SAVER: 'MAP/SET_POWER_SAVER',
   GET_ELEVATION: 'MAP/GET_ELEVATION',
@@ -35,6 +36,10 @@ const setMapTypeAsync = async (mapType) => {
 
 const setThemeAsync = async (theme) => {
   await AsyncStorage.setItem('theme', theme);
+};
+
+const setShapeAsync = async (shape) => {
+  await AsyncStorage.setItem('shape', shape);
 };
 
 const setLastTileAsync = async (tile) => {
@@ -68,6 +73,7 @@ export const actions = {
   setShowCountries: showCountries => ({ type: types.SET_SHOW_COUNTRIES, showCountries }),
   setMapType: mapType => ({ type: types.SET_MAPTYPE, mapType }),
   setTheme: theme => ({ type: types.SET_THEME, theme }),
+  setShape: shape => ({ type: types.SET_SHAPE, shape }),
   setLastTile: lastTile => ({ type: types.SET_LAST_TILE, lastTile }),
   setPowerSaver: powerSaver => ({ type: types.SET_POWER_SAVER, powerSaver }),
   getElevation: coordinate => ({
@@ -96,6 +102,7 @@ const initialState = Map({
   showCountries: false,
   mapType: 'hybrid',
   theme: 'light',
+  shape: 'rectangle',
   lastTile: new GeoLocation(Earth.INITIAL_LOCATION.latitude, Earth.INITIAL_LOCATION.longitude),
   powerSaver: 'off',
   elevation: 0,
@@ -151,6 +158,9 @@ export default (state = initialState, action = {}) => {
     case types.SET_THEME:
       setThemeAsync(action.theme);
       return state.set('theme', action.theme);
+    case types.SET_SHAPE:
+      setShapeAsync(action.shape);
+      return state.set('shape', action.shape);
     case types.SET_LAST_TILE: {
       setLastTileAsync(action.lastTile);
       return state.set('lastTile', action.lastTile);

@@ -21,6 +21,9 @@ import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
 import iconStreetView from '../assets/iconStreetView.png';
 import iconSatellite from '../assets/iconSatellite.png';
+import iconShape from '../assets/iconShape.png';
+import iconRectangle from '../assets/iconRectangle.png';
+import iconDiamond from '../assets/iconDiamond.png';
 import iconFriendlist from '../assets/iconFriendlist.png';
 import iconCollapse from '../assets/iconCollapse.png';
 import iconWorld from '../assets/iconWorld.png';
@@ -135,6 +138,12 @@ class DrawerMenu extends React.Component {
     const { theme, setTheme } = this.props;
     this.closeDrawer();
     setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  toggleShape = () => {
+    const { shape, setShape } = this.props;
+    this.closeDrawer();
+    setShape(shape === 'diamond' ? 'rectangle' : 'diamond');
   };
 
   togglePowerSaver = () => {
@@ -267,7 +276,7 @@ class DrawerMenu extends React.Component {
 
   render() {
     const {
-      mapType, tilesToSave, theme, powerSaver, editMode, showFlights, showCountries, geocode,
+      mapType, tilesToSave, theme, shape, powerSaver, editMode, showFlights, showCountries, geocode,
     } = this.props;
     const {
       showFriendlist,
@@ -311,6 +320,11 @@ class DrawerMenu extends React.Component {
               <Image style={styles.menuIcon} source={iconMap} />
               <Text style={styles.menuLabel}>Map Type</Text>
               <Image style={styles.menuIcon} source={mapType === 'standard' ? iconStreetView : iconSatellite} />
+            </TouchableScale>
+            <TouchableScale style={styles.menuItem} onPress={() => this.toggleShape()}>
+              <Image style={styles.menuIcon} source={iconShape} />
+              <Text style={styles.menuLabel}>Tile Shape</Text>
+              <Image style={styles.menuIcon} source={shape === 'diamond' ? iconDiamond : iconRectangle} />
             </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleFriendlist()}>
               <Image style={styles.menuIcon} source={iconFriendlist} />
@@ -386,6 +400,7 @@ const mapStateToProps = state => ({
   map: state.map.get('map'),
   mapType: state.map.get('mapType'),
   theme: state.map.get('theme'),
+  shape: state.map.get('shape'),
   geocode: state.map.get('geocode'),
   powerSaver: state.map.get('powerSaver'),
   editMode: state.map.get('editMode'),
@@ -403,6 +418,7 @@ const mapDispatchToProps = {
   setPowerSaver: mapActions.setPowerSaver,
   setMapType: mapActions.setMapType,
   setTheme: mapActions.setTheme,
+  setShape: mapActions.setShape,
   getCountries: mapActions.getCountries,
   setFollowLocation: mapActions.setFollowLocation,
   setEditMode: mapActions.setEditMode,

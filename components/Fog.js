@@ -8,11 +8,15 @@ import * as Colors from '../constants/Colors';
 import * as Earth from '../constants/Earth';
 
 const Fog = (props) => {
-  const { region, visitedLocations, friendLocations } = props;
+  const {
+    region, visitedLocations, friendLocations, shape,
+  } = props;
 
   const visibleLocations = GeoGrid.getVisibleLocations(friendLocations || visitedLocations, region);
   const gridDistance = LocationUtils.getGridDistanceByRegion(region);
-  const slices = GeoGrid.getSlices(visibleLocations, gridDistance);
+  const slices = shape === 'diamond'
+    ? GeoGrid.getDiamondSlices(visibleLocations, gridDistance)
+    : GeoGrid.getRectangleSlices(visibleLocations, gridDistance);
 
   return (
     <MapView.Polygon
@@ -29,6 +33,7 @@ const mapStateToProps = state => ({
   visitedLocations: state.user.get('visitedLocations'),
   friendLocations: state.friend.get('friendLocations'),
   region: state.map.get('region'),
+  shape: state.map.get('shape'),
 });
 
 export default connect(mapStateToProps)(Fog);
