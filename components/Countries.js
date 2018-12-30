@@ -7,7 +7,7 @@ import * as AllCountries from '../constants/Countries';
 import * as Colors from '../constants/Colors';
 
 const Countries = (props) => {
-  const { countries, region } = props;
+  const { countries, region, zoom } = props;
 
   const regionLatitude = region.latitude * -1 + 90;
   const regionLongitude = region.longitude + 180;
@@ -17,7 +17,6 @@ const Countries = (props) => {
   const regionBottom = regionLatitude + region.latitudeDelta / 2;
   const region2d = new Region2D([regionLeft, regionTop, regionRight, regionBottom]);
 
-  const zoom = region.longitudeDelta > 0 ? region.longitudeDelta : 360 + region.longitudeDelta;
   const ZoomedCountries = zoom > 20 ? AllCountries.zoom0 : AllCountries.zoom1;
 
   return ZoomedCountries.map((x, i) => {
@@ -26,9 +25,11 @@ const Countries = (props) => {
     if (!country) {
       return false;
     }
+
     if (country.region.longitudeDelta === 0) {
       return false;
     }
+
     const countryLatitude = country.region.latitude * -1 + 90;
     const countryLongitude = country.region.longitude + 180;
     const countryLeft = countryLongitude - country.region.longitudeDelta / 2;
@@ -41,10 +42,10 @@ const Countries = (props) => {
       return false;
     }
 
-    let color = Colors.transparent;
-    if (country && country.status === 1) {
+    let color = Colors.darkGrey;
+    if (country.status === 1) {
       color = Colors.rose;
-    } else if (country && country.status === 2) {
+    } else if (country.status === 2) {
       color = Colors.green;
     }
 
@@ -61,8 +62,9 @@ const Countries = (props) => {
 };
 
 const mapStateToProps = state => ({
-  region: state.map.get('region'),
   countries: state.map.get('countries'),
+  region: state.map.get('region'),
+  zoom: state.map.get('zoom'),
 });
 
 export default connect(mapStateToProps)(Countries);

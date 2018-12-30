@@ -2,6 +2,7 @@ export const transparent = 'rgba(0, 0, 0, 0)';
 export const white = '#FFFFFF';
 export const black = '#000000';
 export const creme = '#FCF4E8';
+export const darkGrey = '#222222';
 export const brown = '#170E03';
 export const rose = '#E65F87';
 export const green = '#62C09F';

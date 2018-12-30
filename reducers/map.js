@@ -51,6 +51,28 @@ const setPowerSaverAsync = async (powerSaver) => {
   await AsyncStorage.setItem('powerSaver', powerSaver);
 };
 
+function getGridDistanceByZoom(zoom) {
+  if (zoom < 0.1) {
+    return Earth.GRID_DISTANCE;
+  }
+
+  let gridDistance;
+
+  if (zoom < 1) {
+    gridDistance = Math.round(zoom * 10) / 10;
+  } else if (zoom < 10) {
+    gridDistance = Math.round(zoom);
+  } else {
+    gridDistance = Math.round(zoom / 10) * 10;
+  }
+
+  if (gridDistance > 50) {
+    return Earth.GRID_DISTANCE * 1000;
+  }
+
+  return gridDistance / 50;
+}
+
 export const actions = {
   setMap: map => ({ type: types.SET_MAP, map }),
   setGeolocation: geolocation => ({ type: types.SET_GEOLOCATION, geolocation }),
@@ -113,6 +135,8 @@ const initialState = Map({
     latitudeDelta: Earth.DELTA,
     longitudeDelta: Earth.DELTA,
   },
+  zoom: false,
+  gridDistance: Earth.GRID_DISTANCE,
 });
 
 export default (state = initialState, action = {}) => {
@@ -183,7 +207,10 @@ export default (state = initialState, action = {}) => {
         },
       });
     case types.SET_REGION: {
-      return state.set('region', action.region);
+      const { region } = action;
+      const zoom = region.longitudeDelta > 0 ? region.longitudeDelta : 360 + region.longitudeDelta;
+      const gridDistance = getGridDistanceByZoom(zoom);
+      return state.set('region', region).set('zoom', zoom).set('gridDistance', gridDistance);
     }
     default:
       return state;
