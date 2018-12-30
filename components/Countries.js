@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Geojson from 'react-native-geojson';
 import Region2D from 'region2d';
 
-import AllCountries from '../constants/Countries';
+import * as AllCountries from '../constants/Countries';
 import * as Colors from '../constants/Colors';
 
 const Countries = (props) => {
@@ -17,7 +17,10 @@ const Countries = (props) => {
   const regionBottom = regionLatitude + region.latitudeDelta / 2;
   const region2d = new Region2D([regionLeft, regionTop, regionRight, regionBottom]);
 
-  return AllCountries.map((x, i) => {
+  const zoom = region.longitudeDelta > 0 ? region.longitudeDelta : 360 + region.longitudeDelta;
+  const ZoomedCountries = zoom > 20 ? AllCountries.zoom0 : AllCountries.zoom1;
+
+  return ZoomedCountries.map((x, i) => {
     const country = countries.find(y => y.id == x.id);
 
     if (!country) {

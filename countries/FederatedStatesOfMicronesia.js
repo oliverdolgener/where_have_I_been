@@ -1,4 +1,10 @@
-export default {
+export const zoom0 = {
+  id: 59,
+  type: 'FeatureCollection',
+  features: [],
+};
+
+export const zoom1 = {
   id: 59,
   type: 'FeatureCollection',
   features: [
