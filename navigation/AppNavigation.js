@@ -1,4 +1,5 @@
 import {
+  createAppContainer,
   createStackNavigator,
   createDrawerNavigator,
   createSwitchNavigator,
@@ -49,4 +50,4 @@ const PrimaryNav = createSwitchNavigator(
   },
 );
 
-export default PrimaryNav;
+export default createAppContainer(PrimaryNav);

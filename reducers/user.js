@@ -1,8 +1,8 @@
 import { Map } from 'immutable';
 import { handle } from 'redux-pack';
-import { NavigationActions } from 'react-navigation';
 import { AsyncStorage } from 'react-native';
 
+import NavigationService from '../navigation/NavigationService';
 import GeoLocation from '../model/GeoLocation';
 import GeoArray from '../model/GeoArray';
 import * as SQLiteUtils from '../utils/SQLiteUtils';
@@ -17,7 +17,6 @@ import {
   addFlight,
   removeFlight,
 } from '../services/api';
-import { navigator } from '../App';
 
 export const types = {
   LOGIN: 'USER/LOGIN',
@@ -58,7 +57,7 @@ export const actions = {
     meta: {
       onSuccess: (result) => {
         setUserAsync(result.data.id);
-        navigator.dispatch(NavigationActions.navigate({ routeName: 'Map' }));
+        NavigationService.navigate('Map');
       },
     },
   }),
@@ -69,7 +68,7 @@ export const actions = {
     meta: {
       onSuccess: (result) => {
         setUserAsync(result.data.id);
-        navigator.dispatch(NavigationActions.navigate({ routeName: 'Map' }));
+        NavigationService.navigate('Map');
       },
     },
   }),
@@ -83,10 +82,10 @@ export const actions = {
     meta: {
       onSuccess: () => {
         setUserAsync(userId);
-        navigator.dispatch(NavigationActions.navigate({ routeName: 'Map' }));
+        NavigationService.navigate('Map');
       },
       onFailure: () => {
-        navigator.dispatch(NavigationActions.navigate({ routeName: 'Login' }));
+        NavigationService.navigate('Login');
       },
     },
   }),
@@ -157,7 +156,7 @@ export default (state = initialState, action = {}) => {
     case types.LOGOUT:
       SQLiteUtils.deleteLocations();
       removeUserAsync();
-      navigator.dispatch(NavigationActions.navigate({ routeName: 'Login' }));
+      NavigationService.navigate('Login');
       return state
         .set('isLoggedIn', false)
         .set('userId', false)
@@ -199,7 +198,7 @@ export default (state = initialState, action = {}) => {
     case types.RELOG_FROM_SQLITE: {
       const visitedLocations = GeoArray.toGrid(action.locations);
       setUserAsync(action.userId);
-      setTimeout(() => navigator.dispatch(NavigationActions.navigate({ routeName: 'Map' })), 1000);
+      setTimeout(() => NavigationService.navigate('Map'), 1000);
       return state
         .set('isLoggedIn', true)
         .set('userId', action.userId)

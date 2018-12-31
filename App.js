@@ -7,6 +7,7 @@ import { Permissions, KeepAwake } from 'expo';
 import UserReducer from './reducers/user';
 import FriendReducer from './reducers/friend';
 import MapReducer from './reducers/map';
+import NavigationService from './navigation/NavigationService';
 import AppNavigation from './navigation/AppNavigation';
 
 const styles = StyleSheet.create({
@@ -24,11 +25,8 @@ const store = createStore(
   applyMiddleware(reduxPackMiddleware),
 );
 
-export let navigator;
-
 class App extends Component {
   componentDidMount() {
-    navigator = this.navigator;
     KeepAwake.activate();
     this.askPermissionsAsync();
   }
@@ -43,8 +41,8 @@ class App extends Component {
       <Provider store={store}>
         <View style={styles.container}>
           <AppNavigation
-            ref={(nav) => {
-              this.navigator = nav;
+            ref={(navigatorRef) => {
+              NavigationService.setTopLevelNavigator(navigatorRef);
             }}
           />
         </View>

@@ -210,7 +210,10 @@ export default (state = initialState, action = {}) => {
       const { region } = action;
       const zoom = region.longitudeDelta > 0 ? region.longitudeDelta : 360 + region.longitudeDelta;
       const gridDistance = getGridDistanceByZoom(zoom);
-      return state.set('region', region).set('zoom', zoom).set('gridDistance', gridDistance);
+      return state
+        .set('region', region)
+        .set('zoom', zoom)
+        .set('gridDistance', gridDistance);
     }
     default:
       return state;
