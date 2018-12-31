@@ -141,8 +141,8 @@ export default class GeoLocation {
 
   static isLatitudeInRegion(latitude, region, factor = 1) {
     const borderTop = region.latitude + region.latitudeDelta / (2 / factor);
-    const borderTopBottom = region.latitude - region.latitudeDelta / (2 / factor);
-    return latitude <= borderTop && latitude >= borderTopBottom;
+    const borderBottom = region.latitude - region.latitudeDelta / (2 / factor);
+    return latitude <= borderTop && latitude >= borderBottom;
   }
 
   static isLongitudeInRegion(longitude, region, factor = 1) {
