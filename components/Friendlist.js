@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, FlatList, Text, Image, View, TextInput,
+  StyleSheet, Text, Image, View, TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -10,11 +10,9 @@ import * as Colors from '../constants/Colors';
 import iconAdd from '../assets/iconAdd.png';
 import iconRemove from '../assets/iconRemove.png';
 
-const ITEM_HEIGHT = 40;
-
 const styles = StyleSheet.create({
   item: {
-    height: ITEM_HEIGHT,
+    height: 40,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
@@ -70,11 +68,27 @@ class Friendlist extends Component {
     } = this.props;
     const { friendName } = this.state;
     return (
-      <FlatList
-        data={friends}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableScale style={styles.item} onPress={() => onFriendPress(item.id)}>
+      <View>
+        <View style={styles.item}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Add Friend"
+            onChangeText={input => this.setState({ friendName: input })}
+            value={friendName}
+            onSubmitEditing={() => this.onAddFriend()}
+            selectionColor={Colors.black}
+            underlineColorAndroid={Colors.black}
+          />
+          <TouchableScale onPress={() => this.onAddFriend()} scaleTo={1.1}>
+            <Image style={styles.icon} source={iconAdd} />
+          </TouchableScale>
+        </View>
+        {friends.map(item => (
+          <TouchableScale
+            style={styles.item}
+            key={item.id.toString()}
+            onPress={() => onFriendPress(item.id)}
+          >
             <View style={styles.badge}>
               <Text style={styles.badgeLabel}>{item.level}</Text>
             </View>
@@ -85,29 +99,8 @@ class Friendlist extends Component {
               <Image style={styles.icon} source={iconRemove} />
             </TouchableScale>
           </TouchableScale>
-        )}
-        ListHeaderComponent={(
-          <View style={styles.item}>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Add Friend"
-              onChangeText={input => this.setState({ friendName: input })}
-              value={friendName}
-              onSubmitEditing={() => this.onAddFriend()}
-              selectionColor={Colors.black}
-              underlineColorAndroid={Colors.black}
-            />
-            <TouchableScale onPress={() => this.onAddFriend()} scaleTo={1.1}>
-              <Image style={styles.icon} source={iconAdd} />
-            </TouchableScale>
-          </View>
-)}
-        getItemLayout={(data, index) => ({
-          length: ITEM_HEIGHT,
-          offset: ITEM_HEIGHT * index,
-          index,
-        })}
-      />
+        ))}
+      </View>
     );
   }
 }
