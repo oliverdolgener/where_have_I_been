@@ -2,11 +2,14 @@ import GeoLocation from './GeoLocation';
 import * as SortUtils from '../utils/SortUtils';
 
 export default class GeoArray {
-  constructor(array) {
-    this.geoArray = GeoArray.fromArray(array);
+  static contains(location, array) {
+    for (let i = 0; i < array.length; i++) {
+      if (GeoLocation.isEqual(location, array[i])) {
+        return array;
+      }
+    }
+    return false;
   }
-
-  static contains = (location, array) => array.find(x => GeoLocation.isEqual(x, location));
 
   static remove(location, array) {
     for (let i = 0; i < array.length; i++) {
@@ -41,7 +44,11 @@ export default class GeoArray {
     return unique;
   }
 
-  static fromArray = array => array.map(x => new GeoLocation(x.latitude, x.longitude, x.timestamp));
+  static fromArray = array => array.map(x => ({
+    latitude: x.latitude,
+    longitude: x.longitude,
+    timestamp: x.timestamp,
+  }));
 
   static toGrid(array) {
     if (array.length < 1) {
@@ -101,14 +108,4 @@ export default class GeoArray {
       longitudeDelta: longMax - longMin,
     };
   }
-
-  contains = location => GeoArray.contains(location, this);
-
-  remove = location => GeoArray.remove(location, this);
-
-  removeDuplicates = () => GeoArray.removeDuplicates(this);
-
-  toGrid = () => GeoArray.toGrid(this);
-
-  toRegion = () => GeoArray.toRegion(this);
 }

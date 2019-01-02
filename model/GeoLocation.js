@@ -3,12 +3,6 @@ import * as RoundUtils from '../utils/RoundUtils';
 import * as Earth from '../constants/Earth';
 
 export default class GeoLocation {
-  constructor(latitude, longitude, timestamp = null) {
-    this.latitude = latitude;
-    this.longitude = longitude;
-    this.timestamp = timestamp;
-  }
-
   static circumferenceAtLatitude(latitude) {
     return 2 * Math.PI * Earth.EARTH_RADIUS * Math.cos(ConversionUtils.toRadians(latitude));
   }
@@ -39,7 +33,11 @@ export default class GeoLocation {
   static getRoundedLocation(location, gridDistance = Earth.gridDistance) {
     const latitude = GeoLocation.getRoundedLatitude(location.latitude, gridDistance);
     const longitude = GeoLocation.getRoundedLongitude(location.longitude, latitude, gridDistance);
-    return new GeoLocation(latitude, longitude, location.timestamp);
+    return {
+      latitude,
+      longitude,
+      timestamp: location.timestamp,
+    };
   }
 
   static getRectangle(left, right, gridDistance = Earth.GRID_DISTANCE) {
@@ -134,7 +132,11 @@ export default class GeoLocation {
       const longitude = center.longitude
         + GeoLocation.gridDistanceAtLatitude(latitude, radius)
           * Math.cos(((2 * Math.PI) / count) * i);
-      points.push(new GeoLocation(latitude, longitude, center.timestamp));
+      points.push({
+        latitude,
+        longitude,
+        timestamp: center.timestamp,
+      });
     }
     return points;
   }
@@ -170,22 +172,4 @@ export default class GeoLocation {
       && GeoLocation.isLongitudeInRegion(location.longitude, region, factor)
     );
   }
-
-  isEqual = geolocation => GeoLocation.isEqual(this, geolocation);
-
-  getRoundedLatitude = (gridDistance = Earth.GRID_DISTANCE) => GeoLocation.getRoundedLatitude(this.latitude, gridDistance);
-
-  getRoundedLongitude = (gridDistance = Earth.GRID_DISTANCE) => GeoLocation.getRoundedLongitude(this.longitude, this.latitude, gridDistance);
-
-  getRoundedLocation = (gridDistance = Earth.GRID_DISTANCE) => GeoLocation.getRoundedLocation(this, gridDistance);
-
-  getSquare = (gridDistance = Earth.GRID_DISTANCE) => GeoLocation.getSlice(this, this, gridDistance);
-
-  getCircle = (radius, count) => GeoLocation.getCircle(this, radius, count);
-
-  isLatitudeInRegion = (region, factor = 1) => GeoLocation.isLatitudeInRegion(this.latitude, region, factor);
-
-  isLongitudeInRegion = (region, factor = 1) => GeoLocation.isLongitudeInRegion(this.longitude, region, factor);
-
-  isInRegion = (region, factor = 1) => GeoLocation.isLatitudeInRegion(this, region, factor);
 }

@@ -3,14 +3,16 @@ import GeoArray from './GeoArray';
 import * as Earth from '../constants/Earth';
 
 export default class GeoGrid {
-  constructor() {
-    this.geoGrid = [];
-  }
-
   static contains(location, grid) {
-    const row = grid.find(x => x.latitude == location.latitude);
-    if (row) {
-      return row.locations.find(x => x.longitude == location.longitude);
+    for (let i = 0; i < grid.length; i++) {
+      if (grid[i].latitude == location.latitude) {
+        const row = grid[i].locations;
+        for (let k = 0; k < row.length; k++) {
+          if (row[k].longitude == location.longitude) {
+            return row[k];
+          }
+        }
+      }
     }
     return false;
   }
@@ -18,7 +20,11 @@ export default class GeoGrid {
   static toArray(grid) {
     const rows = grid.map(x => x.locations);
     const locations = [].concat(...rows);
-    return locations.map(x => new GeoLocation(x.latitude, x.longitude, x.timestamp));
+    return locations.map(x => ({
+      latitude: x.latitude,
+      longitude: x.longitude,
+      timestamp: x.timestamp,
+    }));
   }
 
   static insert(location, grid) {
@@ -70,7 +76,7 @@ export default class GeoGrid {
     const slices = [];
     const array = GeoGrid.toArray(grid);
     const resizedLocations = GeoArray.removeDuplicates(
-      array.map(x => x.getRoundedLocation(gridDistance)),
+      array.map(x => GeoLocation.getRoundedLocation(x, gridDistance)),
     );
     const locations = GeoArray.toGrid(resizedLocations);
 
@@ -106,7 +112,7 @@ export default class GeoGrid {
     const slices = [];
     const array = GeoGrid.toArray(grid);
     const resizedLocations = GeoArray.removeDuplicates(
-      array.map(x => x.getRoundedLocation(gridDistance)),
+      array.map(x => GeoLocation.getRoundedLocation(x, gridDistance)),
     );
     const locations = GeoArray.toGrid(resizedLocations);
 
@@ -161,16 +167,4 @@ export default class GeoGrid {
 
     return visibleLocations;
   }
-
-  contains = location => GeoGrid.contains(location, this);
-
-  toArray = () => GeoGrid.toArray(this);
-
-  insert = location => GeoGrid.insert(location, this);
-
-  remove = location => GeoGrid.remove(location, this);
-
-  getSlices = (gridDistance = Earth.GRID_DISTANCE) => GeoGrid.getSlices(this, gridDistance);
-
-  getVisibleLocations = region => GeoGrid.getVisibleLocations(this, region);
 }

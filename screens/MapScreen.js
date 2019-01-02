@@ -85,8 +85,12 @@ class MapScreen extends Component {
       return;
     }
 
-    const location = new GeoLocation(coordinate.latitude, coordinate.longitude, new Date().getTime());
-    const roundedLocation = location.getRoundedLocation();
+    const location = {
+      latitude: coordinate.latitude,
+      longitude: coordinate.longitude,
+      timestamp: new Date().getTime(),
+    };
+    const roundedLocation = GeoLocation.getRoundedLocation(location);
 
     if (GeoGrid.contains(roundedLocation, visitedLocations)) {
       this.removeLocation(roundedLocation);
@@ -115,7 +119,11 @@ class MapScreen extends Component {
         } = result.coords;
         const { timestamp } = result;
 
-        const location = new GeoLocation(latitude, longitude, timestamp);
+        const location = {
+          latitude,
+          longitude,
+          timestamp,
+        };
 
         const currentPosition = { lat: latitude, lng: longitude, time: timestamp };
         const calculatedSpeed = geolib.getSpeed(this.lastPosition, currentPosition);
@@ -135,7 +143,7 @@ class MapScreen extends Component {
 
         if (accuracy < 50) {
           const { lastTile } = this.props;
-          const roundedLocation = location.getRoundedLocation();
+          const roundedLocation = GeoLocation.getRoundedLocation(location);
           if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
             this.onTileChange(roundedLocation);
           }
