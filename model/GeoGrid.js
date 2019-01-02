@@ -144,27 +144,25 @@ export default class GeoGrid {
     return slices;
   }
 
-  static getVisibleLocations(locations, region) {
+  static getVisibleLocations(grid, region) {
     const visibleLocations = [];
-    locations.forEach((x) => {
-      if (GeoLocation.isLatitudeInRegion(x.latitude, region, 2)) {
-        const row = {
-          latitude: x.latitude,
+    for (let i = 0; i < grid.length; i++) {
+      if (GeoLocation.isLatitudeInRegion(grid[i].latitude, region, 2)) {
+        const row = grid[i].locations;
+        const newRow = {
+          latitude: row.latitude,
           locations: [],
         };
-
-        x.locations.forEach((y) => {
-          if (GeoLocation.isLongitudeInRegion(y.longitude, region, 2)) {
-            row.locations.push(y);
+        for (let k = 0; k < row.length; k++) {
+          if (GeoLocation.isLongitudeInRegion(row[k].longitude, region, 2)) {
+            newRow.locations.push(row[k]);
           }
-        });
-
-        if (row.locations.length > 0) {
-          visibleLocations.push(row);
+        }
+        if (newRow.locations.length > 0) {
+          visibleLocations.push(newRow);
         }
       }
-    });
-
+    }
     return visibleLocations;
   }
 }
