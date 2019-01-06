@@ -3,13 +3,14 @@ import { StyleSheet, View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, DangerZone } from 'expo';
 import geolib from 'geolib';
+import { Box } from 'js-quadtree';
 
 import { actions as userActions } from '../reducers/user';
 import { actions as friendActions } from '../reducers/friend';
 import { actions as mapActions } from '../reducers/map';
+import LatLng from '../model/LatLng';
 import GeoLocation from '../model/GeoLocation';
 import GeoArray from '../model/GeoArray';
-import GeoGrid from '../model/GeoGrid';
 import Speed from '../model/Speed';
 import TouchableScale from '../components/TouchableScale';
 import Toolbar from '../components/Toolbar';
@@ -80,7 +81,7 @@ class MapScreen extends Component {
   }
 
   onMapPress(coordinate) {
-    const { editMode, visitedLocations } = this.props;
+    const { editMode, quadtree } = this.props;
     if (!editMode) {
       return;
     }
@@ -92,10 +93,14 @@ class MapScreen extends Component {
     };
     const roundedLocation = GeoLocation.getRoundedLocation(location);
 
-    if (GeoGrid.contains(roundedLocation, visitedLocations)) {
-      this.removeLocation(roundedLocation);
-    } else {
+    const point = LatLng.toPoint(roundedLocation);
+    const box = new Box(point.x, point.y, 0, 0);
+    const found = quadtree.query(box);
+
+    if (found.length < 1) {
       this.addLocation(roundedLocation);
+    } else {
+      this.removeLocation(roundedLocation);
     }
   }
 
@@ -161,19 +166,22 @@ class MapScreen extends Component {
   addLocation(location) {
     const {
       userId,
+      quadtree,
       tilesToSave,
       setTilesToSave,
       saveTiles,
-      visitedLocations,
-      setLocations,
+      setQuadtree,
       isSaving,
     } = this.props;
 
-    if (!GeoGrid.contains(location, visitedLocations)) {
+    const point = LatLng.toPoint(location);
+    const box = new Box(point.x, point.y, 0, 0);
+    const found = quadtree.query(box);
+
+    if (found.length < 1) {
       const unsaved = [...tilesToSave, location];
-      const locations = GeoGrid.insert(location, visitedLocations);
-      const visited = GeoGrid.toArray(locations);
-      setLocations(visited);
+      quadtree.insert(point);
+      setQuadtree(quadtree);
       setTilesToSave(unsaved);
 
       if (!isSaving) {
@@ -184,18 +192,16 @@ class MapScreen extends Component {
 
   removeLocation(location) {
     const {
-      userId,
-      tilesToSave,
-      setTilesToSave,
-      visitedLocations,
-      setLocations,
-      removeTile,
+      userId, tilesToSave, setTilesToSave, quadtree, setQuadtree, removeTile,
     } = this.props;
 
-    if (GeoGrid.contains(location, visitedLocations)) {
-      const locations = GeoGrid.remove(location, visitedLocations);
-      const visited = GeoGrid.toArray(locations);
-      setLocations(visited);
+    const point = LatLng.toPoint(location);
+    const box = new Box(point.x, point.y, 0, 0);
+    const found = quadtree.query(box);
+
+    if (found.length > 0) {
+      quadtree.remove(point);
+      setQuadtree(quadtree);
 
       if (GeoArray.contains(location, tilesToSave)) {
         setTilesToSave(GeoArray.remove(location, tilesToSave));
@@ -226,7 +232,7 @@ class MapScreen extends Component {
     const {
       isLoggedIn,
       navigation,
-      friendLocations,
+      friendQuadtree,
       resetFriend,
       followLocation,
       setFollowLocation,
@@ -253,7 +259,7 @@ class MapScreen extends Component {
         >
           <Image style={styles.menuImage} source={iconMenu} />
         </TouchableScale>
-        {friendLocations ? (
+        {friendQuadtree ? (
           <View style={styles.actionButton}>
             <TouchableScale onPress={() => resetFriend()} scaleTo={1.1}>
               <Image style={styles.actionIcon} source={iconClose} />
@@ -284,8 +290,8 @@ class MapScreen extends Component {
 const mapStateToProps = state => ({
   isLoggedIn: state.user.get('isLoggedIn'),
   userId: state.user.get('userId'),
-  visitedLocations: state.user.get('visitedLocations'),
-  friendLocations: state.friend.get('friendLocations'),
+  quadtree: state.user.get('quadtree'),
+  friendQuadtree: state.friend.get('friendQuadtree'),
   tilesToSave: state.user.get('tilesToSave'),
   isSaving: state.user.get('isSaving'),
   map: state.map.get('map'),
@@ -298,6 +304,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  setQuadtree: userActions.setQuadtree,
   setLocations: userActions.setLocations,
   setTilesToSave: userActions.setTilesToSave,
   saveTiles: userActions.saveTiles,

@@ -261,9 +261,9 @@ class DrawerMenu extends React.Component {
   }
 
   showFriend(id) {
-    const { getFriendLocations, getFriendFlights } = this.props;
+    const { getFriendQuadtree, getFriendFlights } = this.props;
     this.closeDrawer();
-    getFriendLocations(id);
+    getFriendQuadtree(id);
     getFriendFlights(id);
   }
 
@@ -412,7 +412,7 @@ const mapDispatchToProps = {
   logout: userActions.logout,
   saveTiles: userActions.saveTiles,
   getFriends: friendActions.getFriends,
-  getFriendLocations: friendActions.getFriendLocations,
+  getFriendQuadtree: friendActions.getFriendQuadtree,
   getFriendFlights: friendActions.getFriendFlights,
   resetFriend: friendActions.resetFriend,
   setPowerSaver: mapActions.setPowerSaver,

@@ -46,9 +46,9 @@ const styles = StyleSheet.create({
 });
 
 const Toolbar = (props) => {
-  const { visitedLocations, geolocation } = props;
+  const { quadtree, geolocation } = props;
 
-  const locations = GeoGrid.toArray(visitedLocations);
+  const locations = quadtree.getAllPoints();
   const level = LevelUtils.getLevelFromExp(locations.length);
   const progress = LevelUtils.getPercentToNextLevel(locations.length);
 
@@ -90,7 +90,7 @@ const Toolbar = (props) => {
 };
 
 const mapStateToProps = state => ({
-  visitedLocations: state.user.get('visitedLocations'),
+  quadtree: state.user.get('quadtree'),
   geolocation: state.map.get('geolocation'),
 });
 

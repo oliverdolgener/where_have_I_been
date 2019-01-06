@@ -40,6 +40,20 @@ export default class GeoLocation {
     };
   }
 
+  static toPoint(latlng) {
+    return {
+      x: latlng.longitude + 180,
+      y: latlng.latitude * -1 + 90,
+    };
+  }
+
+  static toLatLng(point) {
+    return {
+      latitude: point.y * -1 + 90,
+      longitude: point.x - 180,
+    };
+  }
+
   static getRectangle(left, right, gridDistance = Earth.GRID_DISTANCE) {
     const centerLatitude = left.latitude;
     const centerGridDistance = GeoLocation.gridDistanceAtLatitude(centerLatitude, gridDistance);

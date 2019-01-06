@@ -32,6 +32,7 @@
     "expo": "^31.0.6",
     "geolib": "^2.0.24",
     "immutable": "^4.0.0-rc.12",
+    "js-quadtree": "^1.2.0",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.1.tar.gz",
     "react-native-collapsible": "^1.4.0",

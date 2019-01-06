@@ -72,9 +72,8 @@ export default class GeoGrid {
     return grid;
   }
 
-  static getRectangleSlices(grid, gridDistance = Earth.GRID_DISTANCE) {
+  static getRectangleSlices(array, gridDistance = Earth.GRID_DISTANCE) {
     const slices = [];
-    const array = GeoGrid.toArray(grid);
     const resizedLocations = GeoArray.removeDuplicates(
       array.map(x => GeoLocation.getRoundedLocation(x, gridDistance)),
     );
@@ -108,9 +107,8 @@ export default class GeoGrid {
     return slices;
   }
 
-  static getDiamondSlices(grid, gridDistance = Earth.GRID_DISTANCE) {
+  static getDiamondSlices(array, gridDistance = Earth.GRID_DISTANCE) {
     const slices = [];
-    const array = GeoGrid.toArray(grid);
     const resizedLocations = GeoArray.removeDuplicates(
       array.map(x => GeoLocation.getRoundedLocation(x, gridDistance)),
     );
