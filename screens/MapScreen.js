@@ -305,7 +305,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   setQuadtree: userActions.setQuadtree,
-  setLocations: userActions.setLocations,
   setTilesToSave: userActions.setTilesToSave,
   saveTiles: userActions.saveTiles,
   removeTile: userActions.removeTile,
