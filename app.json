@@ -2,6 +2,10 @@
   "expo": {
     "sdkVersion": "31.0.0",
     "icon": "./assets/whib.png",
+    "androidStatusBar": {
+      "backgroundColor": "#FCF4E8",
+      "barStyle": "dark-content"
+    },
     "android": {
       "package": "com.ollum.whib",
       "config": {

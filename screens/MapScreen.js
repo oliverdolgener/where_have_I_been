@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     position: 'absolute',
-    top: 30,
+    top: 10,
     left: 10,
     borderRadius: 5,
   },

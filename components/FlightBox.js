@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   flightBox: {
     width: 120,
     position: 'absolute',
-    top: 30,
+    top: 10,
     right: 10,
     backgroundColor: Colors.creme,
   },
