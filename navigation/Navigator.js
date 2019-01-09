@@ -42,13 +42,14 @@ class Navigator extends Component {
     const { width, height, os } = this.props;
     return (
       <View style={styles.container}>
-        {os === 'ios' && height > width ? (
-          <View style={styles.statusBar}>
-            <StatusBar backgroundColor="transparent" barStyle="dark-content" />
-          </View>
-        ) : (
-          <StatusBar hidden />
-        )}
+        {os === 'ios'
+          && (height > width ? (
+            <View style={styles.statusBar}>
+              <StatusBar backgroundColor="transparent" barStyle="dark-content" />
+            </View>
+          ) : (
+            <StatusBar hidden />
+          ))}
         <AppNavigation
           ref={(navigatorRef) => {
             NavigationService.setTopLevelNavigator(navigatorRef);
