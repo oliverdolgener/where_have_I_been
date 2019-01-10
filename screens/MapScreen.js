@@ -116,7 +116,7 @@ class MapScreen extends Component {
 
   watchPositionAsync = async () => {
     this.positionListener = await Location.watchPositionAsync(
-      { enableHighAccuracy: true, timeInterval: 0, distanceInterval: 0 },
+      { accuracy: Location.Accuracy.Highest, timeInterval: 0, distanceInterval: 0 },
       (result) => {
         const { setGeolocation } = this.props;
         const {
