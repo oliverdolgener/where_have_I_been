@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import { connect } from 'react-redux';
-import { Location, DangerZone } from 'expo';
+import { Location, DangerZone, TaskManager } from 'expo';
 import geolib from 'geolib';
 import { Box } from 'js-quadtree';
 
@@ -71,7 +71,8 @@ class MapScreen extends Component {
     const { userId, getFlights, lastTile } = this.props;
     this.motionListener = DangerZone.DeviceMotion.addListener(result => this.handleMotionEvent(result));
     DangerZone.DeviceMotion.setUpdateInterval(1000);
-    this.watchPositionAsync();
+    this.registerLocationTask();
+    this.startLocationUpdatesAsync();
     getFlights(userId);
     this.getGeocodeAsync(lastTile);
   }
@@ -114,47 +115,13 @@ class MapScreen extends Component {
     followLocation && map && map.moveToLocation(tile);
   }
 
-  watchPositionAsync = async () => {
-    this.positionListener = await Location.watchPositionAsync(
-      { accuracy: Location.Accuracy.Highest, timeInterval: 0, distanceInterval: 0 },
-      (result) => {
-        const { setGeolocation } = this.props;
-        const {
-          latitude, longitude, altitude, accuracy,
-        } = result.coords;
-        const { timestamp } = result;
-
-        const location = {
-          latitude,
-          longitude,
-          timestamp,
-        };
-
-        const currentPosition = { lat: latitude, lng: longitude, time: timestamp };
-        const calculatedSpeed = geolib.getSpeed(this.lastPosition, currentPosition);
-        if (calculatedSpeed >= 0 && calculatedSpeed <= 1000) {
-          this.speed.addToBuffer(calculatedSpeed);
-        }
-        this.lastPosition = currentPosition;
-
-        setGeolocation({
-          latitude,
-          longitude,
-          speed: this.speed.getAverage(),
-          altitude: Math.round(altitude),
-          accuracy,
-          timestamp,
-        });
-
-        if (accuracy < 50) {
-          const { lastTile } = this.props;
-          const roundedLocation = GeoLocation.getRoundedLocation(location);
-          if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
-            this.onTileChange(roundedLocation);
-          }
-        }
-      },
-    );
+  startLocationUpdatesAsync = async () => {
+    await Location.startLocationUpdatesAsync('location', {
+      accuracy: Location.Accuracy.Highest,
+      timeInterval: 0,
+      distanceInterval: 0,
+      showsBackgroundLocationIndicator: true,
+    });
   };
 
   getGeocodeAsync = async (location) => {
@@ -162,6 +129,56 @@ class MapScreen extends Component {
     const geocode = await Location.reverseGeocodeAsync(location);
     geocode[0] && setGeocode(geocode[0]);
   };
+
+  registerLocationTask() {
+    TaskManager.defineTask('location', ({ data: { locations }, error }) => {
+      if (error) {
+        return;
+      }
+
+      if (locations.length < 1) {
+        return;
+      }
+
+      const result = locations[0];
+
+      const { setGeolocation } = this.props;
+      const {
+        latitude, longitude, altitude, accuracy,
+      } = result.coords;
+      const { timestamp } = result;
+
+      const location = {
+        latitude,
+        longitude,
+        timestamp,
+      };
+
+      const currentPosition = { lat: latitude, lng: longitude, time: timestamp };
+      const calculatedSpeed = geolib.getSpeed(this.lastPosition, currentPosition);
+      if (calculatedSpeed >= 0 && calculatedSpeed <= 1000) {
+        this.speed.addToBuffer(calculatedSpeed);
+      }
+      this.lastPosition = currentPosition;
+
+      setGeolocation({
+        latitude,
+        longitude,
+        speed: this.speed.getAverage(),
+        altitude: Math.round(altitude),
+        accuracy,
+        timestamp,
+      });
+
+      if (accuracy < 50) {
+        const { lastTile } = this.props;
+        const roundedLocation = GeoLocation.getRoundedLocation(location);
+        if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
+          this.onTileChange(roundedLocation);
+        }
+      }
+    });
+  }
 
   addLocation(location) {
     const {
@@ -230,7 +247,6 @@ class MapScreen extends Component {
 
   render() {
     const {
-      isLoggedIn,
       navigation,
       friendQuadtree,
       resetFriend,
@@ -241,10 +257,6 @@ class MapScreen extends Component {
     } = this.props;
 
     const { showBatterySaver } = this.state;
-
-    if (!isLoggedIn && this.positionListener) {
-      this.positionListener.remove();
-    }
 
     return powerSaver === 'on' && showBatterySaver ? (
       <View style={styles.batterySaver} />
@@ -288,7 +300,6 @@ class MapScreen extends Component {
 }
 
 const mapStateToProps = state => ({
-  isLoggedIn: state.user.get('isLoggedIn'),
   userId: state.user.get('userId'),
   quadtree: state.user.get('quadtree'),
   friendQuadtree: state.friend.get('friendQuadtree'),

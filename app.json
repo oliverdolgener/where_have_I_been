@@ -13,6 +13,11 @@
           "apiKey": "AIzaSyAtzcxNVjs7P539qpPg_Eq0ur27QHE1imA"
         }
       }
+    },
+    "ios": {
+      "infoPlist": {
+        "UIBackgroundModes": ["location", "fetch"]
+      }
     }
   }
 }
