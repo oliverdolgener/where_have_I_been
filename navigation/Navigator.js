@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Dimensions, StatusBar, View,
+  StyleSheet, AppState, Dimensions, StatusBar, View,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Permissions, KeepAwake, Constants } from 'expo';
@@ -22,14 +22,16 @@ const styles = StyleSheet.create({
 
 class Navigator extends Component {
   componentDidMount() {
-    const { resize } = this.props;
+    const { setAppState, resize } = this.props;
+    AppState.addEventListener('change', setAppState);
     Dimensions.addEventListener('change', resize);
     KeepAwake.activate();
     this.askPermissionsAsync();
   }
 
   componentWillUnmount() {
-    const { resize } = this.props;
+    const { setAppState, resize } = this.props;
+    AppState.removeEventListener('change', setAppState);
     Dimensions.removeEventListener('change', resize);
   }
 
@@ -67,6 +69,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  setAppState: appActions.setAppState,
   resize: appActions.resize,
 };
 
