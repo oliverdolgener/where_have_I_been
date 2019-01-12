@@ -51,7 +51,6 @@ class SplashScreen extends React.Component {
       setLastTile,
       setTheme,
       setShape,
-      setPowerSaver,
       navigation,
     } = this.props;
 
@@ -61,7 +60,6 @@ class SplashScreen extends React.Component {
     const mapType = await AsyncStorage.getItem('mapType');
     const theme = await AsyncStorage.getItem('theme');
     const shape = await AsyncStorage.getItem('shape');
-    const powerSaver = await AsyncStorage.getItem('powerSaver');
 
     if (id) {
       const { pushToken } = this.props;
@@ -80,9 +78,6 @@ class SplashScreen extends React.Component {
       }
       if (shape) {
         setShape(shape);
-      }
-      if (powerSaver) {
-        setPowerSaver(powerSaver);
       }
 
       let visitedLocations = [];
@@ -123,7 +118,6 @@ const mapDispatchToProps = {
   setLastTile: mapActions.setLastTile,
   setPushToken: userActions.setPushToken,
   setUserPushToken: userActions.setUserPushToken,
-  setPowerSaver: mapActions.setPowerSaver,
   setMapType: mapActions.setMapType,
   setTheme: mapActions.setTheme,
   setShape: mapActions.setShape,

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import { connect } from 'react-redux';
-import { Location, DangerZone, TaskManager } from 'expo';
+import { Location, TaskManager } from 'expo';
 import geolib from 'geolib';
 import { Box } from 'js-quadtree';
 
@@ -16,7 +16,6 @@ import TouchableScale from '../components/TouchableScale';
 import Toolbar from '../components/Toolbar';
 import Map from '../components/Map';
 import FlightBox from '../components/FlightBox';
-import * as Colors from '../constants/Colors';
 import iconMenu from '../assets/iconMenu.png';
 import iconLocation from '../assets/iconLocation.png';
 import iconClose from '../assets/iconRemove.png';
@@ -24,10 +23,6 @@ import iconClose from '../assets/iconRemove.png';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  batterySaver: {
-    flex: 1,
-    backgroundColor: Colors.black,
   },
   menuButton: {
     position: 'absolute',
@@ -56,9 +51,6 @@ const styles = StyleSheet.create({
 class MapScreen extends Component {
   constructor() {
     super();
-    this.state = {
-      showBatterySaver: false,
-    };
     this.lastPosition = {
       lat: 0,
       lng: 0,
@@ -69,16 +61,10 @@ class MapScreen extends Component {
 
   componentDidMount() {
     const { userId, getFlights, lastTile } = this.props;
-    this.motionListener = DangerZone.DeviceMotion.addListener(result => this.handleMotionEvent(result));
-    DangerZone.DeviceMotion.setUpdateInterval(1000);
     this.registerLocationTask();
     this.startLocationUpdatesAsync();
     getFlights(userId);
     this.getGeocodeAsync(lastTile);
-  }
-
-  componentWillUnmount() {
-    this.motionListener.remove();
   }
 
   onMapPress(coordinate) {
@@ -228,23 +214,6 @@ class MapScreen extends Component {
     }
   }
 
-  handleMotionEvent(result) {
-    const { powerSaver } = this.props;
-    if (powerSaver === 'off') {
-      return;
-    }
-
-    if (result.rotation && result.rotation.beta < -1) {
-      this.setState({
-        showBatterySaver: true,
-      });
-    } else if (result.rotation && result.rotation.beta > 1) {
-      this.setState({
-        showBatterySaver: false,
-      });
-    }
-  }
-
   render() {
     const {
       navigation,
@@ -252,15 +221,10 @@ class MapScreen extends Component {
       resetFriend,
       followLocation,
       setFollowLocation,
-      powerSaver,
       editMode,
     } = this.props;
 
-    const { showBatterySaver } = this.state;
-
-    return powerSaver === 'on' && showBatterySaver ? (
-      <View style={styles.batterySaver} />
-    ) : (
+    return (
       <View style={styles.container}>
         <Map onMapPress={coordinate => this.onMapPress(coordinate)} />
         <Toolbar />
@@ -300,6 +264,7 @@ class MapScreen extends Component {
 }
 
 const mapStateToProps = state => ({
+  motion: state.app.get('motion'),
   userId: state.user.get('userId'),
   quadtree: state.user.get('quadtree'),
   friendQuadtree: state.friend.get('friendQuadtree'),
@@ -307,7 +272,6 @@ const mapStateToProps = state => ({
   isSaving: state.user.get('isSaving'),
   map: state.map.get('map'),
   lastTile: state.map.get('lastTile'),
-  powerSaver: state.map.get('powerSaver'),
   geolocation: state.map.get('geolocation'),
   geocode: state.map.get('geocode'),
   followLocation: state.map.get('followLocation'),

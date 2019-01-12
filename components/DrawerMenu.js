@@ -30,7 +30,6 @@ import iconWorld from '../assets/iconWorld.png';
 import iconSync from '../assets/iconSync.png';
 import iconNight from '../assets/iconNight.png';
 import iconLogout from '../assets/iconLogout.png';
-import iconPowerSaver from '../assets/iconPowerSaver.png';
 import iconEdit from '../assets/iconEdit.png';
 import iconToggleOn from '../assets/iconToggleOn.png';
 import iconToggleOff from '../assets/iconToggleOff.png';
@@ -144,12 +143,6 @@ class DrawerMenu extends React.Component {
     const { shape, setShape } = this.props;
     this.closeDrawer();
     setShape(shape === 'diamond' ? 'rectangle' : 'diamond');
-  };
-
-  togglePowerSaver = () => {
-    const { powerSaver, setPowerSaver } = this.props;
-    this.closeDrawer();
-    setPowerSaver(powerSaver === 'on' ? 'off' : 'on');
   };
 
   toggleMapType = () => {
@@ -276,7 +269,7 @@ class DrawerMenu extends React.Component {
 
   render() {
     const {
-      mapType, tilesToSave, theme, shape, powerSaver, editMode, showFlights, showCountries, geocode,
+      mapType, tilesToSave, theme, shape, editMode, showFlights, showCountries, geocode,
     } = this.props;
     const {
       showFriendlist,
@@ -372,11 +365,6 @@ class DrawerMenu extends React.Component {
               <Text style={styles.menuLabel}>Night Mode</Text>
               <Image style={styles.menuIcon} source={theme === 'dark' ? iconToggleOn : iconToggleOff} />
             </TouchableScale>
-            <TouchableScale style={styles.menuItem} onPress={() => this.togglePowerSaver()}>
-              <Image style={styles.menuIcon} source={iconPowerSaver} />
-              <Text style={styles.menuLabel}>Power Saver</Text>
-              <Image style={styles.menuIcon} source={powerSaver === 'on' ? iconToggleOn : iconToggleOff} />
-            </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleEditMode()}>
               <Image style={styles.menuIcon} source={iconEdit} />
               <Text style={styles.menuLabel}>Edit Mode</Text>
@@ -402,7 +390,6 @@ const mapStateToProps = state => ({
   theme: state.map.get('theme'),
   shape: state.map.get('shape'),
   geocode: state.map.get('geocode'),
-  powerSaver: state.map.get('powerSaver'),
   editMode: state.map.get('editMode'),
   showFlights: state.map.get('showFlights'),
   showCountries: state.map.get('showCountries'),
@@ -415,7 +402,6 @@ const mapDispatchToProps = {
   getFriendQuadtree: friendActions.getFriendQuadtree,
   getFriendFlights: friendActions.getFriendFlights,
   resetFriend: friendActions.resetFriend,
-  setPowerSaver: mapActions.setPowerSaver,
   setMapType: mapActions.setMapType,
   setTheme: mapActions.setTheme,
   setShape: mapActions.setShape,

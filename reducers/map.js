@@ -25,7 +25,6 @@ export const types = {
   SET_THEME: 'MAP/SET_THEME',
   SET_SHAPE: 'MAP/SET_SHAPE',
   SET_LAST_TILE: 'MAP/SET_LAST_TILE',
-  SET_POWER_SAVER: 'MAP/SET_POWER_SAVER',
   GET_ELEVATION: 'MAP/GET_ELEVATION',
   SET_REGION: 'MAP/SET_REGION',
 };
@@ -44,10 +43,6 @@ const setShapeAsync = async (shape) => {
 
 const setLastTileAsync = async (tile) => {
   await AsyncStorage.setItem('lastTile', JSON.stringify(tile));
-};
-
-const setPowerSaverAsync = async (powerSaver) => {
-  await AsyncStorage.setItem('powerSaver', powerSaver);
 };
 
 function getGridDistanceByZoom(zoom) {
@@ -97,7 +92,6 @@ export const actions = {
   setTheme: theme => ({ type: types.SET_THEME, theme }),
   setShape: shape => ({ type: types.SET_SHAPE, shape }),
   setLastTile: lastTile => ({ type: types.SET_LAST_TILE, lastTile }),
-  setPowerSaver: powerSaver => ({ type: types.SET_POWER_SAVER, powerSaver }),
   getElevation: coordinate => ({
     type: types.GET_ELEVATION,
     promise: getElevation(coordinate),
@@ -129,7 +123,6 @@ const initialState = Map({
     latitude: Earth.INITIAL_LOCATION.latitude,
     longitude: Earth.INITIAL_LOCATION.longitude,
   },
-  powerSaver: 'off',
   elevation: 0,
   region: {
     latitude: Earth.INITIAL_LOCATION.latitude,
@@ -196,9 +189,6 @@ export default (state = initialState, action = {}) => {
       setLastTileAsync(action.lastTile);
       return state.set('lastTile', action.lastTile);
     }
-    case types.SET_POWER_SAVER:
-      setPowerSaverAsync(action.powerSaver);
-      return state.set('powerSaver', action.powerSaver);
     case types.GET_ELEVATION:
       return handle(state, action, {
         success: (prevState) => {
