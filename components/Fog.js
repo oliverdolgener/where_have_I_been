@@ -31,7 +31,7 @@ const Fog = (props) => {
 
   return (
     <MapView.Polygon
-      fillColor={Colors.brown}
+      fillColor={Colors.brown80}
       strokeWidth={0}
       strokeColor={Colors.transparent}
       coordinates={Earth.FOG}
