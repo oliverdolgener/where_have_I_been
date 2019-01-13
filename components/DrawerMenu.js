@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import Collapsible from 'react-native-collapsible';
 
 import TouchableScale from './TouchableScale';
+import Geocode from './Geocode';
 import Friendlist from './Friendlist';
 import CountryList from './CountryList';
 import { actions as userActions } from '../reducers/user';
@@ -52,22 +53,6 @@ const styles = StyleSheet.create({
   avatar: {
     width: 80,
     height: 80,
-  },
-  geocodeContainer: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  geocodeCountry: {
-    fontSize: 20,
-    textAlign: 'right',
-  },
-  geocodeRegion: {
-    fontSize: 18,
-    textAlign: 'right',
-  },
-  geocodeCity: {
-    fontSize: 16,
-    textAlign: 'right',
   },
   menuItem: {
     height: 50,
@@ -269,7 +254,7 @@ class DrawerMenu extends React.Component {
 
   render() {
     const {
-      mapType, tilesToSave, theme, shape, editMode, showFlights, showCountries, geocode,
+      mapType, tilesToSave, theme, shape, editMode, showFlights, showCountries,
     } = this.props;
     const {
       showFriendlist,
@@ -303,11 +288,7 @@ class DrawerMenu extends React.Component {
           <View style={styles.menuContainer}>
             <View style={styles.header}>
               <Image style={styles.avatar} source={iconUser} />
-              <View style={styles.geocodeContainer}>
-                <Text style={styles.geocodeCountry} ellipsizeMode="middle" numberOfLines={1}>{geocode.country}</Text>
-                <Text style={styles.geocodeRegion} ellipsizeMode="middle" numberOfLines={1}>{geocode.region}</Text>
-                <Text style={styles.geocodeCity} ellipsizeMode="middle" numberOfLines={1}>{geocode.city}</Text>
-              </View>
+              <Geocode />
             </View>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleMapType()}>
               <Image style={styles.menuIcon} source={iconMap} />
@@ -389,7 +370,6 @@ const mapStateToProps = state => ({
   mapType: state.map.get('mapType'),
   theme: state.map.get('theme'),
   shape: state.map.get('shape'),
-  geocode: state.map.get('geocode'),
   editMode: state.map.get('editMode'),
   showFlights: state.map.get('showFlights'),
   showCountries: state.map.get('showCountries'),

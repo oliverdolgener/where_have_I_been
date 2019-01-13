@@ -133,6 +133,7 @@ const initialState = Map({
   isLoggedIn: false,
   userId: false,
   quadtree: new QuadTree(new Box(0, 0, 360, 180)),
+  count: 0,
   flights: [],
   emailError: '',
   passwordError: '',
@@ -157,6 +158,7 @@ export default (state = initialState, action = {}) => {
             .set('isLoggedIn', true)
             .set('userId', payload.data.id)
             .set('quadtree', quadtree)
+            .set('count', quadtree.getAllPoints().length)
             .set('emailError', '')
             .set('passwordError', '');
         },
@@ -171,6 +173,7 @@ export default (state = initialState, action = {}) => {
         .set('isLoggedIn', false)
         .set('userId', false)
         .set('quadtree', new QuadTree(new Box(0, 0, 360, 180)))
+        .set('count', 0)
         .set('flights', []);
     case types.SIGNUP:
       return handle(state, action, {
@@ -197,7 +200,8 @@ export default (state = initialState, action = {}) => {
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data.id)
-            .set('quadtree', quadtree);
+            .set('quadtree', quadtree)
+            .set('count', quadtree.getAllPoints().length);
         },
       });
     case types.RELOG_FROM_SQLITE: {
@@ -209,19 +213,22 @@ export default (state = initialState, action = {}) => {
       return state
         .set('isLoggedIn', true)
         .set('userId', action.userId)
-        .set('quadtree', quadtree);
+        .set('quadtree', quadtree)
+        .set('count', quadtree.getAllPoints().length);
     }
     case types.SET_EMAIL_ERROR:
       return state.set('emailError', action.error);
     case types.SET_PASSWORD_ERROR:
       return state.set('passwordError', action.error);
     case types.SET_QUADTREE:
-      return state.set('quadtree', action.quadtree);
+      return state
+        .set('quadtree', action.quadtree)
+        .set('count', action.quadtree.getAllPoints().length);
     case types.SET_LOCATIONS: {
       const latlngs = action.locations;
       const points = latlngs.map(x => LatLng.toPoint(x));
       const quadtree = new QuadTree(new Box(0, 0, 360, 180), config, points);
-      return state.set('quadtree', quadtree);
+      return state.set('quadtree', quadtree).set('count', quadtree.getAllPoints().length);
     }
     case types.SET_TILES_TO_SAVE:
       setTilesToSaveAsync(action.tilesToSave);

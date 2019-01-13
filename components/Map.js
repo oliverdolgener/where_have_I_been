@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { MapView } from 'expo';
 
@@ -7,7 +7,6 @@ import { actions as mapActions } from '../reducers/map';
 import Fog from './Fog';
 import Flights from './Flights';
 import Countries from './Countries';
-import GeoLocation from '../model/GeoLocation';
 import * as Earth from '../constants/Earth';
 import mapStyleLight from '../assets/mapStyleLight.json';
 import mapStyleDark from '../assets/mapStyleDark.json';
@@ -20,28 +19,14 @@ const styles = StyleSheet.create({
 
 class Map extends Component {
   onRegionChangeComplete(region) {
-    const { setRegion, setFollowLocation, geolocation } = this.props;
+    const { setRegion } = this.props;
 
     region.longitudeDelta = region.longitudeDelta < 0 ? region.longitudeDelta + 360 : region.longitudeDelta;
     setRegion(region);
-
-    if (Platform.OS === 'ios' && !GeoLocation.isInRegion(geolocation, region)) {
-      setFollowLocation(false);
-    }
   }
 
   moveToLocation(location) {
     this.map && this.map.animateToCoordinate(location, 500);
-  }
-
-  moveToCurrentLocation() {
-    const { geolocation } = this.props;
-    this.moveToRegion({
-      latitude: geolocation.latitude,
-      longitude: geolocation.longitude,
-      latitudeDelta: Earth.DELTA,
-      longitudeDelta: Earth.DELTA,
-    });
   }
 
   moveToRegion(region) {
@@ -54,6 +39,7 @@ class Map extends Component {
       theme,
       lastTile,
       setMap,
+      followLocation,
       setFollowLocation,
       showFlights,
       showCountries,
@@ -98,7 +84,7 @@ class Map extends Component {
         loadingEnabled
         moveOnMarkerPress={false}
         onRegionChangeComplete={newRegion => this.onRegionChangeComplete(newRegion)}
-        onPanDrag={() => setFollowLocation(false)}
+        onPanDrag={() => followLocation && setFollowLocation(false)}
         onLongPress={event => onMapPress(event.nativeEvent.coordinate)}
       >
         <Fog />
@@ -115,7 +101,6 @@ const mapStateToProps = state => ({
   mapType: state.map.get('mapType'),
   theme: state.map.get('theme'),
   followLocation: state.map.get('followLocation'),
-  geolocation: state.map.get('geolocation'),
   editMode: state.map.get('editMode'),
   showFlights: state.map.get('showFlights'),
   showCountries: state.map.get('showCountries'),

@@ -92,12 +92,9 @@ class MapScreen extends Component {
   }
 
   onTileChange(tile) {
-    const {
-      setLastTile, geolocation, followLocation, map,
-    } = this.props;
+    const { setLastTile, followLocation, map } = this.props;
     setLastTile(tile);
     this.addLocation(tile);
-    this.getGeocodeAsync(geolocation);
     followLocation && map && map.moveToLocation(tile);
   }
 
@@ -161,6 +158,7 @@ class MapScreen extends Component {
         const roundedLocation = GeoLocation.getRoundedLocation(location);
         if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
           this.onTileChange(roundedLocation);
+          this.getGeocodeAsync(location);
         }
       }
     });
@@ -228,11 +226,7 @@ class MapScreen extends Component {
       <View style={styles.container}>
         <Map onMapPress={coordinate => this.onMapPress(coordinate)} />
         <Toolbar />
-        <TouchableScale
-          style={styles.menuButton}
-          onPress={() => navigation.openDrawer()}
-          scaleTo={1.1}
-        >
+        <TouchableScale style={styles.menuButton} onPress={() => navigation.openDrawer()}>
           <Image style={styles.menuImage} source={iconMenu} />
         </TouchableScale>
         {friendQuadtree ? (
@@ -244,14 +238,7 @@ class MapScreen extends Component {
         ) : (
           !followLocation && (
             <View style={styles.actionButton}>
-              <TouchableScale
-                onPress={() => {
-                  const { map } = this.props;
-                  map && map.moveToCurrentLocation();
-                  setFollowLocation(true);
-                }}
-                scaleTo={1.1}
-              >
+              <TouchableScale onPress={() => setFollowLocation(true)}>
                 <Image style={styles.actionIcon} source={iconLocation} />
               </TouchableScale>
             </View>
@@ -264,7 +251,6 @@ class MapScreen extends Component {
 }
 
 const mapStateToProps = state => ({
-  motion: state.app.get('motion'),
   userId: state.user.get('userId'),
   quadtree: state.user.get('quadtree'),
   friendQuadtree: state.friend.get('friendQuadtree'),
@@ -272,8 +258,6 @@ const mapStateToProps = state => ({
   isSaving: state.user.get('isSaving'),
   map: state.map.get('map'),
   lastTile: state.map.get('lastTile'),
-  geolocation: state.map.get('geolocation'),
-  geocode: state.map.get('geocode'),
   followLocation: state.map.get('followLocation'),
   editMode: state.map.get('editMode'),
 });

@@ -1,10 +1,11 @@
 import { Map } from 'immutable';
 import { handle } from 'redux-pack';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Platform } from 'react-native';
 
 import {
   getVacations, setVacation, getAirports, getElevation,
 } from '../services/api';
+import GeoLocation from '../model/GeoLocation';
 import GeoArray from '../model/GeoArray';
 import * as SortUtils from '../utils/SortUtils';
 import * as Earth from '../constants/Earth';
@@ -143,8 +144,16 @@ export default (state = initialState, action = {}) => {
       return state.set('geolocation', action.geolocation);
     case types.SET_GEOCODE:
       return state.set('geocode', action.geocode);
-    case types.SET_FOLLOW_LOCATION:
+    case types.SET_FOLLOW_LOCATION: {
+      const map = state.get('map');
+      action.followLocation && map && map.moveToRegion({
+        latitude: state.get('geolocation').latitude,
+        longitude: state.get('geolocation').longitude,
+        latitudeDelta: Earth.DELTA,
+        longitudeDelta: Earth.DELTA,
+      });
       return state.set('followLocation', action.followLocation);
+    }
     case types.GET_COUNTRIES:
       return handle(state, action, {
         success: (prevState) => {
@@ -202,10 +211,15 @@ export default (state = initialState, action = {}) => {
       const { region } = action;
       const zoom = region.longitudeDelta > 0 ? region.longitudeDelta : 360 + region.longitudeDelta;
       const gridDistance = getGridDistanceByZoom(zoom);
+      let followLocation = state.get('followLocation');
+      if (Platform.OS === 'ios' && !GeoLocation.isInRegion(state.get('geolocation'), region)) {
+        followLocation = false;
+      }
       return state
         .set('region', region)
         .set('zoom', zoom)
-        .set('gridDistance', gridDistance);
+        .set('gridDistance', gridDistance)
+        .set('followLocation', followLocation);
     }
     default:
       return state;

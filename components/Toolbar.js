@@ -5,7 +5,6 @@ import {
 import { connect } from 'react-redux';
 import ProgressBar from 'react-native-progress/Bar';
 
-import GeoGrid from '../model/GeoGrid';
 import * as LevelUtils from '../utils/LevelUtils';
 import * as Colors from '../constants/Colors';
 import iconLevel from '../assets/iconLevel.png';
@@ -46,11 +45,10 @@ const styles = StyleSheet.create({
 });
 
 const Toolbar = (props) => {
-  const { quadtree, geolocation } = props;
+  const { count, geolocation } = props;
 
-  const locations = quadtree.getAllPoints();
-  const level = LevelUtils.getLevelFromExp(locations.length);
-  const progress = LevelUtils.getPercentToNextLevel(locations.length);
+  const level = LevelUtils.getLevelFromExp(count);
+  const progress = LevelUtils.getPercentToNextLevel(count);
 
   return (
     <View style={styles.container}>
@@ -62,7 +60,7 @@ const Toolbar = (props) => {
         <View style={styles.separator} />
         <View style={[styles.toolbarItem, { flex: 5 }]}>
           <Image style={styles.toolbarIcon} source={iconSquare} />
-          <Text style={styles.toolbarLabel}>{locations.length}</Text>
+          <Text style={styles.toolbarLabel}>{count}</Text>
         </View>
         <View style={styles.separator} />
         <View style={styles.toolbarItem}>
@@ -90,7 +88,7 @@ const Toolbar = (props) => {
 };
 
 const mapStateToProps = state => ({
-  quadtree: state.user.get('quadtree'),
+  count: state.user.get('count'),
   geolocation: state.map.get('geolocation'),
 });
 
