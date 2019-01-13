@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 5,
+    backgroundColor: Colors.creme,
   },
   menuIcon: {
     width: 30,
