@@ -42,7 +42,7 @@ const Countries = (props) => {
       return false;
     }
 
-    let color = Colors.darkGrey;
+    let color = Colors.brown;
     if (country.status === 1) {
       color = Colors.rose;
     } else if (country.status === 2) {
