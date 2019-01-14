@@ -74,7 +74,7 @@ class Toolbar extends Component {
     if (this.animation) this.animation.stop();
     Animated.timing(animation, {
       toValue: -HEIGHT,
-      duration: 300,
+      duration: 250,
     }).start();
   }
 
