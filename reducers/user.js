@@ -28,7 +28,6 @@ export const types = {
   LOGIN: 'USER/LOGIN',
   LOGOUT: 'USER/LOGOUT',
   SIGNUP: 'USER/SIGNUP',
-  GET_USER: 'USER/GET_USER',
   RELOG_USER: 'USER/RELOG_USER',
   RELOG_FROM_SQLITE: 'USER/RELOG_FROM_SQLITE',
   SET_EMAIL_ERROR: 'USER/SET_EMAIL_ERROR',
@@ -78,10 +77,6 @@ export const actions = {
         NavigationService.navigate('Map');
       },
     },
-  }),
-  getUser: userId => ({
-    type: types.GET_USER,
-    promise: getLocations(userId),
   }),
   relogUser: userId => ({
     type: types.RELOG_USER,
@@ -185,10 +180,6 @@ export default (state = initialState, action = {}) => {
         failure: prevState => prevState
           .set('emailError', 'Email address already in use. Try to login instead.')
           .set('passwordError', ''),
-      });
-    case types.GET_USER:
-      return handle(state, action, {
-        success: prevState => prevState.set('isLoggedIn', true).set('userId', payload.data.id),
       });
     case types.RELOG_USER:
       return handle(state, action, {

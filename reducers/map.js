@@ -2,9 +2,7 @@ import { Map } from 'immutable';
 import { handle } from 'redux-pack';
 import { AsyncStorage, Platform } from 'react-native';
 
-import {
-  getVacations, setVacation, getAirports, getElevation,
-} from '../services/api';
+import { getVacations, setVacation, getAirports } from '../services/api';
 import GeoLocation from '../model/GeoLocation';
 import GeoArray from '../model/GeoArray';
 import * as SortUtils from '../utils/SortUtils';
@@ -26,7 +24,6 @@ export const types = {
   SET_THEME: 'MAP/SET_THEME',
   SET_SHAPE: 'MAP/SET_SHAPE',
   SET_LAST_TILE: 'MAP/SET_LAST_TILE',
-  GET_ELEVATION: 'MAP/GET_ELEVATION',
   SET_REGION: 'MAP/SET_REGION',
 };
 
@@ -93,10 +90,6 @@ export const actions = {
   setTheme: theme => ({ type: types.SET_THEME, theme }),
   setShape: shape => ({ type: types.SET_SHAPE, shape }),
   setLastTile: lastTile => ({ type: types.SET_LAST_TILE, lastTile }),
-  getElevation: coordinate => ({
-    type: types.GET_ELEVATION,
-    promise: getElevation(coordinate),
-  }),
   setRegion: region => ({ type: types.SET_REGION, region }),
 };
 
@@ -124,7 +117,6 @@ const initialState = Map({
     latitude: Earth.INITIAL_LOCATION.latitude,
     longitude: Earth.INITIAL_LOCATION.longitude,
   },
-  elevation: 0,
   region: {
     latitude: Earth.INITIAL_LOCATION.latitude,
     longitude: Earth.INITIAL_LOCATION.longitude,
@@ -138,23 +130,28 @@ const initialState = Map({
 export default (state = initialState, action = {}) => {
   const { type, payload } = action;
   switch (type) {
-    case types.SET_MAP:
+    case types.SET_MAP: {
       return state.set('map', action.map);
-    case types.SET_GEOLOCATION:
+    }
+    case types.SET_GEOLOCATION: {
       return state.set('geolocation', action.geolocation);
-    case types.SET_GEOCODE:
+    }
+    case types.SET_GEOCODE: {
       return state.set('geocode', action.geocode);
+    }
     case types.SET_FOLLOW_LOCATION: {
       const map = state.get('map');
-      action.followLocation && map && map.moveToRegion({
-        latitude: state.get('geolocation').latitude,
-        longitude: state.get('geolocation').longitude,
-        latitudeDelta: Earth.DELTA,
-        longitudeDelta: Earth.DELTA,
-      });
+      action.followLocation
+        && map
+        && map.moveToRegion({
+          latitude: state.get('geolocation').latitude,
+          longitude: state.get('geolocation').longitude,
+          latitudeDelta: Earth.DELTA,
+          longitudeDelta: Earth.DELTA,
+        });
       return state.set('followLocation', action.followLocation);
     }
-    case types.GET_COUNTRIES:
+    case types.GET_COUNTRIES: {
       return handle(state, action, {
         success: (prevState) => {
           const countries = payload.data
@@ -171,14 +168,16 @@ export default (state = initialState, action = {}) => {
           return prevState.set('countries', countries);
         },
       });
+    }
     case types.SET_COUNTRIES: {
       const countries = action.countries.sort(SortUtils.byStatusDesc);
       return state.set('countries', countries);
     }
-    case types.GET_AIRPORTS:
+    case types.GET_AIRPORTS: {
       return handle(state, action, {
         success: prevState => prevState.set('airports', payload.data),
       });
+    }
     case types.SET_EDIT_MODE:
       return state.set('editMode', action.editMode);
     case types.SET_SHOW_FLIGHTS:
@@ -198,15 +197,6 @@ export default (state = initialState, action = {}) => {
       setLastTileAsync(action.lastTile);
       return state.set('lastTile', action.lastTile);
     }
-    case types.GET_ELEVATION:
-      return handle(state, action, {
-        success: (prevState) => {
-          if (payload.data.results.length > 0) {
-            return prevState.set('elevation', payload.data.results[0].elevation);
-          }
-          return prevState;
-        },
-      });
     case types.SET_REGION: {
       const { region } = action;
       const zoom = region.longitudeDelta > 0 ? region.longitudeDelta : 360 + region.longitudeDelta;

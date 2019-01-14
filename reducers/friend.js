@@ -68,14 +68,13 @@ export default (state = initialState, action = {}) => {
       });
     case types.ADD_FRIEND:
       return handle(state, action, {
-        failure: prevState => prevState.set('friendError', 'User not found'),
         success: (prevState) => {
           const friends = payload.data.map(x => ({
             id: x.id.toString(),
             username: x.username,
             level: LevelUtils.getLevelFromExp(x.locations),
           }));
-          return prevState.set('friends', friends).set('friendError', '');
+          return prevState.set('friends', friends);
         },
       });
     case types.REMOVE_FRIEND:
