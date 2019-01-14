@@ -34,7 +34,7 @@ const Flights = (props) => {
 };
 
 const mapStateToProps = state => ({
-  flights: state.user.get('flights'),
+  flights: state.flight.get('flights'),
   friendFlights: state.friend.get('friendFlights'),
 });
 

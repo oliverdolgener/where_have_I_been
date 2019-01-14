@@ -8,6 +8,7 @@ import { Box } from 'js-quadtree';
 import { actions as userActions } from '../reducers/user';
 import { actions as friendActions } from '../reducers/friend';
 import { actions as mapActions } from '../reducers/map';
+import { actions as flightActions } from '../reducers/flight';
 import LatLng from '../model/LatLng';
 import GeoLocation from '../model/GeoLocation';
 import GeoArray from '../model/GeoArray';
@@ -267,12 +268,12 @@ const mapDispatchToProps = {
   setTilesToSave: userActions.setTilesToSave,
   saveTiles: userActions.saveTiles,
   removeTile: userActions.removeTile,
-  getFlights: userActions.getFlights,
   resetFriend: friendActions.resetFriend,
   setLastTile: mapActions.setLastTile,
   setGeolocation: mapActions.setGeolocation,
   setGeocode: mapActions.setGeocode,
   setFollowLocation: mapActions.setFollowLocation,
+  getFlights: flightActions.getFlights,
 };
 
 export default connect(

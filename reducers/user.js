@@ -13,9 +13,6 @@ import {
   setUserPushToken,
   saveTiles,
   removeTile,
-  getFlights,
-  addFlight,
-  removeFlight,
 } from '../services/api';
 import LatLng from '../model/LatLng';
 
@@ -39,9 +36,6 @@ export const types = {
   REMOVE_TILE: 'USER/REMOVE_TILE',
   SET_PUSH_TOKEN: 'USER/SET_PUSH_TOKEN',
   SET_USER_PUSH_TOKEN: 'USER/SET_USER_PUSH_TOKEN',
-  GET_FLIGHTS: 'USER/GET_FLIGHTS',
-  ADD_FLIGHT: 'USER/ADD_FLIGHT',
-  REMOVE_FLIGHT: 'USER/REMOVE_FLIGHT',
 };
 
 const setUserAsync = async (id) => {
@@ -110,18 +104,6 @@ export const actions = {
     type: types.SET_USER_PUSH_TOKEN,
     promise: setUserPushToken(userId, pushToken),
   }),
-  getFlights: userId => ({
-    type: types.GET_FLIGHTS,
-    promise: getFlights(userId),
-  }),
-  addFlight: (userId, from, to) => ({
-    type: types.ADD_FLIGHT,
-    promise: addFlight(userId, from, to),
-  }),
-  removeFlight: (userId, from, to) => ({
-    type: types.REMOVE_FLIGHT,
-    promise: removeFlight(userId, from, to),
-  }),
 };
 
 const initialState = Map({
@@ -129,7 +111,6 @@ const initialState = Map({
   userId: false,
   quadtree: new QuadTree(new Box(0, 0, 360, 180)),
   count: 0,
-  flights: [],
   emailError: '',
   passwordError: '',
   tilesToSave: [],
@@ -168,8 +149,7 @@ export default (state = initialState, action = {}) => {
         .set('isLoggedIn', false)
         .set('userId', false)
         .set('quadtree', new QuadTree(new Box(0, 0, 360, 180)))
-        .set('count', 0)
-        .set('flights', []);
+        .set('count', 0);
     case types.SIGNUP:
       return handle(state, action, {
         success: prevState => prevState
@@ -248,21 +228,6 @@ export default (state = initialState, action = {}) => {
       });
     case types.SET_PUSH_TOKEN: {
       return state.set('pushToken', action.pushToken);
-    }
-    case types.GET_FLIGHTS: {
-      return handle(state, action, {
-        success: prevState => prevState.set('flights', payload.data),
-      });
-    }
-    case types.ADD_FLIGHT: {
-      return handle(state, action, {
-        success: prevState => prevState.set('flights', payload.data),
-      });
-    }
-    case types.REMOVE_FLIGHT: {
-      return handle(state, action, {
-        success: prevState => prevState.set('flights', payload.data),
-      });
     }
     default:
       return state;

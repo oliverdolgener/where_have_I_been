@@ -1,11 +1,7 @@
 import { Map } from 'immutable';
-import { handle } from 'redux-pack';
 import { AsyncStorage, Platform } from 'react-native';
 
-import { getVacations, setVacation, getAirports } from '../services/api';
 import GeoLocation from '../model/GeoLocation';
-import GeoArray from '../model/GeoArray';
-import * as SortUtils from '../utils/SortUtils';
 import * as Earth from '../constants/Earth';
 
 export const types = {
@@ -13,13 +9,7 @@ export const types = {
   SET_GEOLOCATION: 'MAP/SET_GEOLOCATION',
   SET_GEOCODE: 'MAP/SET_GEOCODE',
   SET_FOLLOW_LOCATION: 'MAP/SET_FOLLOW_LOCATION',
-  GET_COUNTRIES: 'MAP/GET_COUNTRIES',
-  SET_COUNTRIES: 'MAP/SET_COUNTRIES',
-  SET_VACATION: 'MAP/SET_VACATION',
-  GET_AIRPORTS: 'MAP/GET_AIRPORTS',
   SET_EDIT_MODE: 'MAP/SET_EDIT_MODE',
-  SET_SHOW_FLIGHTS: 'MAP/SET_SHOW_FLIGHTS',
-  SET_SHOW_COUNTRIES: 'MAP/SET_SHOW_COUNTRIES',
   SET_MAPTYPE: 'MAP/SET_MAPTYPE',
   SET_THEME: 'MAP/SET_THEME',
   SET_SHAPE: 'MAP/SET_SHAPE',
@@ -70,22 +60,7 @@ export const actions = {
   setGeolocation: geolocation => ({ type: types.SET_GEOLOCATION, geolocation }),
   setGeocode: geocode => ({ type: types.SET_GEOCODE, geocode }),
   setFollowLocation: followLocation => ({ type: types.SET_FOLLOW_LOCATION, followLocation }),
-  getCountries: userId => ({
-    type: types.GET_COUNTRIES,
-    promise: getVacations(userId),
-  }),
-  setCountries: countries => ({ type: types.SET_COUNTRIES, countries }),
-  setVacation: (userId, countryId, status) => ({
-    type: types.SET_VACATION,
-    promise: setVacation(userId, countryId, status),
-  }),
-  getAirports: () => ({
-    type: types.GET_AIRPORTS,
-    promise: getAirports(),
-  }),
   setEditMode: editMode => ({ type: types.SET_EDIT_MODE, editMode }),
-  setShowFlights: showFlights => ({ type: types.SET_SHOW_FLIGHTS, showFlights }),
-  setShowCountries: showCountries => ({ type: types.SET_SHOW_COUNTRIES, showCountries }),
   setMapType: mapType => ({ type: types.SET_MAPTYPE, mapType }),
   setTheme: theme => ({ type: types.SET_THEME, theme }),
   setShape: shape => ({ type: types.SET_SHAPE, shape }),
@@ -105,11 +80,7 @@ const initialState = Map({
   },
   geocode: {},
   followLocation: true,
-  countries: [],
-  airports: [],
   editMode: false,
-  showFlights: false,
-  showCountries: false,
   mapType: 'hybrid',
   theme: 'light',
   shape: 'rectangle',
@@ -128,7 +99,7 @@ const initialState = Map({
 });
 
 export default (state = initialState, action = {}) => {
-  const { type, payload } = action;
+  const { type } = action;
   switch (type) {
     case types.SET_MAP: {
       return state.set('map', action.map);
@@ -151,39 +122,8 @@ export default (state = initialState, action = {}) => {
         });
       return state.set('followLocation', action.followLocation);
     }
-    case types.GET_COUNTRIES: {
-      return handle(state, action, {
-        success: (prevState) => {
-          const countries = payload.data
-            .map(x => ({
-              id: x.id.toString(),
-              name: x.name,
-              region: GeoArray.toRegion([
-                { latitude: x.lat_min, longitude: x.long_min },
-                { latitude: x.lat_max, longitude: x.long_max },
-              ]),
-              status: x.status,
-            }))
-            .sort(SortUtils.byStatusDesc);
-          return prevState.set('countries', countries);
-        },
-      });
-    }
-    case types.SET_COUNTRIES: {
-      const countries = action.countries.sort(SortUtils.byStatusDesc);
-      return state.set('countries', countries);
-    }
-    case types.GET_AIRPORTS: {
-      return handle(state, action, {
-        success: prevState => prevState.set('airports', payload.data),
-      });
-    }
     case types.SET_EDIT_MODE:
       return state.set('editMode', action.editMode);
-    case types.SET_SHOW_FLIGHTS:
-      return state.set('showFlights', action.showFlights);
-    case types.SET_SHOW_COUNTRIES:
-      return state.set('showCountries', action.showCountries);
     case types.SET_MAPTYPE:
       setMapTypeAsync(action.mapType);
       return state.set('mapType', action.mapType);

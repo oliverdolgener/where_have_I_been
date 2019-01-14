@@ -102,8 +102,8 @@ const mapStateToProps = state => ({
   theme: state.map.get('theme'),
   followLocation: state.map.get('followLocation'),
   editMode: state.map.get('editMode'),
-  showFlights: state.map.get('showFlights'),
-  showCountries: state.map.get('showCountries'),
+  showCountries: state.country.get('showCountries'),
+  showFlights: state.flight.get('showFlights'),
 });
 
 const mapDispatchToProps = {

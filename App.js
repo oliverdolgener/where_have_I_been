@@ -8,6 +8,8 @@ import AppReducer from './reducers/app';
 import UserReducer from './reducers/user';
 import FriendReducer from './reducers/friend';
 import MapReducer from './reducers/map';
+import CountryReducer from './reducers/country';
+import FlightReducer from './reducers/flight';
 
 const store = createStore(
   combineReducers({
@@ -15,6 +17,8 @@ const store = createStore(
     user: UserReducer,
     friend: FriendReducer,
     map: MapReducer,
+    country: CountryReducer,
+    flight: FlightReducer,
   }),
   applyMiddleware(reduxPackMiddleware),
 );

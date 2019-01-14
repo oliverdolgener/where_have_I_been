@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import { actions as userActions } from '../reducers/user';
+import { actions as flightActions } from '../reducers/flight';
 import TouchableScale from './TouchableScale';
 import * as Colors from '../constants/Colors';
 
@@ -124,8 +124,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  addFlight: userActions.addFlight,
-  removeFlight: userActions.removeFlight,
+  addFlight: flightActions.addFlight,
+  removeFlight: flightActions.removeFlight,
 };
 
 export default connect(

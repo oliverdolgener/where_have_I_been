@@ -62,9 +62,9 @@ const Countries = (props) => {
 };
 
 const mapStateToProps = state => ({
-  countries: state.map.get('countries'),
   region: state.map.get('region'),
   zoom: state.map.get('zoom'),
+  countries: state.country.get('countries'),
 });
 
 export default connect(mapStateToProps)(Countries);

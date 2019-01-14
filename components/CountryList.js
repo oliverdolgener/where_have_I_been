@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import { actions as mapActions } from '../reducers/map';
+import { actions as countryActions } from '../reducers/country';
 import TouchableScale from './TouchableScale';
 import Flags from '../constants/Flags';
 import iconDone from '../assets/iconDone.png';
@@ -89,12 +89,12 @@ const CountryList = (props) => {
 
 const mapStateToProps = state => ({
   userId: state.user.get('userId'),
-  countries: state.map.get('countries'),
+  countries: state.country.get('countries'),
 });
 
 const mapDispatchToProps = {
-  setVacation: mapActions.setVacation,
-  setCountries: mapActions.setCountries,
+  setVacation: countryActions.setVacation,
+  setCountries: countryActions.setCountries,
 };
 
 export default connect(

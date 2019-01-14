@@ -18,6 +18,8 @@ import CountryList from './CountryList';
 import { actions as userActions } from '../reducers/user';
 import { actions as friendActions } from '../reducers/friend';
 import { actions as mapActions } from '../reducers/map';
+import { actions as countryActions } from '../reducers/country';
+import { actions as flightActions } from '../reducers/flight';
 import * as Colors from '../constants/Colors';
 import iconMap from '../assets/iconMap.png';
 import iconStreetView from '../assets/iconStreetView.png';
@@ -372,8 +374,8 @@ const mapStateToProps = state => ({
   theme: state.map.get('theme'),
   shape: state.map.get('shape'),
   editMode: state.map.get('editMode'),
-  showFlights: state.map.get('showFlights'),
-  showCountries: state.map.get('showCountries'),
+  showFlights: state.flight.get('showFlights'),
+  showCountries: state.country.get('showCountries'),
 });
 
 const mapDispatchToProps = {
@@ -386,11 +388,11 @@ const mapDispatchToProps = {
   setMapType: mapActions.setMapType,
   setTheme: mapActions.setTheme,
   setShape: mapActions.setShape,
-  getCountries: mapActions.getCountries,
   setFollowLocation: mapActions.setFollowLocation,
   setEditMode: mapActions.setEditMode,
-  setShowFlights: mapActions.setShowFlights,
-  setShowCountries: mapActions.setShowCountries,
+  getCountries: countryActions.getCountries,
+  setShowCountries: countryActions.setShowCountries,
+  setShowFlights: flightActions.setShowFlights,
 };
 
 export default connect(
