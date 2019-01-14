@@ -96,7 +96,7 @@ class MapScreen extends Component {
     const found = quadtree.query(box);
 
     if (found.length < 1) {
-      this.addLocation(roundedLocation);
+      this.addLocations([roundedLocation]);
     } else {
       this.removeLocation(roundedLocation);
     }
@@ -105,7 +105,7 @@ class MapScreen extends Component {
   onTileChange(tile) {
     const { setLastTile, followLocation, map } = this.props;
     setLastTile(tile);
-    this.addLocation(tile);
+    this.addLocations([tile]);
     followLocation && map && map.moveToLocation(tile);
   }
 
@@ -162,7 +162,7 @@ class MapScreen extends Component {
     });
   };
 
-  addLocation(location) {
+  addLocations(locations) {
     const {
       userId,
       quadtree,
@@ -173,19 +173,24 @@ class MapScreen extends Component {
       isSaving,
     } = this.props;
 
-    const point = LatLng.toPoint(location);
-    const box = new Box(point.x, point.y, 0, 0);
-    const found = quadtree.query(box);
+    const unsaved = [...tilesToSave];
 
-    if (found.length < 1) {
-      const unsaved = [...tilesToSave, location];
-      quadtree.insert(point);
-      setQuadtree(quadtree);
-      setTilesToSave(unsaved);
+    locations.forEach((x) => {
+      const point = LatLng.toPoint(x);
+      const box = new Box(point.x, point.y, 0, 0);
+      const found = quadtree.query(box);
 
-      if (!isSaving) {
-        saveTiles(userId, unsaved);
+      if (found.length < 1) {
+        unsaved.push(x);
+        quadtree.insert(point);
       }
+    });
+
+    setQuadtree(quadtree);
+    setTilesToSave(unsaved);
+
+    if (!isSaving) {
+      saveTiles(userId, unsaved);
     }
   }
 
