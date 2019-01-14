@@ -56,7 +56,7 @@ class Toolbar extends Component {
   constructor() {
     super();
     this.state = {
-      animation: new Animated.Value(1),
+      animation: new Animated.Value(0),
     };
   }
 
