@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image } from 'react-native';
+import {
+  StyleSheet, View, Image, AppState,
+} from 'react-native';
 import { connect } from 'react-redux';
 import { Location, TaskManager } from 'expo';
 import geolib from 'geolib';
@@ -20,6 +22,14 @@ import FlightBox from '../components/FlightBox';
 import iconMenu from '../assets/iconMenu.png';
 import iconLocation from '../assets/iconLocation.png';
 import iconClose from '../assets/iconRemove.png';
+
+const locationOptions = {
+  accuracy: Location.Accuracy.BestForNavigation,
+  timeInterval: 0,
+  distanceInterval: 0,
+};
+
+const outside = [];
 
 const styles = StyleSheet.create({
   container: {
@@ -62,7 +72,7 @@ class MapScreen extends Component {
 
   componentDidMount() {
     const { userId, getFlights, lastTile } = this.props;
-    this.registerLocationTask();
+    this.watchPositionAsync();
     this.startLocationUpdatesAsync();
     getFlights(userId);
     this.getGeocodeAsync(lastTile);
@@ -100,12 +110,7 @@ class MapScreen extends Component {
   }
 
   startLocationUpdatesAsync = async () => {
-    await Location.startLocationUpdatesAsync('location', {
-      accuracy: Location.Accuracy.Highest,
-      timeInterval: 0,
-      distanceInterval: 0,
-      showsBackgroundLocationIndicator: true,
-    });
+    await Location.startLocationUpdatesAsync('location', locationOptions);
   };
 
   getGeocodeAsync = async (location) => {
@@ -114,56 +119,48 @@ class MapScreen extends Component {
     geocode[0] && setGeocode(geocode[0]);
   };
 
-  registerLocationTask() {
-    TaskManager.defineTask('location', ({ data: { locations }, error }) => {
-      if (error) {
-        return;
-      }
+  watchPositionAsync = async () => {
+    await Location.watchPositionAsync(locationOptions, (result) => {
+      if (AppState.currentState == 'active') {
+        const { setGeolocation } = this.props;
+        const {
+          latitude, longitude, altitude, accuracy,
+        } = result.coords;
+        const { timestamp } = result;
 
-      if (locations.length < 1) {
-        return;
-      }
+        const location = {
+          latitude,
+          longitude,
+          timestamp,
+        };
 
-      const result = locations[0];
+        const currentPosition = { lat: latitude, lng: longitude, time: timestamp };
+        const calculatedSpeed = geolib.getSpeed(this.lastPosition, currentPosition);
+        if (calculatedSpeed >= 0 && calculatedSpeed <= 1000) {
+          this.speed.addToBuffer(calculatedSpeed);
+        }
+        this.lastPosition = currentPosition;
 
-      const { setGeolocation } = this.props;
-      const {
-        latitude, longitude, altitude, accuracy,
-      } = result.coords;
-      const { timestamp } = result;
+        setGeolocation({
+          latitude,
+          longitude,
+          speed: this.speed.getAverage(),
+          altitude: Math.round(altitude),
+          accuracy,
+          timestamp,
+        });
 
-      const location = {
-        latitude,
-        longitude,
-        timestamp,
-      };
-
-      const currentPosition = { lat: latitude, lng: longitude, time: timestamp };
-      const calculatedSpeed = geolib.getSpeed(this.lastPosition, currentPosition);
-      if (calculatedSpeed >= 0 && calculatedSpeed <= 1000) {
-        this.speed.addToBuffer(calculatedSpeed);
-      }
-      this.lastPosition = currentPosition;
-
-      setGeolocation({
-        latitude,
-        longitude,
-        speed: this.speed.getAverage(),
-        altitude: Math.round(altitude),
-        accuracy,
-        timestamp,
-      });
-
-      if (accuracy < 50) {
-        const { lastTile } = this.props;
-        const roundedLocation = GeoLocation.getRoundedLocation(location);
-        if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
-          this.onTileChange(roundedLocation);
-          this.getGeocodeAsync(location);
+        if (accuracy < 50) {
+          const { lastTile } = this.props;
+          const roundedLocation = GeoLocation.getRoundedLocation(location);
+          if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
+            this.onTileChange(roundedLocation);
+            this.getGeocodeAsync(location);
+          }
         }
       }
     });
-  }
+  };
 
   addLocation(location) {
     const {
@@ -250,6 +247,40 @@ class MapScreen extends Component {
     );
   }
 }
+
+TaskManager.defineTask('location', ({ data: { locations }, error }) => {
+  if (error) {
+    return;
+  }
+
+  if (AppState.currentState == 'active') {
+    return;
+  }
+
+  if (locations.length < 1) {
+    return;
+  }
+
+  const result = locations[0];
+  // const {
+  //   latitude, longitude, accuracy,
+  // } = result.coords;
+  // const { timestamp } = result;
+
+  // const location = {
+  //   latitude,
+  //   longitude,
+  //   timestamp,
+  // };
+
+  // if (accuracy < 50) {
+  //   const roundedLocation = GeoLocation.getRoundedLocation(location);
+  //   if (!GeoArray.contains(roundedLocation, outside)) {
+  //     outside.push(roundedLocation);
+  //     console.log(outside);
+  //   }
+  // }
+});
 
 const mapStateToProps = state => ({
   userId: state.user.get('userId'),
