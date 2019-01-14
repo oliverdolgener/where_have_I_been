@@ -25,8 +25,8 @@ import iconClose from '../assets/iconRemove.png';
 
 const locationOptions = {
   accuracy: Location.Accuracy.BestForNavigation,
-  timeInterval: 0,
-  distanceInterval: 0,
+  timeInterval: 1,
+  distanceInterval: 10,
 };
 
 const outside = [];
@@ -102,13 +102,6 @@ class MapScreen extends Component {
     }
   }
 
-  onTileChange(tile) {
-    const { setLastTile, followLocation, map } = this.props;
-    setLastTile(tile);
-    this.addLocations([tile]);
-    followLocation && map && map.moveToLocation(tile);
-  }
-
   startLocationUpdatesAsync = async () => {
     await Location.startLocationUpdatesAsync('location', locationOptions);
   };
@@ -151,11 +144,17 @@ class MapScreen extends Component {
         });
 
         if (accuracy < 50) {
-          const { lastTile } = this.props;
+          const {
+            lastTile, setLastTile, followLocation, map,
+          } = this.props;
           const roundedLocation = GeoLocation.getRoundedLocation(location);
+
+          this.addLocations(GeoLocation.getCircleTiles(location, 0.0001, 16));
+
           if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
-            this.onTileChange(roundedLocation);
-            this.getGeocodeAsync(location);
+            setLastTile(roundedLocation);
+            followLocation && map && map.moveToLocation(roundedLocation);
+            this.getGeocodeAsync(roundedLocation);
           }
         }
       }
@@ -174,6 +173,7 @@ class MapScreen extends Component {
     } = this.props;
 
     const unsaved = [...tilesToSave];
+    let count = 0;
 
     locations.forEach((x) => {
       const point = LatLng.toPoint(x);
@@ -181,16 +181,19 @@ class MapScreen extends Component {
       const found = quadtree.query(box);
 
       if (found.length < 1) {
+        count++;
         unsaved.push(x);
         quadtree.insert(point);
       }
     });
 
-    setQuadtree(quadtree);
-    setTilesToSave(unsaved);
+    if (count > 0) {
+      setQuadtree(quadtree);
+      setTilesToSave(unsaved);
 
-    if (!isSaving) {
-      saveTiles(userId, unsaved);
+      if (!isSaving) {
+        saveTiles(userId, unsaved);
+      }
     }
   }
 
@@ -280,10 +283,13 @@ TaskManager.defineTask('location', ({ data: { locations }, error }) => {
 
   // if (accuracy < 50) {
   //   const roundedLocation = GeoLocation.getRoundedLocation(location);
-  //   if (!GeoArray.contains(roundedLocation, outside)) {
-  //     outside.push(roundedLocation);
-  //     console.log(outside);
-  //   }
+  //   const tiles = GeoLocation.getCircleTiles(location, 0.0001, 16);
+  //   tiles.forEach((x) => {
+  //     if (!GeoArray.contains(x, outside)) {
+  //       outside.push(roundedLocation);
+  //     }
+  //   });
+  //   console.log(outside);
   // }
 });
 

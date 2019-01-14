@@ -1,3 +1,4 @@
+import GeoArray from './GeoArray';
 import * as ConversionUtils from '../utils/ConversionUtils';
 import * as RoundUtils from '../utils/RoundUtils';
 import * as Earth from '../constants/Earth';
@@ -153,6 +154,23 @@ export default class GeoLocation {
       });
     }
     return points;
+  }
+
+  static getCircleTiles(center, radius, count) {
+    const points = [];
+    for (let i = 0; i < count; i++) {
+      const latitude = center.latitude + radius * Math.sin(((2 * Math.PI) / count) * i);
+      const longitude = center.longitude
+        + GeoLocation.gridDistanceAtLatitude(latitude, radius)
+          * Math.cos(((2 * Math.PI) / count) * i);
+      const tile = GeoLocation.getRoundedLocation({ latitude, longitude });
+      points.push({
+        latitude: tile.latitude,
+        longitude: tile.longitude,
+        timestamp: center.timestamp,
+      });
+    }
+    return GeoArray.removeDuplicates(points);
   }
 
   static isLatitudeInRegion(latitude, region, factor = 1) {
