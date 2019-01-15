@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'right',
     marginRight: 10,
+    fontFamily: 'regular',
   },
   separator: {
     height: '100%',

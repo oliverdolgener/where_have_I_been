@@ -237,7 +237,7 @@ class MapScreen extends Component {
         </TouchableScale>
         {friendQuadtree ? (
           <View style={styles.actionButton}>
-            <TouchableScale onPress={() => resetFriend()} scaleTo={1.1}>
+            <TouchableScale onPress={() => resetFriend()}>
               <Image style={styles.actionIcon} source={iconClose} />
             </TouchableScale>
           </View>

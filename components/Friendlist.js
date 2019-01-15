@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontSize: 20,
+    fontFamily: 'light',
   },
   icon: {
     width: 25,
@@ -36,12 +37,14 @@ const styles = StyleSheet.create({
   badgeLabel: {
     textAlign: 'center',
     fontSize: 16,
+    fontFamily: 'light',
   },
   textInput: {
     height: 40,
     flex: 1,
     marginLeft: 40,
     fontSize: 20,
+    fontFamily: 'light',
   },
 });
 
@@ -79,7 +82,7 @@ class Friendlist extends Component {
             selectionColor={Colors.black}
             underlineColorAndroid={Colors.black}
           />
-          <TouchableScale onPress={() => this.onAddFriend()} scaleTo={1.1}>
+          <TouchableScale onPress={() => this.onAddFriend()}>
             <Image style={styles.icon} source={iconAdd} />
           </TouchableScale>
         </View>

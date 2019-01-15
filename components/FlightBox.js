@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     height: 40,
     margin: 5,
     paddingHorizontal: 5,
+    fontFamily: 'light',
   },
   flightButton: {
     height: 30,
@@ -30,6 +31,7 @@ const styles = StyleSheet.create({
   },
   flightButtonLabel: {
     color: Colors.creme,
+    fontFamily: 'light',
   },
 });
 

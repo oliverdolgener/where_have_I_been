@@ -21,9 +21,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 96,
     marginBottom: 20,
+    fontFamily: 'regular',
   },
   subtitle: {
     fontSize: 24,
+    fontFamily: 'regular',
   },
 });
 

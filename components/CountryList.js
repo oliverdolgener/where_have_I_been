@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontSize: 20,
+    fontFamily: 'light',
   },
   status: {
     height: ITEM_HEIGHT,
@@ -77,7 +78,7 @@ const CountryList = (props) => {
           <Text style={styles.label} numberOfLines={1} ellipsizeMode="middle">
             {item.name}
           </Text>
-          <TouchableScale style={styles.status} onPress={() => toggleStatus(item)} scaleTo={1.1}>
+          <TouchableScale style={styles.status} onPress={() => toggleStatus(item)}>
             <Image style={styles.icon} source={getIcon(item.status)} />
           </TouchableScale>
         </TouchableScale>

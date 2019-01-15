@@ -10,14 +10,17 @@ const styles = StyleSheet.create({
   country: {
     fontSize: 20,
     textAlign: 'right',
+    fontFamily: 'light',
   },
   region: {
     fontSize: 18,
     textAlign: 'right',
+    fontFamily: 'light',
   },
   city: {
     fontSize: 16,
     textAlign: 'right',
+    fontFamily: 'light',
   },
 });
 

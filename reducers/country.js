@@ -6,10 +6,11 @@ import GeoArray from '../model/GeoArray';
 import * as SortUtils from '../utils/SortUtils';
 
 export const types = {
-  GET_COUNTRIES: 'MAP/GET_COUNTRIES',
-  SET_COUNTRIES: 'MAP/SET_COUNTRIES',
-  SET_VACATION: 'MAP/SET_VACATION',
-  SET_SHOW_COUNTRIES: 'MAP/SET_SHOW_COUNTRIES',
+  GET_COUNTRIES: 'COUNTRY/GET_COUNTRIES',
+  SET_COUNTRIES: 'COUNTRY/SET_COUNTRIES',
+  SORT_COUNTRIES: 'COUNTRY/SORT_COUNTRIES',
+  SET_VACATION: 'COUNTRY/SET_VACATION',
+  SET_SHOW_COUNTRIES: 'COUNTRY/SET_SHOW_COUNTRIES',
 };
 
 export const actions = {
@@ -18,6 +19,7 @@ export const actions = {
     promise: getVacations(userId),
   }),
   setCountries: countries => ({ type: types.SET_COUNTRIES, countries }),
+  sortCountries: () => ({ type: types.SORT_COUNTRIES }),
   setVacation: (userId, countryId, status) => ({
     type: types.SET_VACATION,
     promise: setVacation(userId, countryId, status),
@@ -52,11 +54,15 @@ export default (state = initialState, action = {}) => {
       });
     }
     case types.SET_COUNTRIES: {
-      const countries = action.countries.sort(SortUtils.byStatusDesc);
+      return state.set('countries', action.countries);
+    }
+    case types.SORT_COUNTRIES: {
+      const countries = state.get('countries').sort(SortUtils.byStatusDesc);
       return state.set('countries', countries);
     }
-    case types.SET_SHOW_COUNTRIES:
+    case types.SET_SHOW_COUNTRIES: {
       return state.set('showCountries', action.showCountries);
+    }
     default:
       return state;
   }

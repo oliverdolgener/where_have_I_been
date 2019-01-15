@@ -27,18 +27,22 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 96,
     marginBottom: 20,
+    fontFamily: 'regular',
   },
   subtitle: {
     alignSelf: 'center',
     fontSize: 24,
     marginBottom: 20,
+    fontFamily: 'regular',
   },
   input: {
     height: 50,
+    fontFamily: 'light',
   },
   error: {
     height: 20,
     color: Colors.red,
+    fontFamily: 'light',
   },
   loginButton: {
     height: 50,
@@ -49,6 +53,7 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: Colors.creme,
+    fontFamily: 'light',
   },
   signUpButton: {
     height: 50,
@@ -58,6 +63,7 @@ const styles = StyleSheet.create({
   },
   signUpButtonText: {
     color: Colors.blue,
+    fontFamily: 'light',
   },
   indicator: {
     position: 'absolute',

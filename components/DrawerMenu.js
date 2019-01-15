@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 15,
     fontSize: 24,
+    fontFamily: 'regular',
   },
   badge: {
     justifyContent: 'center',
@@ -82,6 +83,7 @@ const styles = StyleSheet.create({
   badgeLabel: {
     textAlign: 'center',
     fontSize: 16,
+    fontFamily: 'regular',
   },
 });
 
@@ -150,11 +152,13 @@ class DrawerMenu extends React.Component {
   };
 
   toggleFriendlist = () => {
-    const { showFriendlist, friendlistIconValue, countriesIconValue } = this.state;
+    const {
+      showFriendlist, showCountryList, friendlistIconValue, countriesIconValue,
+    } = this.state;
+    showCountryList && this.closeListAnimation(countriesIconValue);
     showFriendlist
       ? this.closeListAnimation(friendlistIconValue)
       : this.openListAnimation(friendlistIconValue);
-    this.closeListAnimation(countriesIconValue);
     this.setState({
       showFriendlist: !showFriendlist,
       showCountryList: false,
@@ -162,11 +166,15 @@ class DrawerMenu extends React.Component {
   };
 
   toggleCountryList = () => {
-    const { showCountryList, countriesIconValue, friendlistIconValue } = this.state;
+    const { sortCountries } = this.props;
+    const {
+      showCountryList, showFriendlist, countriesIconValue, friendlistIconValue,
+    } = this.state;
+    showFriendlist && this.closeListAnimation(friendlistIconValue);
+    !showCountryList && sortCountries();
     showCountryList
       ? this.closeListAnimation(countriesIconValue)
       : this.openListAnimation(countriesIconValue);
-    this.closeListAnimation(friendlistIconValue);
     this.setState({
       showCountryList: !showCountryList,
       showFriendlist: false,
@@ -391,6 +399,7 @@ const mapDispatchToProps = {
   setFollowLocation: mapActions.setFollowLocation,
   setEditMode: mapActions.setEditMode,
   getCountries: countryActions.getCountries,
+  sortCountries: countryActions.sortCountries,
   setShowCountries: countryActions.setShowCountries,
   setShowFlights: flightActions.setShowFlights,
 };
