@@ -7,21 +7,21 @@ const db = SQLite.openDatabase('whib.db');
 export function createDB() {
   db.transaction((tx) => {
     tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS location (id INTEGER PRIMARY KEY NOT NULL, latitude BLOB NOT NULL, longitude BLOB NOT NULL)',
+      'BEGIN; CREATE TABLE IF NOT EXISTS location (id INTEGER PRIMARY KEY NOT NULL, latitude BLOB NOT NULL, longitude BLOB NOT NULL); COMMIT;',
     );
   });
 }
 
 export function deleteLocations() {
   db.transaction((tx) => {
-    tx.executeSql('DELETE FROM location', []);
+    tx.executeSql('BEGIN; DELETE FROM location; COMMIT;', []);
   });
 }
 
 export function getLocations() {
   return new Promise((resolve) => {
     db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM location', [], (_, { rows: { _array } }) => {
+      tx.executeSql('BEGIN; SELECT * FROM location; COMMIT;', [], (_, { rows: { _array } }) => {
         resolve(_array);
       });
     });
@@ -31,9 +31,13 @@ export function getLocations() {
 export function getCount() {
   return new Promise((resolve) => {
     db.transaction((tx) => {
-      tx.executeSql('SELECT COUNT(*) as count FROM location', [], (_, { rows: { _array } }) => {
-        resolve(_array[0].count);
-      });
+      tx.executeSql(
+        'BEGIN; SELECT COUNT(*) as count FROM location; COMMIT;',
+        [],
+        (_, { rows: { _array } }) => {
+          resolve(_array[0].count);
+        },
+      );
     });
   });
 }
@@ -87,12 +91,14 @@ export function insertLocations(locations) {
   return new Promise((resolve) => {
     db.transaction(
       (tx) => {
+        tx.executeSql('BEGIN;');
         locations.forEach((x) => {
-          tx.executeSql('INSERT INTO location (latitude, longitude) VALUES (?, ?)', [
+          tx.executeSql('INSERT INTO location (latitude, longitude) VALUES (?, ?);', [
             x.latitude,
             x.longitude,
           ]);
         });
+        tx.executeSql('COMMIT;');
       },
       null,
       resolve(),
@@ -104,7 +110,7 @@ export function deleteLocation(location) {
   return new Promise((resolve) => {
     db.transaction(
       (tx) => {
-        tx.executeSql('DELETE FROM location WHERE latitude = ? And longitude = ?', [
+        tx.executeSql('BEGIN; DELETE FROM location WHERE latitude = ? And longitude = ?; COMMIT;', [
           location.latitude,
           location.longitude,
         ]);
