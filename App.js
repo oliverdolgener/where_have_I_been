@@ -11,8 +11,8 @@ import FriendReducer from './reducers/friend';
 import MapReducer from './reducers/map';
 import CountryReducer from './reducers/country';
 import FlightReducer from './reducers/flight';
-import OpenSansRegular from './assets/fonts/OpenSans-Regular.ttf';
-import OpenSansLight from './assets/fonts/OpenSans-Light.ttf';
+import Regular from './assets/fonts/Lato-Regular.ttf';
+import Light from './assets/fonts/Lato-Light.ttf';
 
 const store = createStore(
   combineReducers({
@@ -36,8 +36,8 @@ class App extends Component {
 
   async componentDidMount() {
     await Font.loadAsync({
-      regular: OpenSansRegular,
-      light: OpenSansLight,
+      regular: Regular,
+      light: Light,
     });
     this.setState({ fontsLoaded: true });
   }
