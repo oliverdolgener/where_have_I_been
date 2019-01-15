@@ -104,7 +104,7 @@ class Toolbar extends Component {
           borderRadius={0}
           borderWidth={0}
           unfilledColor={Colors.creme}
-          color={Colors.green}
+          color={Colors.rose}
           useNativeDriver
         />
         <View style={styles.toolbar}>
