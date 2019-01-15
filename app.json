@@ -2,8 +2,11 @@
   "expo": {
     "sdkVersion": "32.0.0",
     "icon": "./assets/whib.png",
+    "splash": {
+      "backgroundColor": "#FFF5ED"
+    },
     "androidStatusBar": {
-      "backgroundColor": "#FCF4E8",
+      "backgroundColor": "#FFF5ED",
       "barStyle": "dark-content"
     },
     "android": {
@@ -15,6 +18,11 @@
       }
     },
     "ios": {
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAtzcxNVjs7P539qpPg_Eq0ur27QHE1imA"
+        }
+      },
       "infoPlist": {
         "UIBackgroundModes": ["location", "fetch"]
       }
