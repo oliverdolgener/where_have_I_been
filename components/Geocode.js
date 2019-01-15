@@ -1,6 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
+
+import StyledText from './StyledText';
 
 const styles = StyleSheet.create({
   container: {
@@ -28,15 +30,15 @@ const Geocode = (props) => {
   const { geocode } = props;
   return (
     <View style={styles.container}>
-      <Text style={styles.country} ellipsizeMode="middle" numberOfLines={1}>
+      <StyledText style={styles.country} ellipsizeMode="middle" numberOfLines={1}>
         {geocode.country}
-      </Text>
-      <Text style={styles.region} ellipsizeMode="middle" numberOfLines={1}>
+      </StyledText>
+      <StyledText style={styles.region} ellipsizeMode="middle" numberOfLines={1}>
         {geocode.region}
-      </Text>
-      <Text style={styles.city} ellipsizeMode="middle" numberOfLines={1}>
+      </StyledText>
+      <StyledText style={styles.city} ellipsizeMode="middle" numberOfLines={1}>
         {geocode.city}
-      </Text>
+      </StyledText>
     </View>
   );
 };

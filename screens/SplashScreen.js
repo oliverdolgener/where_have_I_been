@@ -1,12 +1,11 @@
 import React from 'react';
-import {
-  AsyncStorage, View, StyleSheet, Text,
-} from 'react-native';
+import { AsyncStorage, View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { Permissions, Notifications } from 'expo';
 
 import { actions as userActions } from '../reducers/user';
 import { actions as mapActions } from '../reducers/map';
+import StyledText from '../components/StyledText';
 import * as SQLiteUtils from '../utils/SQLiteUtils';
 import * as Colors from '../constants/Colors';
 
@@ -21,11 +20,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 96,
     marginBottom: 20,
-    fontFamily: 'regular',
   },
   subtitle: {
     fontSize: 24,
-    fontFamily: 'regular',
   },
 });
 
@@ -102,8 +99,8 @@ class SplashScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>WHIB</Text>
-        <Text style={styles.subtitle}>Where Have I Been</Text>
+        <StyledText style={styles.title}>WHIB</StyledText>
+        <StyledText style={styles.subtitle}>Where Have I Been</StyledText>
       </View>
     );
   }

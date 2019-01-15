@@ -1,15 +1,11 @@
 import React from 'react';
 import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  StyleSheet,
-  TextInput,
-  View,
-  Text,
+  ActivityIndicator, KeyboardAvoidingView, StyleSheet, TextInput, View,
 } from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as userActions } from '../reducers/user';
+import StyledText from '../components/StyledText';
 import TouchableScale from '../components/TouchableScale';
 import * as Colors from '../constants/Colors';
 
@@ -27,13 +23,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 96,
     marginBottom: 20,
-    fontFamily: 'regular',
   },
   subtitle: {
     alignSelf: 'center',
     fontSize: 24,
     marginBottom: 20,
-    fontFamily: 'regular',
   },
   input: {
     height: 50,
@@ -151,8 +145,8 @@ class LoginScreen extends React.Component {
 
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <Text style={styles.title}>WHIB</Text>
-        <Text style={styles.subtitle}>Where Have I Been</Text>
+        <StyledText style={styles.title}>WHIB</StyledText>
+        <StyledText style={styles.subtitle}>Where Have I Been</StyledText>
         <View style={styles.header} />
         <TextInput
           style={styles.input}
@@ -168,7 +162,7 @@ class LoginScreen extends React.Component {
           onSubmitEditing={() => this.passwordInput.focus()}
           autoCorrect={false}
         />
-        <Text style={styles.error}>{emailError}</Text>
+        <StyledText style={styles.error}>{emailError}</StyledText>
         <TextInput
           style={styles.input}
           ref={(ref) => {
@@ -185,13 +179,15 @@ class LoginScreen extends React.Component {
           onSubmitEditing={() => this.onLoginPress()}
           autoCorrect={false}
         />
-        <Text style={styles.error}>{passwordError}</Text>
+        <StyledText style={styles.error}>{passwordError}</StyledText>
         <TouchableScale style={styles.loginButton} onPress={this.onLoginPress}>
-          <Text style={styles.loginButtonText}>{isLoggingIn ? 'Logging in...' : 'Login'}</Text>
+          <StyledText style={styles.loginButtonText}>
+            {isLoggingIn ? 'Logging in...' : 'Login'}
+          </StyledText>
           {isLoggingIn && <ActivityIndicator style={styles.indicator} color={Colors.creme} />}
         </TouchableScale>
         <TouchableScale style={styles.signUpButton} onPress={this.onSignUpPress}>
-          <Text style={styles.signUpButtonText}>Sign Up</Text>
+          <StyledText style={styles.signUpButtonText}>Sign Up</StyledText>
         </TouchableScale>
       </KeyboardAvoidingView>
     );

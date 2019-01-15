@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet, View, Text, TextInput,
-} from 'react-native';
+import { StyleSheet, View, TextInput } from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as flightActions } from '../reducers/flight';
+import StyledText from './StyledText';
 import TouchableScale from './TouchableScale';
 import * as Colors from '../constants/Colors';
 
@@ -111,10 +110,10 @@ class FlightBox extends Component {
           autoCapitalize="characters"
         />
         <TouchableScale style={styles.flightButton} onPress={() => this.onAddFlight()}>
-          <Text style={styles.flightButtonLabel}>Add Flight</Text>
+          <StyledText style={styles.flightButtonLabel}>Add Flight</StyledText>
         </TouchableScale>
         <TouchableScale style={styles.flightButton} onPress={() => this.onRemoveFlight()}>
-          <Text style={styles.flightButtonLabel}>Remove Flight</Text>
+          <StyledText style={styles.flightButtonLabel}>Remove Flight</StyledText>
         </TouchableScale>
       </View>
     );

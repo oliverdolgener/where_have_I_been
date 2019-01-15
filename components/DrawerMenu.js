@@ -4,13 +4,13 @@ import {
   Animated,
   ScrollView,
   View,
-  Text,
   Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import Collapsible from 'react-native-collapsible';
 
+import StyledText from './StyledText';
 import TouchableScale from './TouchableScale';
 import Geocode from './Geocode';
 import Friendlist from './Friendlist';
@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 15,
     fontSize: 24,
-    fontFamily: 'regular',
   },
   badge: {
     justifyContent: 'center',
@@ -82,7 +81,6 @@ const styles = StyleSheet.create({
   badgeLabel: {
     textAlign: 'center',
     fontSize: 16,
-    fontFamily: 'regular',
   },
 });
 
@@ -302,17 +300,17 @@ class DrawerMenu extends React.Component {
             </View>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleMapType()}>
               <Image style={styles.menuIcon} source={iconMap} />
-              <Text style={styles.menuLabel}>Map Type</Text>
+              <StyledText style={styles.menuLabel}>Map Type</StyledText>
               <Image style={styles.menuIcon} source={mapType === 'standard' ? iconStreetView : iconSatellite} />
             </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleShape()}>
               <Image style={styles.menuIcon} source={iconShape} />
-              <Text style={styles.menuLabel}>Tile Shape</Text>
+              <StyledText style={styles.menuLabel}>Tile Shape</StyledText>
               <Image style={styles.menuIcon} source={shape === 'diamond' ? iconDiamond : iconRectangle} />
             </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleFriendlist()}>
               <Image style={styles.menuIcon} source={iconFriendlist} />
-              <Text style={styles.menuLabel}>Friendlist</Text>
+              <StyledText style={styles.menuLabel}>Friendlist</StyledText>
               <Animated.View style={{ transform: [{ rotateX: friendlistFlip }] }}>
                 <Image style={styles.menuIcon} source={iconCollapse} />
               </Animated.View>
@@ -322,7 +320,7 @@ class DrawerMenu extends React.Component {
             </Collapsible>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleCountryList()}>
               <Image style={styles.menuIcon} source={iconWorld} />
-              <Text style={styles.menuLabel}>Countries</Text>
+              <StyledText style={styles.menuLabel}>Countries</StyledText>
               <Animated.View style={{ transform: [{ rotateX: countriesFlip }] }}>
                 <Image style={styles.menuIcon} source={iconCollapse} />
               </Animated.View>
@@ -336,34 +334,34 @@ class DrawerMenu extends React.Component {
               <Animated.View style={{ transform: [{ rotate: spin }] }}>
                 <Image style={styles.menuIcon} source={iconSync} />
               </Animated.View>
-              <Text style={styles.menuLabel}>Sync Data</Text>
+              <StyledText style={styles.menuLabel}>Sync Data</StyledText>
               <View style={styles.badge}>
-                <Text style={styles.badgeLabel}>{tilesToSave.length}</Text>
+                <StyledText style={styles.badgeLabel}>{tilesToSave.length}</StyledText>
               </View>
             </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleFlights()}>
               <Image style={styles.menuIcon} source={iconAirport} />
-              <Text style={styles.menuLabel}>Show Flights</Text>
+              <StyledText style={styles.menuLabel}>Show Flights</StyledText>
               <Image style={styles.menuIcon} source={showFlights ? iconToggleOn : iconToggleOff} />
             </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleCountries()}>
               <Image style={styles.menuIcon} source={iconMap} />
-              <Text style={styles.menuLabel}>Show Countries</Text>
+              <StyledText style={styles.menuLabel}>Show Countries</StyledText>
               <Image style={styles.menuIcon} source={showCountries ? iconToggleOn : iconToggleOff} />
             </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleTheme()}>
               <Image style={styles.menuIcon} source={iconNight} />
-              <Text style={styles.menuLabel}>Night Mode</Text>
+              <StyledText style={styles.menuLabel}>Night Mode</StyledText>
               <Image style={styles.menuIcon} source={theme === 'dark' ? iconToggleOn : iconToggleOff} />
             </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleEditMode()}>
               <Image style={styles.menuIcon} source={iconEdit} />
-              <Text style={styles.menuLabel}>Edit Mode</Text>
+              <StyledText style={styles.menuLabel}>Edit Mode</StyledText>
               <Image style={styles.menuIcon} source={editMode ? iconToggleOn : iconToggleOff} />
             </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.logout()}>
               <Image style={styles.menuIcon} source={iconLogout} />
-              <Text style={styles.menuLabel}>Logout</Text>
+              <StyledText style={styles.menuLabel}>Logout</StyledText>
             </TouchableScale>
           </View>
         </ScrollView>

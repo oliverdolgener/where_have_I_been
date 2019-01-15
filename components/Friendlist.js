@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, Image, View, TextInput,
+  StyleSheet, Image, View, TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as friendActions } from '../reducers/friend';
+import StyledText from './StyledText';
 import TouchableScale from './TouchableScale';
 import * as Colors from '../constants/Colors';
 import iconAdd from '../assets/iconAdd.png';
@@ -93,11 +94,11 @@ class Friendlist extends Component {
             onPress={() => onFriendPress(item.id)}
           >
             <View style={styles.badge}>
-              <Text style={styles.badgeLabel}>{item.level}</Text>
+              <StyledText style={styles.badgeLabel}>{item.level}</StyledText>
             </View>
-            <Text style={styles.label} numberOfLines={1} ellipsizeMode="middle">
+            <StyledText style={styles.label} numberOfLines={1} ellipsizeMode="middle">
               {item.username}
-            </Text>
+            </StyledText>
             <TouchableScale onPress={() => removeFriend(userId, item.id)}>
               <Image style={styles.icon} source={iconRemove} />
             </TouchableScale>

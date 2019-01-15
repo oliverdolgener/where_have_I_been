@@ -1,10 +1,9 @@
 import React from 'react';
-import {
-  StyleSheet, FlatList, Text, Image,
-} from 'react-native';
+import { StyleSheet, FlatList, Image } from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as countryActions } from '../reducers/country';
+import StyledText from './StyledText';
 import TouchableScale from './TouchableScale';
 import Flags from '../constants/Flags';
 import iconDone from '../assets/iconDone.png';
@@ -75,9 +74,9 @@ const CountryList = (props) => {
       renderItem={({ item }) => (
         <TouchableScale style={styles.item} onPress={() => onCountryPress(item.region)}>
           <Image style={styles.icon} source={getFlag(item.id)} />
-          <Text style={styles.label} numberOfLines={1} ellipsizeMode="middle">
+          <StyledText style={styles.label} numberOfLines={1} ellipsizeMode="middle">
             {item.name}
-          </Text>
+          </StyledText>
           <TouchableScale style={styles.status} onPress={() => toggleStatus(item)}>
             <Image style={styles.icon} source={getIcon(item.status)} />
           </TouchableScale>

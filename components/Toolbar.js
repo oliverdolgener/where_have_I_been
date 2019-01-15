@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Animated, View, Text, Image,
+  StyleSheet, Animated, View, Image,
 } from 'react-native';
 import { connect } from 'react-redux';
 import ProgressBar from 'react-native-progress/Bar';
 
+import StyledText from './StyledText';
 import * as LevelUtils from '../utils/LevelUtils';
 import * as Colors from '../constants/Colors';
 import iconLevel from '../assets/iconLevel.png';
@@ -14,7 +15,6 @@ import iconAltitude from '../assets/iconAltitude.png';
 
 const TOOLBAR_HEIGHT = 30;
 const PROGRESS_HEIGHT = 5;
-const HEIGHT = TOOLBAR_HEIGHT + PROGRESS_HEIGHT;
 
 const styles = StyleSheet.create({
   container: {
@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'right',
     marginRight: 10,
-    fontFamily: 'regular',
   },
   separator: {
     height: '100%',
@@ -110,22 +109,22 @@ class Toolbar extends Component {
         <View style={styles.toolbar}>
           <View style={styles.toolbarItem}>
             <Image style={styles.toolbarIcon} source={iconLevel} />
-            <Text style={styles.toolbarLabel}>{level}</Text>
+            <StyledText style={styles.toolbarLabel}>{level}</StyledText>
           </View>
           <View style={styles.separator} />
           <View style={[styles.toolbarItem, { flex: 5 }]}>
             <Image style={styles.toolbarIcon} source={iconSquare} />
-            <Text style={styles.toolbarLabel}>{count}</Text>
+            <StyledText style={styles.toolbarLabel}>{count}</StyledText>
           </View>
           <View style={styles.separator} />
           <View style={styles.toolbarItem}>
             <Image style={styles.toolbarIcon} source={iconSpeed} />
-            <Text style={styles.toolbarLabel}>{geolocation.speed || 0}</Text>
+            <StyledText style={styles.toolbarLabel}>{geolocation.speed || 0}</StyledText>
           </View>
           <View style={styles.separator} />
           <View style={[styles.toolbarItem, { flex: 4 }]}>
             <Image style={styles.toolbarIcon} source={iconAltitude} />
-            <Text style={styles.toolbarLabel}>{geolocation.altitude || 0}</Text>
+            <StyledText style={styles.toolbarLabel}>{geolocation.altitude || 0}</StyledText>
           </View>
         </View>
       </Animated.View>
