@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, View, Image, AppState,
+  StyleSheet, View, Image, AppState, AsyncStorage,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Location, TaskManager } from 'expo';
@@ -28,8 +28,6 @@ const locationOptions = {
   timeInterval: 1,
   distanceInterval: 10,
 };
-
-const outside = [];
 
 const styles = StyleSheet.create({
   container: {
@@ -76,6 +74,25 @@ class MapScreen extends Component {
     this.startLocationUpdatesAsync();
     getFlights(userId);
     this.getGeocodeAsync(lastTile);
+    this.onResume();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { appState } = this.props;
+    if (prevProps.appState != 'active' && appState == 'active') {
+      this.onResume();
+    }
+  }
+
+  async onResume() {
+    const backgroundLocations = await AsyncStorage.getItem('backgroundLocations');
+    if (backgroundLocations) {
+      const locations = JSON.parse(backgroundLocations);
+      if (locations.length > 0) {
+        this.addLocations(locations);
+        AsyncStorage.removeItem('backgroundLocations');
+      }
+    }
   }
 
   onMapPress(coordinate) {
@@ -270,30 +287,42 @@ TaskManager.defineTask('location', ({ data: { locations }, error }) => {
   }
 
   const result = locations[0];
-  // const {
-  //   latitude, longitude, accuracy,
-  // } = result.coords;
-  // const { timestamp } = result;
+  const {
+    latitude, longitude, accuracy,
+  } = result.coords;
+  const { timestamp } = result;
 
-  // const location = {
-  //   latitude,
-  //   longitude,
-  //   timestamp,
-  // };
+  const location = {
+    latitude,
+    longitude,
+    timestamp,
+  };
 
-  // if (accuracy < 50) {
-  //   const roundedLocation = GeoLocation.getRoundedLocation(location);
-  //   const tiles = GeoLocation.getCircleTiles(location, 0.0001, 16);
-  //   tiles.forEach((x) => {
-  //     if (!GeoArray.contains(x, outside)) {
-  //       outside.push(roundedLocation);
-  //     }
-  //   });
-  //   console.log(outside);
-  // }
+  if (accuracy < 50) {
+    const tiles = GeoLocation.getCircleTiles(location, 0.0001, 16);
+    AsyncStorage.getItem('backgroundLocations').then((asyncLocations) => {
+      if (asyncLocations) {
+        const backgroundLocations = JSON.parse(asyncLocations);
+        const newLocations = [];
+        tiles.forEach((x) => {
+          if (!GeoArray.contains(x, backgroundLocations)) {
+            newLocations.push(x);
+          }
+        });
+
+        if (newLocations.length > 0) {
+          const mergedLocations = backgroundLocations.concat(newLocations);
+          AsyncStorage.setItem('backgroundLocations', JSON.stringify(mergedLocations));
+        }
+      } else {
+        AsyncStorage.setItem('backgroundLocations', JSON.stringify(tiles));
+      }
+    });
+  }
 });
 
 const mapStateToProps = state => ({
+  appState: state.app.get('appState'),
   userId: state.user.get('userId'),
   quadtree: state.user.get('quadtree'),
   friendQuadtree: state.friend.get('friendQuadtree'),
