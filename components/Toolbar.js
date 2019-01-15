@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   separator: {
     height: '100%',
     borderWidth: 0.5,
-    borderColor: Colors.black,
+    borderColor: Colors.brown,
   },
 });
 
@@ -74,7 +74,7 @@ class Toolbar extends Component {
     const { animation } = this.state;
     if (this.animation) this.animation.stop();
     Animated.timing(animation, {
-      toValue: -HEIGHT,
+      toValue: -TOOLBAR_HEIGHT,
       duration: 250,
     }).start();
   }
@@ -97,6 +97,16 @@ class Toolbar extends Component {
 
     return (
       <Animated.View style={[styles.container, { bottom: animation }]}>
+        <ProgressBar
+          progress={progress}
+          width={null}
+          height={PROGRESS_HEIGHT}
+          borderRadius={0}
+          borderWidth={0}
+          unfilledColor={Colors.creme}
+          color={Colors.green}
+          useNativeDriver
+        />
         <View style={styles.toolbar}>
           <View style={styles.toolbarItem}>
             <Image style={styles.toolbarIcon} source={iconLevel} />
@@ -118,16 +128,6 @@ class Toolbar extends Component {
             <Text style={styles.toolbarLabel}>{geolocation.altitude || 0}</Text>
           </View>
         </View>
-        <ProgressBar
-          progress={progress}
-          width={null}
-          height={PROGRESS_HEIGHT}
-          borderRadius={0}
-          borderWidth={0}
-          unfilledColor={Colors.creme}
-          color={Colors.blue}
-          useNativeDriver
-        />
       </Animated.View>
     );
   }

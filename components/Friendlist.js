@@ -79,8 +79,8 @@ class Friendlist extends Component {
             onChangeText={input => this.setState({ friendName: input })}
             value={friendName}
             onSubmitEditing={() => this.onAddFriend()}
-            selectionColor={Colors.black}
-            underlineColorAndroid={Colors.black}
+            selectionColor={Colors.brown}
+            underlineColorAndroid={Colors.brown}
           />
           <TouchableScale onPress={() => this.onAddFriend()}>
             <Image style={styles.icon} source={iconAdd} />

@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   error: {
     height: 20,
-    color: Colors.red,
+    color: Colors.rose,
     fontFamily: 'light',
   },
   loginButton: {
