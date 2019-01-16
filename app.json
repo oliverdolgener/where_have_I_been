@@ -18,11 +18,6 @@
       }
     },
     "ios": {
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyAtzcxNVjs7P539qpPg_Eq0ur27QHE1imA"
-        }
-      },
       "infoPlist": {
         "UIBackgroundModes": ["location", "fetch"]
       }
