@@ -19,7 +19,7 @@
     },
     "ios": {
       "infoPlist": {
-        "UIBackgroundModes": ["location", "fetch"]
+        "UIBackgroundModes": ["location"]
       }
     }
   }

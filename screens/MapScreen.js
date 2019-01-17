@@ -25,8 +25,8 @@ import iconClose from '../assets/iconRemove.png';
 
 const locationOptions = {
   accuracy: Location.Accuracy.BestForNavigation,
-  timeInterval: 1,
-  distanceInterval: 10,
+  timeInterval: 0,
+  distanceInterval: 0,
 };
 
 const styles = StyleSheet.create({
@@ -84,6 +84,11 @@ class MapScreen extends Component {
     }
   }
 
+  async componentWillUnmount() {
+    this.locationListener.remove();
+    await Location.stopLocationUpdatesAsync('location');
+  }
+
   async onResume() {
     const backgroundLocations = await AsyncStorage.getItem('backgroundLocations');
     if (backgroundLocations) {
@@ -130,7 +135,7 @@ class MapScreen extends Component {
   };
 
   watchPositionAsync = async () => {
-    await Location.watchPositionAsync(locationOptions, (result) => {
+    this.locationListener = await Location.watchPositionAsync(locationOptions, (result) => {
       if (AppState.currentState == 'active') {
         const { setGeolocation } = this.props;
         const {
@@ -273,15 +278,20 @@ class MapScreen extends Component {
   }
 }
 
-TaskManager.defineTask('location', ({ data: { locations }, error }) => {
-  if (error) {
-    return;
-  }
-
+TaskManager.defineTask('location', ({ data, error }) => {
   if (AppState.currentState == 'active') {
     return;
   }
 
+  if (error) {
+    return;
+  }
+
+  if (!data) {
+    return;
+  }
+
+  const { locations } = data;
   if (locations.length < 1) {
     return;
   }
