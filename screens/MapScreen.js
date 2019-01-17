@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, View, Image, AppState, AsyncStorage,
+  StyleSheet, View, Image, AsyncStorage,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Location, TaskManager } from 'expo';
+import { Location } from 'expo';
 import geolib from 'geolib';
 import { Box } from 'js-quadtree';
 
@@ -81,6 +81,8 @@ class MapScreen extends Component {
     const { appState } = this.props;
     if (prevProps.appState != 'active' && appState == 'active') {
       this.onResume();
+    } else if (prevProps.appState == 'active' && appState != 'active') {
+      this.onPause();
     }
   }
 
@@ -90,6 +92,8 @@ class MapScreen extends Component {
   }
 
   async onResume() {
+    this.watchPositionAsync();
+    await Location.stopLocationUpdatesAsync('location');
     const backgroundLocations = await AsyncStorage.getItem('backgroundLocations');
     if (backgroundLocations) {
       const locations = JSON.parse(backgroundLocations);
@@ -98,6 +102,11 @@ class MapScreen extends Component {
         AsyncStorage.removeItem('backgroundLocations');
       }
     }
+  }
+
+  async onPause() {
+    this.startLocationUpdatesAsync();
+    this.locationListener && this.locationListener.remove();
   }
 
   onMapPress(coordinate) {
@@ -136,48 +145,46 @@ class MapScreen extends Component {
 
   watchPositionAsync = async () => {
     this.locationListener = await Location.watchPositionAsync(locationOptions, (result) => {
-      if (AppState.currentState == 'active') {
-        const { setGeolocation } = this.props;
+      const { setGeolocation } = this.props;
+      const {
+        latitude, longitude, altitude, accuracy,
+      } = result.coords;
+      const { timestamp } = result;
+
+      const location = {
+        latitude,
+        longitude,
+        timestamp,
+      };
+
+      const currentPosition = { lat: latitude, lng: longitude, time: timestamp };
+      const calculatedSpeed = geolib.getSpeed(this.lastPosition, currentPosition);
+      if (calculatedSpeed >= 0 && calculatedSpeed <= 1000) {
+        this.speed.addToBuffer(calculatedSpeed);
+      }
+      this.lastPosition = currentPosition;
+
+      setGeolocation({
+        latitude,
+        longitude,
+        speed: this.speed.getAverage(),
+        altitude: Math.round(altitude),
+        accuracy,
+        timestamp,
+      });
+
+      if (accuracy < 50) {
         const {
-          latitude, longitude, altitude, accuracy,
-        } = result.coords;
-        const { timestamp } = result;
+          lastTile, setLastTile, followLocation, map,
+        } = this.props;
+        const roundedLocation = GeoLocation.getRoundedLocation(location);
 
-        const location = {
-          latitude,
-          longitude,
-          timestamp,
-        };
+        this.addLocations(GeoLocation.getCircleTiles(location, 0.0001, 16));
 
-        const currentPosition = { lat: latitude, lng: longitude, time: timestamp };
-        const calculatedSpeed = geolib.getSpeed(this.lastPosition, currentPosition);
-        if (calculatedSpeed >= 0 && calculatedSpeed <= 1000) {
-          this.speed.addToBuffer(calculatedSpeed);
-        }
-        this.lastPosition = currentPosition;
-
-        setGeolocation({
-          latitude,
-          longitude,
-          speed: this.speed.getAverage(),
-          altitude: Math.round(altitude),
-          accuracy,
-          timestamp,
-        });
-
-        if (accuracy < 50) {
-          const {
-            lastTile, setLastTile, followLocation, map,
-          } = this.props;
-          const roundedLocation = GeoLocation.getRoundedLocation(location);
-
-          this.addLocations(GeoLocation.getCircleTiles(location, 0.0001, 16));
-
-          if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
-            setLastTile(roundedLocation);
-            followLocation && map && map.moveToLocation(roundedLocation);
-            this.getGeocodeAsync(roundedLocation);
-          }
+        if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
+          setLastTile(roundedLocation);
+          followLocation && map && map.moveToLocation(roundedLocation);
+          this.getGeocodeAsync(roundedLocation);
         }
       }
     });
@@ -277,59 +284,6 @@ class MapScreen extends Component {
     );
   }
 }
-
-TaskManager.defineTask('location', ({ data, error }) => {
-  if (AppState.currentState == 'active') {
-    return;
-  }
-
-  if (error) {
-    return;
-  }
-
-  if (!data) {
-    return;
-  }
-
-  const { locations } = data;
-  if (locations.length < 1) {
-    return;
-  }
-
-  const result = locations[0];
-  const {
-    latitude, longitude, accuracy,
-  } = result.coords;
-  const { timestamp } = result;
-
-  const location = {
-    latitude,
-    longitude,
-    timestamp,
-  };
-
-  if (accuracy < 50) {
-    const tiles = GeoLocation.getCircleTiles(location, 0.0001, 16);
-    AsyncStorage.getItem('backgroundLocations').then((asyncLocations) => {
-      if (asyncLocations) {
-        const backgroundLocations = JSON.parse(asyncLocations);
-        const newLocations = [];
-        tiles.forEach((x) => {
-          if (!GeoArray.contains(x, backgroundLocations)) {
-            newLocations.push(x);
-          }
-        });
-
-        if (newLocations.length > 0) {
-          const mergedLocations = backgroundLocations.concat(newLocations);
-          AsyncStorage.setItem('backgroundLocations', JSON.stringify(mergedLocations));
-        }
-      } else {
-        AsyncStorage.setItem('backgroundLocations', JSON.stringify(tiles));
-      }
-    });
-  }
-});
 
 const mapStateToProps = state => ({
   appState: state.app.get('appState'),

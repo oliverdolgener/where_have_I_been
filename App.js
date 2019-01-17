@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { AsyncStorage } from 'react-native';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { middleware as reduxPackMiddleware } from 'redux-pack';
-import { Font } from 'expo';
+import { Font, TaskManager } from 'expo';
 
 import Navigator from './navigation/Navigator';
 import AppReducer from './reducers/app';
@@ -11,8 +12,59 @@ import FriendReducer from './reducers/friend';
 import MapReducer from './reducers/map';
 import CountryReducer from './reducers/country';
 import FlightReducer from './reducers/flight';
+import GeoLocation from './model/GeoLocation';
+import GeoArray from './model/GeoArray';
 import Regular from './assets/fonts/Lato-Regular.ttf';
 import Light from './assets/fonts/Lato-Light.ttf';
+
+TaskManager.defineTask('location', ({ data, error }) => {
+  if (error) {
+    return;
+  }
+
+  if (!data) {
+    return;
+  }
+
+  const { locations } = data;
+  if (locations.length < 1) {
+    return;
+  }
+
+  const result = locations[0];
+  const {
+    latitude, longitude, accuracy,
+  } = result.coords;
+  const { timestamp } = result;
+
+  const location = {
+    latitude,
+    longitude,
+    timestamp,
+  };
+
+  if (accuracy < 50) {
+    const tiles = GeoLocation.getCircleTiles(location, 0.0001, 16);
+    AsyncStorage.getItem('backgroundLocations').then((asyncLocations) => {
+      if (asyncLocations) {
+        const backgroundLocations = JSON.parse(asyncLocations);
+        const newLocations = [];
+        tiles.forEach((x) => {
+          if (!GeoArray.contains(x, backgroundLocations)) {
+            newLocations.push(x);
+          }
+        });
+
+        if (newLocations.length > 0) {
+          const mergedLocations = backgroundLocations.concat(newLocations);
+          AsyncStorage.setItem('backgroundLocations', JSON.stringify(mergedLocations));
+        }
+      } else {
+        AsyncStorage.setItem('backgroundLocations', JSON.stringify(tiles));
+      }
+    });
+  }
+});
 
 const store = createStore(
   combineReducers({
