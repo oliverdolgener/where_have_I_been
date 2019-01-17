@@ -85,7 +85,7 @@ class MapScreen extends Component {
   }
 
   async componentWillUnmount() {
-    this.locationListener.remove();
+    this.locationListener && this.locationListener.remove();
     await Location.stopLocationUpdatesAsync('location');
   }
 
