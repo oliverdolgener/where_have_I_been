@@ -18,11 +18,7 @@ import Regular from './assets/fonts/Lato-Regular.ttf';
 import Light from './assets/fonts/Lato-Light.ttf';
 
 TaskManager.defineTask('location', ({ data, error }) => {
-  if (error) {
-    return;
-  }
-
-  if (!data) {
+  if (error || !data) {
     return;
   }
 
