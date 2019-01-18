@@ -14,6 +14,7 @@ import CountryReducer from './reducers/country';
 import FlightReducer from './reducers/flight';
 import GeoLocation from './model/GeoLocation';
 import GeoArray from './model/GeoArray';
+import * as Earth from './constants/Earth';
 import Regular from './assets/fonts/Lato-Regular.ttf';
 import Light from './assets/fonts/Lato-Light.ttf';
 
@@ -40,7 +41,7 @@ TaskManager.defineTask('location', ({ data, error }) => {
   };
 
   if (accuracy < 50) {
-    const tiles = GeoLocation.getCircleTiles(location, 0.0001, 16);
+    const tiles = GeoLocation.getCircleTiles(location, Earth.CIRCLE_RADIUS, 16);
     AsyncStorage.getItem('backgroundLocations').then((asyncLocations) => {
       if (asyncLocations) {
         const backgroundLocations = JSON.parse(asyncLocations);

@@ -19,6 +19,7 @@ import TouchableScale from '../components/TouchableScale';
 import Toolbar from '../components/Toolbar';
 import Map from '../components/Map';
 import FlightBox from '../components/FlightBox';
+import * as Earth from '../constants/Earth';
 import iconMenu from '../assets/iconMenu.png';
 import iconLocation from '../assets/iconLocation.png';
 import iconClose from '../assets/iconRemove.png';
@@ -179,7 +180,7 @@ class MapScreen extends Component {
         } = this.props;
         const roundedLocation = GeoLocation.getRoundedLocation(location);
 
-        this.addLocations(GeoLocation.getCircleTiles(location, 0.0001, 16));
+        this.addLocations(GeoLocation.getCircleTiles(location, Earth.CIRCLE_RADIUS, 16));
 
         if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
           setLastTile(roundedLocation);
