@@ -23,7 +23,7 @@ const Fog = (props) => {
     region.latitudeDelta * 2,
   );
   const points = friendQuadtree ? friendQuadtree.query(box) : quadtree.query(box);
-  const visibleLocations = points.map(x => Point.toLatLng(x));
+  const visibleLocations = points.map(x => Point.toLatLngRounded(x));
 
   const slices = shape === 'diamond'
     ? GeoGrid.getDiamondSlices(visibleLocations, gridDistance)
