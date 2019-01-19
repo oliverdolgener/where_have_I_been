@@ -11,7 +11,7 @@ import * as Earth from '../constants/Earth';
 
 const Fog = (props) => {
   const {
-    quadtree, friendQuadtree, region, gridDistance, shape,
+    quadtree, friendQuadtree, region, gridDistance, mapType, shape,
   } = props;
 
   const latlng = { latitude: region.latitude, longitude: region.longitude };
@@ -25,17 +25,28 @@ const Fog = (props) => {
   const points = friendQuadtree ? friendQuadtree.query(box) : quadtree.query(box);
   const visibleLocations = points.map(x => Point.toLatLngRounded(x));
 
-  const slices = shape === 'diamond'
-    ? GeoGrid.getDiamondSlices(visibleLocations, gridDistance)
-    : GeoGrid.getRectangleSlices(visibleLocations, gridDistance);
+  let holes;
+  switch (shape) {
+    case 'rectangle':
+      holes = GeoGrid.getRectangleSlices(visibleLocations, gridDistance);
+      break;
+    case 'diamond':
+      holes = GeoGrid.getDiamondSlices(visibleLocations, gridDistance);
+      break;
+    case 'grid':
+      holes = GeoGrid.getRectangles(visibleLocations, gridDistance);
+      break;
+    default:
+      break;
+  }
 
   return (
     <MapView.Polygon
       fillColor={Colors.brown80}
-      strokeWidth={0}
-      strokeColor={Colors.transparent}
+      strokeWidth={0.5}
+      strokeColor={mapType == 'hybrid' ? Colors.creme : Colors.brown}
       coordinates={Earth.FOG}
-      holes={slices}
+      holes={holes}
     />
   );
 };
@@ -45,6 +56,7 @@ const mapStateToProps = state => ({
   friendQuadtree: state.friend.get('friendQuadtree'),
   region: state.map.get('region'),
   gridDistance: state.map.get('gridDistance'),
+  mapType: state.map.get('mapType'),
   shape: state.map.get('shape'),
 });
 

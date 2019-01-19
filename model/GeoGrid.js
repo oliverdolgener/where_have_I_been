@@ -72,6 +72,13 @@ export default class GeoGrid {
     return grid;
   }
 
+  static getRectangles(array, gridDistance = Earth.GRID_DISTANCE) {
+    const resizedLocations = GeoArray.removeDuplicates(
+      array.map(x => GeoLocation.getRoundedLocation(x, gridDistance)),
+    );
+    return resizedLocations.map(x => GeoLocation.getSquare(x, gridDistance));
+  }
+
   static getRectangleSlices(array, gridDistance = Earth.GRID_DISTANCE) {
     const slices = [];
     const resizedLocations = GeoArray.removeDuplicates(

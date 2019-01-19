@@ -124,7 +124,7 @@ export default class GeoLocation {
     return [topLeft, topRight, botRight, botLeft];
   }
 
-  static getSquare = (location, gridDistance = Earth.GRID_DISTANCE) => GeoLocation.getSlice(location, location, gridDistance);
+  static getSquare = (location, gridDistance = Earth.GRID_DISTANCE) => GeoLocation.getRectangle(location, location, gridDistance);
 
   static getCircle(center, radius, count) {
     const points = [];

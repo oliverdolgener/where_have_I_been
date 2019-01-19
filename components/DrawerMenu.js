@@ -27,6 +27,7 @@ import iconSatellite from '../assets/iconSatellite.png';
 import iconShape from '../assets/iconShape.png';
 import iconRectangle from '../assets/iconRectangle.png';
 import iconDiamond from '../assets/iconDiamond.png';
+import iconGrid from '../assets/iconGrid.png';
 import iconFriendlist from '../assets/iconFriendlist.png';
 import iconCollapse from '../assets/iconCollapse.png';
 import iconWorld from '../assets/iconWorld.png';
@@ -129,7 +130,20 @@ class DrawerMenu extends React.Component {
   toggleShape = () => {
     const { shape, setShape } = this.props;
     this.closeDrawer();
-    setShape(shape === 'diamond' ? 'rectangle' : 'diamond');
+    switch (shape) {
+      case 'rectangle':
+        setShape('diamond');
+        break;
+      case 'diamond':
+        setShape('grid');
+        break;
+      case 'grid':
+        setShape('rectangle');
+        break;
+      default:
+        setShape('rectangle');
+        break;
+    }
   };
 
   toggleMapType = () => {
@@ -287,6 +301,22 @@ class DrawerMenu extends React.Component {
       outputRange: ['0deg', '180deg'],
     });
 
+    let shapeIcon;
+    switch (shape) {
+      case 'rectangle':
+        shapeIcon = iconRectangle;
+        break;
+      case 'diamond':
+        shapeIcon = iconDiamond;
+        break;
+      case 'grid':
+        shapeIcon = iconGrid;
+        break;
+      default:
+        shapeIcon = iconRectangle;
+        break;
+    }
+
     return (
       <SafeAreaView
         style={styles.container}
@@ -306,7 +336,7 @@ class DrawerMenu extends React.Component {
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleShape()}>
               <Image style={styles.menuIcon} source={iconShape} />
               <StyledText style={styles.menuLabel}>Tile Shape</StyledText>
-              <Image style={styles.menuIcon} source={shape === 'diamond' ? iconDiamond : iconRectangle} />
+              <Image style={styles.menuIcon} source={shapeIcon} />
             </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleFriendlist()}>
               <Image style={styles.menuIcon} source={iconFriendlist} />
