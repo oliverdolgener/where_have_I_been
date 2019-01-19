@@ -43,7 +43,7 @@ const Fog = (props) => {
   return (
     <MapView.Polygon
       fillColor={Colors.brown80}
-      strokeWidth={0.5}
+      strokeWidth={shape == 'grid' ? 0.5 : 0}
       strokeColor={mapType == 'hybrid' ? Colors.creme : Colors.brown}
       coordinates={Earth.FOG}
       holes={holes}
