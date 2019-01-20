@@ -1,7 +1,9 @@
 import { Map } from 'immutable';
 import { AsyncStorage, Platform } from 'react-native';
+import { handle } from 'redux-pack';
 
 import GeoLocation from '../model/GeoLocation';
+import { getPlaces } from '../services/api';
 import * as Earth from '../constants/Earth';
 
 export const types = {
@@ -15,6 +17,7 @@ export const types = {
   SET_SHAPE: 'MAP/SET_SHAPE',
   SET_LAST_TILE: 'MAP/SET_LAST_TILE',
   SET_REGION: 'MAP/SET_REGION',
+  SET_PLACES: 'MAP/SET_PLACES',
 };
 
 const setMapTypeAsync = async (mapType) => {
@@ -66,6 +69,10 @@ export const actions = {
   setShape: shape => ({ type: types.SET_SHAPE, shape }),
   setLastTile: lastTile => ({ type: types.SET_LAST_TILE, lastTile }),
   setRegion: region => ({ type: types.SET_REGION, region }),
+  setPlaces: center => ({
+    type: types.SET_PLACES,
+    promise: getPlaces(center),
+  }),
 };
 
 const initialState = Map({
@@ -96,10 +103,11 @@ const initialState = Map({
   },
   zoom: false,
   gridDistance: Earth.GRID_DISTANCE,
+  places: [],
 });
 
 export default (state = initialState, action = {}) => {
-  const { type } = action;
+  const { type, payload } = action;
   switch (type) {
     case types.SET_MAP: {
       return state.set('map', action.map);
@@ -151,6 +159,25 @@ export default (state = initialState, action = {}) => {
         .set('gridDistance', gridDistance)
         .set('followLocation', followLocation);
     }
+    case types.SET_PLACES:
+      return handle(state, action, {
+        success: (prevState) => {
+          // const places = payload.data.results.map(x => ({
+          //   id: x.id,
+          //   placeId: x.place_id,
+          //   name: x.name,
+          //   latitude: x.geometry.location.lat,
+          //   longitude: x.geometry.location.lng,
+          // }));
+          const places = payload.data.response.venues.map(x => ({
+            id: x.id,
+            name: x.name,
+            latitude: x.location.lat,
+            longitude: x.location.lng,
+          }));
+          return prevState.set('places', places);
+        },
+      });
     default:
       return state;
   }
