@@ -149,7 +149,7 @@ class MapScreen extends Component {
 
   watchPositionAsync = async () => {
     this.locationListener = await Location.watchPositionAsync(locationOptions, (result) => {
-      const { setGeolocation, setPlaces } = this.props;
+      const { setGeolocation } = this.props;
       const {
         latitude, longitude, altitude, accuracy,
       } = result.coords;
@@ -189,7 +189,6 @@ class MapScreen extends Component {
           setLastTile(roundedLocation);
           followLocation && map && map.moveToLocation(roundedLocation);
           this.getGeocodeAsync(roundedLocation);
-          // setPlaces(roundedLocation);
         }
       }
     });
@@ -312,7 +311,6 @@ const mapDispatchToProps = {
   setLastTile: mapActions.setLastTile,
   setGeolocation: mapActions.setGeolocation,
   setGeocode: mapActions.setGeocode,
-  setPlaces: mapActions.setPlaces,
   setFollowLocation: mapActions.setFollowLocation,
   getFlights: flightActions.getFlights,
 };

@@ -38,6 +38,7 @@ export const types = {
   REMOVE_TILE: 'USER/REMOVE_TILE',
   SET_PUSH_TOKEN: 'USER/SET_PUSH_TOKEN',
   SET_USER_PUSH_TOKEN: 'USER/SET_USER_PUSH_TOKEN',
+  SET_SCORE: 'USER/SET_SCORE',
 };
 
 const setUserAsync = async (id) => {
@@ -51,6 +52,41 @@ const removeUserAsync = async () => {
 const setTilesToSaveAsync = async (tilesToSave) => {
   await AsyncStorage.setItem('tilesToSave', JSON.stringify(tilesToSave));
 };
+
+const calculateChunkAsync = (quadtree, allPoints, start, end) => new Promise((resolve) => {
+  setTimeout(() => {
+    let score = 0;
+    const realEnd = end > allPoints.length ? allPoints.length : end;
+    for (let i = start; i < realEnd; i++) {
+      const latLng = Point.toLatLngRounded(allPoints[i]);
+      const gridDistanceAtLatitude = GeoLocation.gridDistanceAtLatitude(latLng.latitude);
+      const box = new Box(
+        allPoints[i].x - gridDistanceAtLatitude - 0.00001,
+        allPoints[i].y - Earth.GRID_DISTANCE - 0.00001,
+        (gridDistanceAtLatitude + 0.00001) * 2,
+        (Earth.GRID_DISTANCE + 0.00001) * 2,
+      );
+      score += quadtree.query(box).length;
+    }
+    resolve(score);
+  }, 0);
+});
+
+const calculateScoreAsync = quadtree => new Promise((resolve) => {
+  const chunkSize = 1000;
+  const allPoints = quadtree.getAllPoints();
+  let score = 0;
+  const promises = [];
+  for (let i = 0; i < allPoints.length; i += chunkSize) {
+    promises.push(calculateChunkAsync(quadtree, allPoints, i, i + chunkSize));
+  }
+  Promise.all(promises).then((chunkScores) => {
+    chunkScores.forEach((x) => {
+      score += x;
+    });
+    resolve(score);
+  });
+});
 
 const calculateScore = (quadtree) => {
   const allPoints = quadtree.getAllPoints();
@@ -122,6 +158,10 @@ export const actions = {
   setUserPushToken: (userId, pushToken) => ({
     type: types.SET_USER_PUSH_TOKEN,
     promise: setUserPushToken(userId, pushToken),
+  }),
+  setScore: quadtree => ({
+    type: types.SET_SCORE,
+    promise: calculateScoreAsync(quadtree),
   }),
 };
 
@@ -254,6 +294,10 @@ export default (state = initialState, action = {}) => {
     case types.SET_PUSH_TOKEN: {
       return state.set('pushToken', action.pushToken);
     }
+    case types.SET_SCORE:
+      return handle(state, action, {
+        success: prevState => prevState.set('score', action.payload),
+      });
     default:
       return state;
   }
