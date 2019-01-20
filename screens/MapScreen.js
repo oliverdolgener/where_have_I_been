@@ -70,14 +70,8 @@ class MapScreen extends Component {
   }
 
   componentDidMount() {
-    const {
-      userId, getFlights, lastTile, setPlaces,
-    } = this.props;
-    this.watchPositionAsync();
-    this.startLocationUpdatesAsync();
+    const { userId, getFlights } = this.props;
     getFlights(userId);
-    this.getGeocodeAsync(lastTile);
-    setPlaces(lastTile);
     this.onResume();
   }
 
@@ -90,27 +84,23 @@ class MapScreen extends Component {
     }
   }
 
-  async componentWillUnmount() {
-    this.locationListener && this.locationListener.remove();
-    await Location.stopLocationUpdatesAsync('location');
+  componentWillUnmount() {
+    this.stopForegroundLocations();
+    this.stopBackgroundLocations();
+    this.stopGeocode();
   }
 
-  async onResume() {
-    this.watchPositionAsync();
-    await Location.stopLocationUpdatesAsync('location');
-    const backgroundLocations = await AsyncStorage.getItem('backgroundLocations');
-    if (backgroundLocations) {
-      const locations = JSON.parse(backgroundLocations);
-      if (locations.length > 0) {
-        this.addLocations(locations);
-        AsyncStorage.removeItem('backgroundLocations');
-      }
-    }
+  onResume() {
+    this.startForegroundLocations();
+    this.stopBackgroundLocations();
+    this.startGeocode();
+    this.restoreBackgroundLocations();
   }
 
-  async onPause() {
-    this.startLocationUpdatesAsync();
-    this.locationListener && this.locationListener.remove();
+  onPause() {
+    this.startBackgroundLocations();
+    this.stopForegroundLocations();
+    this.stopGeocode();
   }
 
   onMapPress(coordinate) {
@@ -137,13 +127,47 @@ class MapScreen extends Component {
     }
   }
 
-  startLocationUpdatesAsync = async () => {
-    await Location.startLocationUpdatesAsync('location', locationOptions);
-  };
+  startForegroundLocations = () => {
+    this.watchPositionAsync();
+  }
 
-  getGeocodeAsync = async (location) => {
-    const { setGeocode } = this.props;
-    const geocode = await Location.reverseGeocodeAsync(location);
+  stopForegroundLocations = () => {
+    this.locationListener && this.locationListener.remove();
+  }
+
+  startBackgroundLocations = async () => {
+    await Location.startLocationUpdatesAsync('location', locationOptions);
+  }
+
+  stopBackgroundLocations = async () => {
+    await Location.hasStartedLocationUpdatesAsync('location') && await Location.stopLocationUpdatesAsync('location');
+  }
+
+  restoreBackgroundLocations = async () => {
+    const backgroundLocations = await AsyncStorage.getItem('backgroundLocations');
+    if (backgroundLocations) {
+      const locations = JSON.parse(backgroundLocations);
+      if (locations.length > 0) {
+        this.addLocations(locations);
+        AsyncStorage.removeItem('backgroundLocations');
+      }
+    }
+  }
+
+  startGeocode = () => {
+    this.getGeocodeAsync();
+    this.geocodeListener = setInterval(async () => {
+      this.getGeocodeAsync();
+    }, 10000);
+  }
+
+  stopGeocode = () => {
+    this.geocodeListener && clearInterval(this.geocodeListener);
+  }
+
+  getGeocodeAsync = async () => {
+    const { lastTile, setGeocode } = this.props;
+    const geocode = await Location.reverseGeocodeAsync(lastTile);
     geocode[0] && setGeocode(geocode[0]);
   };
 
@@ -188,7 +212,6 @@ class MapScreen extends Component {
         if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
           setLastTile(roundedLocation);
           followLocation && map && map.moveToLocation(roundedLocation);
-          this.getGeocodeAsync(roundedLocation);
         }
       }
     });
