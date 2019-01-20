@@ -186,7 +186,7 @@ export default (state = initialState, action = {}) => {
       });
     case types.SET_ELEVATION:
       return handle(state, action, {
-        success: prevState => prevState.set('elevation', payload.data.results[0].elevation),
+        success: prevState => prevState.set('elevation', payload.data.elevations[0].elevation),
       });
     default:
       return state;

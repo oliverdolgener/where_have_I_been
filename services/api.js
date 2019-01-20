@@ -3,8 +3,8 @@ import URI from 'urijs';
 const API_URL = 'https://api.0llum.de/';
 // const PLACES_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
 const PLACES_URL = 'https://api.foursquare.com/v2/venues/search';
-const ELEVATION_URL = 'https://api.open-elevation.com/api/v1/lookup';
-// const ELEVATION_URL = 'https://elevation-api.io/api/elevation';
+// const ELEVATION_URL = 'https://api.open-elevation.com/api/v1/lookup';
+const ELEVATION_URL = 'https://elevation-api.io/api/elevation';
 
 const ENDPOINT_USER = 'user';
 const ENDPOINT_LOGIN = 'login';
@@ -233,7 +233,7 @@ export const getPlaces = (center) => {
 
 export const getElevation = (center) => {
   const url = new URI(ELEVATION_URL);
-  url.addQuery('locations', `${center.latitude},${center.longitude}`);
-  // url.addQuery('points', `${center.latitude},${center.longitude}`);
+  // url.addQuery('locations', `${center.latitude},${center.longitude}`);
+  url.addQuery('points', `${center.latitude},${center.longitude}`);
   return fetchJson(url.href());
 };
