@@ -3,7 +3,7 @@ import { AsyncStorage, Platform } from 'react-native';
 import { handle } from 'redux-pack';
 
 import GeoLocation from '../model/GeoLocation';
-import { getPlaces } from '../services/api';
+import { getPlaces, getElevation } from '../services/api';
 import * as Earth from '../constants/Earth';
 
 export const types = {
@@ -18,6 +18,7 @@ export const types = {
   SET_LAST_TILE: 'MAP/SET_LAST_TILE',
   SET_REGION: 'MAP/SET_REGION',
   SET_PLACES: 'MAP/SET_PLACES',
+  SET_ELEVATION: 'MAP/SET_ELEVATION',
 };
 
 const setMapTypeAsync = async (mapType) => {
@@ -73,6 +74,10 @@ export const actions = {
     type: types.SET_PLACES,
     promise: getPlaces(center),
   }),
+  setElevation: center => ({
+    type: types.SET_ELEVATION,
+    promise: getElevation(center),
+  }),
 };
 
 const initialState = Map({
@@ -86,6 +91,7 @@ const initialState = Map({
     timestamp: false,
   },
   geocode: {},
+  elevation: 0,
   followLocation: true,
   editMode: false,
   mapType: 'hybrid',
@@ -177,6 +183,10 @@ export default (state = initialState, action = {}) => {
           }));
           return prevState.set('places', places);
         },
+      });
+    case types.SET_ELEVATION:
+      return handle(state, action, {
+        success: prevState => prevState.set('elevation', payload.data.results[0].elevation),
       });
     default:
       return state;

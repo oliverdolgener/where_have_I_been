@@ -88,7 +88,7 @@ class Toolbar extends Component {
   }
 
   render() {
-    const { count, geolocation } = this.props;
+    const { count, elevation, geolocation } = this.props;
     const { animation } = this.state;
 
     const level = LevelUtils.getLevelFromExp(count);
@@ -124,7 +124,7 @@ class Toolbar extends Component {
           <View style={styles.separator} />
           <View style={[styles.toolbarItem, { flex: 4 }]}>
             <Image style={styles.toolbarIcon} source={iconAltitude} />
-            <StyledText style={styles.toolbarLabel}>{geolocation.altitude || 0}</StyledText>
+            <StyledText style={styles.toolbarLabel}>{elevation || 0}</StyledText>
           </View>
         </View>
       </Animated.View>
@@ -135,6 +135,7 @@ class Toolbar extends Component {
 const mapStateToProps = state => ({
   count: state.user.get('count'),
   geolocation: state.map.get('geolocation'),
+  elevation: state.map.get('elevation'),
   followLocation: state.map.get('followLocation'),
 });
 

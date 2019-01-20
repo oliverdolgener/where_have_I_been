@@ -24,6 +24,9 @@ import iconMenu from '../assets/iconMenu.png';
 import iconLocation from '../assets/iconLocation.png';
 import iconClose from '../assets/iconRemove.png';
 
+const GEOCODE_INTERVAL = 20000;
+const ELEVATION_INTERVAL = 30000;
+
 const locationOptions = {
   accuracy: Location.Accuracy.BestForNavigation,
   timeInterval: 0,
@@ -88,12 +91,14 @@ class MapScreen extends Component {
     this.stopForegroundLocations();
     this.stopBackgroundLocations();
     this.stopGeocode();
+    this.stopElevation();
   }
 
   onResume() {
     this.startForegroundLocations();
     this.stopBackgroundLocations();
     this.startGeocode();
+    this.startElevation();
     this.restoreBackgroundLocations();
   }
 
@@ -101,6 +106,7 @@ class MapScreen extends Component {
     this.startBackgroundLocations();
     this.stopForegroundLocations();
     this.stopGeocode();
+    this.stopElevation();
   }
 
   onMapPress(coordinate) {
@@ -158,7 +164,7 @@ class MapScreen extends Component {
     this.getGeocodeAsync();
     this.geocodeListener = setInterval(async () => {
       this.getGeocodeAsync();
-    }, 10000);
+    }, GEOCODE_INTERVAL);
   }
 
   stopGeocode = () => {
@@ -170,6 +176,22 @@ class MapScreen extends Component {
     const geocode = await Location.reverseGeocodeAsync(lastTile);
     geocode[0] && setGeocode(geocode[0]);
   };
+
+  startElevation = () => {
+    this.getElevation();
+    this.elevationListener = setInterval(async () => {
+      this.getElevation();
+    }, ELEVATION_INTERVAL);
+  }
+
+  stopElevation = () => {
+    this.elevationListener && clearInterval(this.elevationListener);
+  }
+
+  getElevation = () => {
+    const { lastTile, setElevation } = this.props;
+    setElevation(lastTile);
+  }
 
   watchPositionAsync = async () => {
     this.locationListener = await Location.watchPositionAsync(locationOptions, (result) => {
@@ -334,6 +356,7 @@ const mapDispatchToProps = {
   setLastTile: mapActions.setLastTile,
   setGeolocation: mapActions.setGeolocation,
   setGeocode: mapActions.setGeocode,
+  setElevation: mapActions.setElevation,
   setFollowLocation: mapActions.setFollowLocation,
   getFlights: flightActions.getFlights,
 };
