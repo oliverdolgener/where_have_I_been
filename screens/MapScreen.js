@@ -19,6 +19,7 @@ import TouchableScale from '../components/TouchableScale';
 import Toolbar from '../components/Toolbar';
 import Map from '../components/Map';
 import FlightBox from '../components/FlightBox';
+import NotificationPanel from '../components/NotificationPanel';
 import * as Earth from '../constants/Earth';
 import iconMenu from '../assets/iconMenu.png';
 import iconLocation from '../assets/iconLocation.png';
@@ -76,6 +77,10 @@ class MapScreen extends Component {
     const { userId, getFlights } = this.props;
     getFlights(userId);
     this.onResume();
+    setTimeout(() => {
+      const { notificationPanel, username } = this.props;
+      notificationPanel && notificationPanel.show(`Willkommen zurück, ${username}!`);
+    }, 5000);
   }
 
   componentDidUpdate(prevProps) {
@@ -329,6 +334,7 @@ class MapScreen extends Component {
           )
         )}
         {editMode && <FlightBox />}
+        <NotificationPanel />
       </View>
     );
   }
@@ -336,7 +342,9 @@ class MapScreen extends Component {
 
 const mapStateToProps = state => ({
   appState: state.app.get('appState'),
+  notificationPanel: state.app.get('notificationPanel'),
   userId: state.user.get('userId'),
+  username: state.user.get('username'),
   quadtree: state.user.get('quadtree'),
   friendQuadtree: state.friend.get('friendQuadtree'),
   tilesToSave: state.user.get('tilesToSave'),
