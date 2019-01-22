@@ -86,8 +86,10 @@ class SplashScreen extends React.Component {
 
       setTimeout(() => {
         if (visitedLocations.length > 0) {
+          console.log('sqlite');
           relogFromSQLite(id, visitedLocations);
         } else {
+          console.log('relog');
           relogUser(id);
         }
       }, 3000);
