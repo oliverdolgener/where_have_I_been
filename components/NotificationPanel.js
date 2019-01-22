@@ -4,8 +4,11 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
+import { actions as appActions } from '../reducers/app';
 import StyledText from './StyledText';
 import * as Colors from '../constants/Colors';
+
+const DURATION = 5000;
 
 const styles = StyleSheet.create({
   container: {
@@ -18,36 +21,34 @@ const styles = StyleSheet.create({
   },
   panel: {
     maxWidth: '80%',
-    backgroundColor: Colors.creme,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
     borderColor: Colors.brown,
     borderWidth: 1,
     padding: 10,
+    backgroundColor: Colors.rose,
   },
   message: {
     textAlign: 'center',
     fontSize: 20,
     fontFamily: 'light',
+    color: Colors.creme,
   },
 });
 
-class Toolbar extends Component {
+class NotificationPanel extends Component {
   constructor() {
     super();
     this.state = {
+      message: '',
       animation: new Animated.Value(-300),
     };
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.slideDown();
-    }, 5000);
-    setTimeout(() => {
-      this.slideUp();
-    }, 10000);
+    const { setNotificationPanel } = this.props;
+    setNotificationPanel(this);
   }
 
   slideDown() {
@@ -68,24 +69,33 @@ class Toolbar extends Component {
     }).start();
   }
 
+  show(message, duration = DURATION) {
+    this.setState({ message });
+    this.slideDown();
+    duration > 0 && setTimeout(() => {
+      this.slideUp();
+    }, duration);
+  }
+
+  hide() {
+    this.slideDown();
+  }
+
   render() {
-    const { animation } = this.state;
-    const { username } = this.props;
+    const { message, animation } = this.state;
 
     return (
       <Animated.View style={[styles.container, { top: animation }]}>
         <View style={styles.panel}>
-          <StyledText style={styles.message}>
-            {`Willkommen zurück, ${username}!`}
-          </StyledText>
+          <StyledText style={styles.message}>{message}</StyledText>
         </View>
       </Animated.View>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  username: state.user.get('username'),
-});
+const mapDispatchToProps = {
+  setNotificationPanel: appActions.setNotificationPanel,
+};
 
-export default connect(mapStateToProps)(Toolbar);
+export default connect(null, mapDispatchToProps)(NotificationPanel);

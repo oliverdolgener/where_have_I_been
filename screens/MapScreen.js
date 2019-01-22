@@ -77,6 +77,10 @@ class MapScreen extends Component {
     const { userId, getFlights } = this.props;
     getFlights(userId);
     this.onResume();
+    setTimeout(() => {
+      const { notificationPanel, username } = this.props;
+      notificationPanel && notificationPanel.show(`Willkommen zurück, ${username}!`);
+    }, 5000);
   }
 
   componentDidUpdate(prevProps) {
@@ -338,7 +342,9 @@ class MapScreen extends Component {
 
 const mapStateToProps = state => ({
   appState: state.app.get('appState'),
+  notificationPanel: state.app.get('notificationPanel'),
   userId: state.user.get('userId'),
+  username: state.user.get('username'),
   quadtree: state.user.get('quadtree'),
   friendQuadtree: state.friend.get('friendQuadtree'),
   tilesToSave: state.user.get('tilesToSave'),
