@@ -79,7 +79,7 @@ class MapScreen extends Component {
     this.onResume();
     setTimeout(() => {
       const { notificationPanel, username } = this.props;
-      notificationPanel && notificationPanel.show(`Willkommen zurück, ${username}!`);
+      notificationPanel && notificationPanel.show(`Welcome back, ${username}!`);
     }, 5000);
   }
 

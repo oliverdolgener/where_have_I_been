@@ -61,11 +61,17 @@ class Toolbar extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { followLocation } = this.props;
+    const { followLocation, count, notificationPanel } = this.props;
     if (prevProps.followLocation && !followLocation) {
       this.slideDown();
     } else if (!prevProps.followLocation && followLocation) {
       this.slideUp();
+    }
+
+    const level = LevelUtils.getLevelFromExp(count);
+    const prevLevel = LevelUtils.getLevelFromExp(prevProps.count);
+    if (level > prevLevel) {
+      notificationPanel && notificationPanel.show(`Congratulations! You've reached Level ${level}!`);
     }
   }
 
@@ -133,6 +139,7 @@ class Toolbar extends Component {
 }
 
 const mapStateToProps = state => ({
+  notificationPanel: state.app.get('notificationPanel'),
   count: state.user.get('count'),
   geolocation: state.map.get('geolocation'),
   elevation: state.map.get('elevation'),
