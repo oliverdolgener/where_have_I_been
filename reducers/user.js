@@ -133,6 +133,7 @@ export const actions = {
     type: types.RELOG_USER,
     promise: getLocations(userId),
     meta: {
+      username,
       onSuccess: () => {
         setUserAsync(userId, username);
         NavigationService.navigate('Map');
@@ -185,7 +186,7 @@ const initialState = Map({
 });
 
 export default (state = initialState, action = {}) => {
-  const { type, payload } = action;
+  const { type, payload, meta } = action;
   switch (type) {
     case types.LOGIN:
       return handle(state, action, {
@@ -238,11 +239,10 @@ export default (state = initialState, action = {}) => {
           const latlngs = payload.data.locations;
           const points = latlngs.map(x => LatLng.toPoint(x));
           const quadtree = new QuadTree(new Box(0, 0, 360, 180), config, points);
-          console.log('relog', payload.data.username);
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data.id)
-            .set('username', payload.data.username)
+            .set('username', meta.username)
             .set('quadtree', quadtree)
             .set('count', quadtree.getAllPoints().length);
         },
