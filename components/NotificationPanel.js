@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet, Animated, View,
-} from 'react-native';
+import { StyleSheet, Animated } from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as appActions } from '../reducers/app';
+import TouchableScale from './TouchableScale';
 import StyledText from './StyledText';
 import * as Colors from '../constants/Colors';
 
@@ -78,7 +77,7 @@ class NotificationPanel extends Component {
   }
 
   hide() {
-    this.slideDown();
+    this.slideUp();
   }
 
   render() {
@@ -86,9 +85,9 @@ class NotificationPanel extends Component {
 
     return (
       <Animated.View style={[styles.container, { top: animation }]}>
-        <View style={styles.panel}>
+        <TouchableScale style={styles.panel} onPress={() => this.hide()}>
           <StyledText style={styles.message}>{message}</StyledText>
-        </View>
+        </TouchableScale>
       </Animated.View>
     );
   }
