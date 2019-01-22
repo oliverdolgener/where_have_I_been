@@ -54,6 +54,7 @@ class SplashScreen extends React.Component {
     } = this.props;
 
     const id = await AsyncStorage.getItem('id');
+    const username = await AsyncStorage.getItem('username');
     const tilesToSave = await AsyncStorage.getItem('tilesToSave');
     const lastTile = await AsyncStorage.getItem('lastTile');
     const mapType = await AsyncStorage.getItem('mapType');
@@ -85,10 +86,13 @@ class SplashScreen extends React.Component {
       });
 
       setTimeout(() => {
+        console.log(visitedLocations.length);
         if (visitedLocations.length > 0) {
-          relogFromSQLite(id, visitedLocations);
+          console.log('sqlite');
+          relogFromSQLite(id, username, visitedLocations);
         } else {
-          relogUser(id);
+          console.log('relog');
+          relogUser(id, username);
         }
       }, 3000);
     } else {

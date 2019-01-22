@@ -41,12 +41,14 @@ export const types = {
   SET_SCORE: 'USER/SET_SCORE',
 };
 
-const setUserAsync = async (id) => {
+const setUserAsync = async (id, username) => {
   await AsyncStorage.setItem('id', id.toString());
+  await AsyncStorage.setItem('username', username.toString());
 };
 
 const removeUserAsync = async () => {
   await AsyncStorage.removeItem('id');
+  await AsyncStorage.setItem('username');
 };
 
 const setTilesToSaveAsync = async (tilesToSave) => {
@@ -111,7 +113,7 @@ export const actions = {
     promise: login(email, password, pushToken),
     meta: {
       onSuccess: (result) => {
-        setUserAsync(result.data.id);
+        setUserAsync(result.data.id, result.data.username);
         NavigationService.navigate('Map');
       },
     },
@@ -122,17 +124,17 @@ export const actions = {
     promise: signup(email, password, pushToken),
     meta: {
       onSuccess: (result) => {
-        setUserAsync(result.data.id);
+        setUserAsync(result.data.id, result.data.username);
         NavigationService.navigate('Map');
       },
     },
   }),
-  relogUser: userId => ({
+  relogUser: (userId, username) => ({
     type: types.RELOG_USER,
     promise: getLocations(userId),
     meta: {
       onSuccess: () => {
-        setUserAsync(userId);
+        setUserAsync(userId, username);
         NavigationService.navigate('Map');
       },
       onFailure: () => {
@@ -140,7 +142,9 @@ export const actions = {
       },
     },
   }),
-  relogFromSQLite: (userId, locations) => ({ type: types.RELOG_FROM_SQLITE, userId, locations }),
+  relogFromSQLite: (userId, username, locations) => ({
+    type: types.RELOG_FROM_SQLITE, userId, username, locations,
+  }),
   setEmailError: error => ({ type: types.SET_EMAIL_ERROR, error }),
   setPasswordError: error => ({ type: types.SET_PASSWORD_ERROR, error }),
   setQuadtree: quadtree => ({ type: types.SET_QUADTREE, quadtree }),
@@ -168,6 +172,7 @@ export const actions = {
 const initialState = Map({
   isLoggedIn: false,
   userId: false,
+  username: false,
   quadtree: new QuadTree(new Box(0, 0, 360, 180)),
   count: 0,
   score: 0,
@@ -190,9 +195,11 @@ export default (state = initialState, action = {}) => {
           const latlngs = payload.data.locations;
           const points = latlngs.map(x => LatLng.toPoint(x));
           const quadtree = new QuadTree(new Box(0, 0, 360, 180), config, points);
+          console.log('login', payload.data.username);
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data.id)
+            .set('username', payload.data.username)
             .set('quadtree', quadtree)
             .set('count', quadtree.getAllPoints().length)
             .set('emailError', '')
@@ -208,6 +215,7 @@ export default (state = initialState, action = {}) => {
       return state
         .set('isLoggedIn', false)
         .set('userId', false)
+        .set('username', false)
         .set('quadtree', new QuadTree(new Box(0, 0, 360, 180)))
         .set('count', 0)
         .set('score', 0);
@@ -216,6 +224,7 @@ export default (state = initialState, action = {}) => {
         success: prevState => prevState
           .set('isLoggedIn', true)
           .set('userId', payload.data.id)
+          .set('username', payload.data.username)
           .set('emailError', '')
           .set('passwordError', ''),
         failure: prevState => prevState
@@ -229,9 +238,11 @@ export default (state = initialState, action = {}) => {
           const latlngs = payload.data.locations;
           const points = latlngs.map(x => LatLng.toPoint(x));
           const quadtree = new QuadTree(new Box(0, 0, 360, 180), config, points);
+          console.log('relog', payload.data.username);
           return prevState
             .set('isLoggedIn', true)
             .set('userId', payload.data.id)
+            .set('username', payload.data.username)
             .set('quadtree', quadtree)
             .set('count', quadtree.getAllPoints().length);
         },
@@ -240,11 +251,13 @@ export default (state = initialState, action = {}) => {
       const latlngs = action.locations;
       const points = latlngs.map(x => LatLng.toPoint(x));
       const quadtree = new QuadTree(new Box(0, 0, 360, 180), config, points);
-      setUserAsync(action.userId);
+      setUserAsync(action.userId, action.username);
+      console.log('sqlite', action.username);
       setTimeout(() => NavigationService.navigate('Map'), 1000);
       return state
         .set('isLoggedIn', true)
         .set('userId', action.userId)
+        .set('username', action.username)
         .set('quadtree', quadtree)
         .set('count', quadtree.getAllPoints().length);
     }
