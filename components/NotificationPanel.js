@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     backgroundColor: Colors.rose,
+    elevation: 3,
   },
   message: {
     textAlign: 'center',
