@@ -1,39 +1,11 @@
 import React from 'react';
-import { StyleSheet, FlatList, Image } from 'react-native';
+import { FlatList } from 'react-native';
 import { connect } from 'react-redux';
 
 import { actions as countryActions } from '../reducers/country';
-import StyledText from './StyledText';
-import TouchableScale from './TouchableScale';
-import iconDone from '../assets/iconDone.png';
-import iconToDo from '../assets/iconToDo.png';
-import iconHeart from '../assets/iconHeart.png';
+import CountryListItem from './CountryListItem';
 
 const ITEM_HEIGHT = 40;
-
-const styles = StyleSheet.create({
-  item: {
-    height: ITEM_HEIGHT,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 10,
-  },
-  label: {
-    flex: 1,
-    marginLeft: 10,
-    fontSize: 20,
-    fontFamily: 'light',
-  },
-  status: {
-    height: ITEM_HEIGHT,
-    justifyContent: 'center',
-    paddingHorizontal: 10,
-  },
-  icon: {
-    width: 30,
-    height: 30,
-  },
-});
 
 const CountryList = (props) => {
   const { countries, onCountryPress } = props;
@@ -51,30 +23,16 @@ const CountryList = (props) => {
     setCountries(countries.map(x => (x.id === country.id ? { ...x, status } : x)));
   };
 
-  const getIcon = (status) => {
-    let icon = iconToDo;
-    if (status === 1) {
-      icon = iconHeart;
-    } else if (status === 2) {
-      icon = iconDone;
-    }
-    return icon;
-  };
-
   return (
     <FlatList
       data={countries}
       keyExtractor={item => item.id.toString()}
       renderItem={({ item }) => (
-        <TouchableScale style={styles.item} onPress={() => onCountryPress(item.region)}>
-          <Image style={styles.icon} source={item.flag} />
-          <StyledText style={styles.label} numberOfLines={1} ellipsizeMode="middle">
-            {item.name}
-          </StyledText>
-          <TouchableScale style={styles.status} onPress={() => toggleStatus(item)}>
-            <Image style={styles.icon} source={getIcon(item.status)} />
-          </TouchableScale>
-        </TouchableScale>
+        <CountryListItem
+          item={item}
+          onCountryPress={region => onCountryPress(region)}
+          onStatusPress={country => toggleStatus(country)}
+        />
       )}
       getItemLayout={(data, index) => ({ length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index })}
     />
