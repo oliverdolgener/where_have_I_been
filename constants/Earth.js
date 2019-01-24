@@ -8,6 +8,7 @@ export const INITIAL_LOCATION = {
 export const DELTA = 0.01;
 export const SQUARE_OFFSET = 2.01;
 export const ROUND_OFFSET = 0.00001;
+export const BOX_OFFSET = 0.01;
 export const SLICE_OFFSET = 0.0001;
 export const NEIGHBOUR_BOUNDARY = 1;
 export const NEIGHBOUR_OFFSET_LAT = 0.01;
