@@ -229,7 +229,7 @@ class MapScreen extends Component {
         timestamp,
       });
 
-      if (accuracy < 50) {
+      if (accuracy < 100) {
         const {
           lastTile, setLastTile, followLocation, map,
         } = this.props;

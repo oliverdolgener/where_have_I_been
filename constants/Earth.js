@@ -1,11 +1,11 @@
 export const EARTH_RADIUS = 6371008;
 export const GRID_DISTANCE = 0.0025;
-export const CIRCLE_RADIUS = 0.0002;
+export const CIRCLE_RADIUS = 0.00025;
 export const INITIAL_LOCATION = {
   latitude: 52.558,
   longitude: 13.206497,
 };
-export const DELTA = 0.005;
+export const DELTA = 0.01;
 export const SQUARE_OFFSET = 2.01;
 export const ROUND_OFFSET_LONG = 0.000001;
 export const SLICE_OFFSET = 0.0001;

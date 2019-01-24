@@ -40,7 +40,7 @@ TaskManager.defineTask('location', ({ data, error }) => {
     timestamp,
   };
 
-  if (accuracy < 50) {
+  if (accuracy < 100) {
     const tiles = GeoLocation.getCircleTiles(location, Earth.CIRCLE_RADIUS, 16);
     AsyncStorage.getItem('backgroundLocations').then((asyncLocations) => {
       if (asyncLocations) {
