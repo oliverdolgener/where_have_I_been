@@ -63,10 +63,10 @@ const calculateChunkAsync = (quadtree, allPoints, start, end) => new Promise((re
       const latLng = Point.toLatLngRounded(allPoints[i]);
       const gridDistanceAtLatitude = GeoLocation.gridDistanceAtLatitude(latLng.latitude);
       const box = new Box(
-        allPoints[i].x - gridDistanceAtLatitude - 0.00001,
-        allPoints[i].y - Earth.GRID_DISTANCE - 0.00001,
-        (gridDistanceAtLatitude + 0.00001) * 2,
-        (Earth.GRID_DISTANCE + 0.00001) * 2,
+        allPoints[i].x - gridDistanceAtLatitude - Earth.ROUND_OFFSET,
+        allPoints[i].y - Earth.GRID_DISTANCE - Earth.ROUND_OFFSET,
+        (gridDistanceAtLatitude + Earth.ROUND_OFFSET) * 2,
+        (Earth.GRID_DISTANCE + Earth.ROUND_OFFSET) * 2,
       );
       score += quadtree.query(box).length;
     }

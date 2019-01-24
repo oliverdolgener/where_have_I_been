@@ -17,10 +17,10 @@ const Fog = (props) => {
   const latlng = { latitude: region.latitude, longitude: region.longitude };
   const point = LatLng.toPoint(latlng);
   const box = new Box(
-    point.x - region.longitudeDelta,
-    point.y - region.latitudeDelta,
-    region.longitudeDelta * 2,
-    region.latitudeDelta * 2,
+    point.x - region.longitudeDelta - Earth.ROUND_OFFSET,
+    point.y - region.latitudeDelta - Earth.ROUND_OFFSET,
+    (region.longitudeDelta + Earth.ROUND_OFFSET) * 2,
+    (region.latitudeDelta + Earth.ROUND_OFFSET) * 2,
   );
   const points = friendQuadtree ? friendQuadtree.query(box) : quadtree.query(box);
   const visibleLocations = points.map(x => Point.toLatLngRounded(x));
