@@ -210,6 +210,12 @@ class DrawerMenu extends React.Component {
     setEditMode(!editMode);
   };
 
+  showLogoutDialog = () => {
+    const { alertDialog } = this.props;
+    this.closeDrawer();
+    alertDialog && alertDialog.show('You have unsynced tiles! Are you sure you want to log out?', () => this.logout());
+  }
+
   logout = async () => {
     const { logout, resetFriend } = this.props;
     this.closeDrawer();
@@ -389,7 +395,12 @@ class DrawerMenu extends React.Component {
               <StyledText style={styles.menuLabel}>Edit Mode</StyledText>
               <Image style={styles.menuIcon} source={editMode ? iconToggleOn : iconToggleOff} />
             </TouchableScale>
-            <TouchableScale style={styles.menuItem} onPress={() => this.logout()}>
+            <TouchableScale
+              style={styles.menuItem}
+              onPress={() => {
+                tilesToSave.length > 0 ? this.showLogoutDialog() : this.logout();
+              }}
+            >
               <Image style={styles.menuIcon} source={iconLogout} />
               <StyledText style={styles.menuLabel}>Logout</StyledText>
             </TouchableScale>
@@ -401,6 +412,7 @@ class DrawerMenu extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  alertDialog: state.app.get('alertDialog'),
   userId: state.user.get('userId'),
   tilesToSave: state.user.get('tilesToSave'),
   isSaving: state.user.get('isSaving'),

@@ -19,6 +19,7 @@ import TouchableScale from '../components/TouchableScale';
 import Toolbar from '../components/Toolbar';
 import Map from '../components/Map';
 import FlightBox from '../components/FlightBox';
+import AlertDialog from '../components/AlertDialog';
 import NotificationPanel from '../components/NotificationPanel';
 import * as Earth from '../constants/Earth';
 import iconMenu from '../assets/iconMenu.png';
@@ -334,6 +335,7 @@ class MapScreen extends Component {
           )
         )}
         {editMode && <FlightBox />}
+        <AlertDialog />
         <NotificationPanel />
       </View>
     );
