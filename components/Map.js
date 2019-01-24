@@ -69,7 +69,7 @@ class Map extends Component {
         showsPointsOfInterest
         showsCompass={false}
         showsScale={false}
-        showsBuildings
+        showsBuildings={false}
         showsTraffic={false}
         showsIndoors={false}
         showsIndoorLevelPicker={false}
@@ -81,7 +81,7 @@ class Map extends Component {
         scrollEnabled
         pitchEnabled={false}
         toolbarEnabled={false}
-        loadingEnabled
+        loadingEnabled={false}
         moveOnMarkerPress={false}
         onRegionChangeComplete={newRegion => this.onRegionChangeComplete(newRegion)}
         onPanDrag={() => followLocation && setFollowLocation(false)}
