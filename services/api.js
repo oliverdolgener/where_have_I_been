@@ -8,7 +8,7 @@ const ELEVATION_URL = 'https://elevation-api.io/api/elevation';
 
 const ENDPOINT_USER = 'user';
 const ENDPOINT_LOGIN = 'login';
-const ENDPOINT_LOCATION = 'location';
+const ENDPOINT_LOCATION = 'location2';
 const ENDPOINT_FRIEND = 'friend';
 const ENDPOINT_COUNTRY = 'country';
 const ENDPOINT_AIRPORT = 'airport';

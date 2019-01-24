@@ -9,7 +9,8 @@ export default class GeoLocation {
   }
 
   static pointsAtLatitude(latitude, gridDistance = Earth.GRID_DISTANCE) {
-    return Math.round((360 / gridDistance) * Math.cos(ConversionUtils.toRadians(latitude)));
+    const rounded = Math.round((360 / gridDistance) * Math.cos(ConversionUtils.toRadians(latitude)));
+    return rounded < 1 ? 1 : rounded;
   }
 
   static gridDistanceAtLatitude(latitude, gridDistance = Earth.GRID_DISTANCE) {

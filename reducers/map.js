@@ -38,8 +38,8 @@ const setLastTileAsync = async (tile) => {
 };
 
 function getGridDistanceByZoom(zoom) {
-  if (zoom < 0.1 * 2.5) {
-    return Earth.GRID_DISTANCE * 2.5;
+  if (zoom < 0.25) {
+    return Earth.GRID_DISTANCE;
   }
 
   let gridDistance;
@@ -53,7 +53,7 @@ function getGridDistanceByZoom(zoom) {
   }
 
   if (gridDistance > 50) {
-    return Earth.GRID_DISTANCE * 1000;
+    return Earth.GRID_DISTANCE * 500;
   }
 
   return gridDistance / 50;
