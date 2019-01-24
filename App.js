@@ -14,7 +14,6 @@ import CountryReducer from './reducers/country';
 import FlightReducer from './reducers/flight';
 import GeoLocation from './model/GeoLocation';
 import GeoArray from './model/GeoArray';
-import * as Earth from './constants/Earth';
 import Regular from './assets/fonts/Lato-Regular.ttf';
 import Light from './assets/fonts/Lato-Light.ttf';
 
@@ -41,23 +40,16 @@ TaskManager.defineTask('location', ({ data, error }) => {
   };
 
   if (accuracy < 100) {
-    const tiles = GeoLocation.getCircleTiles(location, Earth.CIRCLE_RADIUS, 16);
+    const roundedLocation = GeoLocation.getRoundedLocation(location);
     AsyncStorage.getItem('backgroundLocations').then((asyncLocations) => {
       if (asyncLocations) {
         const backgroundLocations = JSON.parse(asyncLocations);
-        const newLocations = [];
-        tiles.forEach((x) => {
-          if (!GeoArray.contains(x, backgroundLocations)) {
-            newLocations.push(x);
-          }
-        });
-
-        if (newLocations.length > 0) {
-          const mergedLocations = backgroundLocations.concat(newLocations);
-          AsyncStorage.setItem('backgroundLocations', JSON.stringify(mergedLocations));
+        if (!GeoArray.contains(roundedLocation, backgroundLocations)) {
+          backgroundLocations.push(roundedLocation);
+          AsyncStorage.setItem('backgroundLocations', JSON.stringify(backgroundLocations));
         }
       } else {
-        AsyncStorage.setItem('backgroundLocations', JSON.stringify(tiles));
+        AsyncStorage.setItem('backgroundLocations', JSON.stringify([roundedLocation]));
       }
     });
   }

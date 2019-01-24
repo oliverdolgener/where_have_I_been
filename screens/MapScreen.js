@@ -21,7 +21,6 @@ import Map from '../components/Map';
 import FlightBox from '../components/FlightBox';
 import AlertDialog from '../components/AlertDialog';
 import NotificationPanel from '../components/NotificationPanel';
-import * as Earth from '../constants/Earth';
 import iconMenu from '../assets/iconMenu.png';
 import iconLocation from '../assets/iconLocation.png';
 import iconClose from '../assets/iconRemove.png';
@@ -30,7 +29,7 @@ const GEOCODE_INTERVAL = 20000;
 const ELEVATION_INTERVAL = 30000;
 
 const locationOptions = {
-  accuracy: Location.Accuracy.BestForNavigation,
+  accuracy: 4,
   timeInterval: 0,
   distanceInterval: 0,
 };
@@ -235,9 +234,8 @@ class MapScreen extends Component {
         } = this.props;
         const roundedLocation = GeoLocation.getRoundedLocation(location);
 
-        this.addLocations(GeoLocation.getCircleTiles(location, Earth.CIRCLE_RADIUS, 16));
-
         if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
+          this.addLocations([roundedLocation]);
           setLastTile(roundedLocation);
           followLocation && map && map.moveToLocation(roundedLocation);
         }
