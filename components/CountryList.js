@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { actions as countryActions } from '../reducers/country';
 import StyledText from './StyledText';
 import TouchableScale from './TouchableScale';
-import Flags from '../constants/Flags';
 import iconDone from '../assets/iconDone.png';
 import iconToDo from '../assets/iconToDo.png';
 import iconHeart from '../assets/iconHeart.png';
@@ -62,18 +61,13 @@ const CountryList = (props) => {
     return icon;
   };
 
-  const getFlag = (id) => {
-    const match = Flags.find(x => x.id == id);
-    return match && match.flag;
-  };
-
   return (
     <FlatList
       data={countries}
       keyExtractor={item => item.id.toString()}
       renderItem={({ item }) => (
         <TouchableScale style={styles.item} onPress={() => onCountryPress(item.region)}>
-          <Image style={styles.icon} source={getFlag(item.id)} />
+          <Image style={styles.icon} source={item.flag} />
           <StyledText style={styles.label} numberOfLines={1} ellipsizeMode="middle">
             {item.name}
           </StyledText>

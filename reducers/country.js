@@ -4,6 +4,7 @@ import { handle } from 'redux-pack';
 import { getVacations, setVacation } from '../services/api';
 import GeoArray from '../model/GeoArray';
 import * as SortUtils from '../utils/SortUtils';
+import Flags from '../constants/Flags';
 
 export const types = {
   GET_COUNTRIES: 'COUNTRY/GET_COUNTRIES',
@@ -42,6 +43,7 @@ export default (state = initialState, action = {}) => {
             .map(x => ({
               id: x.id.toString(),
               name: x.name,
+              flag: Flags.find(y => y.id == x.id).flag,
               region: GeoArray.toRegion([
                 { latitude: x.lat_min, longitude: x.long_min },
                 { latitude: x.lat_max, longitude: x.long_max },
