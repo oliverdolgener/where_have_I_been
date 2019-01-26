@@ -46,6 +46,7 @@ class Map extends Component {
       showCountries,
       editMode,
       onMapPress,
+      setMarker,
     } = this.props;
 
     return (
@@ -87,6 +88,7 @@ class Map extends Component {
         onRegionChangeComplete={newRegion => this.onRegionChangeComplete(newRegion)}
         onPanDrag={() => followLocation && setFollowLocation(false)}
         onLongPress={event => onMapPress(event.nativeEvent.coordinate)}
+        onPress={() => setMarker(false)}
       >
         <Fog />
         {showCountries && <Countries />}
@@ -112,6 +114,7 @@ const mapDispatchToProps = {
   setRegion: mapActions.setRegion,
   setMap: mapActions.setMap,
   setFollowLocation: mapActions.setFollowLocation,
+  setMarker: mapActions.setMarker,
 };
 
 export default connect(

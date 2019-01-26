@@ -35,7 +35,7 @@ class PlaceDialog extends Component {
     const distance = geolib.getDistance(geolocation, place);
 
     return (
-      <View key={`distance-${distance}`} style={[styles.container, { maxWidth: width * 0.8 }]}>
+      <View style={[styles.container, { maxWidth: width * 0.8 }]}>
         <StyledText style={styles.title} ellipsizeMode="middle" numberOfLines={1}>{place.name}</StyledText>
         <StyledText style={styles.distance}>{`${distance} m`}</StyledText>
       </View>
