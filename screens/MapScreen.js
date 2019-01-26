@@ -27,7 +27,7 @@ import iconClose from '../assets/iconRemove.png';
 
 const GEOCODE_INTERVAL = 20000;
 const ELEVATION_INTERVAL = 30000;
-// const PLACES_INTERVAL = 60000;
+const PLACES_INTERVAL = 60000;
 
 const locationOptions = {
   accuracy: 4,
@@ -98,7 +98,7 @@ class MapScreen extends Component {
     this.stopBackgroundLocations();
     this.stopGeocode();
     this.stopElevation();
-    // this.stopPlaces();
+    this.stopPlaces();
   }
 
   onResume() {
@@ -106,7 +106,7 @@ class MapScreen extends Component {
     this.stopBackgroundLocations();
     this.startGeocode();
     this.startElevation();
-    // this.startPlaces();
+    this.startPlaces();
     this.restoreBackgroundLocations();
   }
 
@@ -115,7 +115,7 @@ class MapScreen extends Component {
     this.stopForegroundLocations();
     this.stopGeocode();
     this.stopElevation();
-    // this.stopPlaces();
+    this.stopPlaces();
   }
 
   onMapPress(coordinate) {
@@ -202,21 +202,21 @@ class MapScreen extends Component {
     setElevation(lastTile);
   }
 
-  // startPlaces = () => {
-  //   this.getPlaces();
-  //   this.placesListener = setInterval(async () => {
-  //     this.getPlaces();
-  //   }, PLACES_INTERVAL);
-  // }
+  startPlaces = () => {
+    this.getPlaces();
+    this.placesListener = setInterval(async () => {
+      this.getPlaces();
+    }, PLACES_INTERVAL);
+  }
 
-  // stopPlaces = () => {
-  //   this.placesListener && clearInterval(this.placesListener);
-  // }
+  stopPlaces = () => {
+    this.placesListener && clearInterval(this.placesListener);
+  }
 
-  // getPlaces = () => {
-  //   const { lastTile, setPlaces } = this.props;
-  //   setPlaces(lastTile);
-  // }
+  getPlaces = () => {
+    const { lastTile, setPlaces } = this.props;
+    setPlaces(lastTile);
+  }
 
   watchPositionAsync = async () => {
     this.locationListener = await Location.watchPositionAsync(locationOptions, (result) => {
@@ -384,7 +384,7 @@ const mapDispatchToProps = {
   setLastTile: mapActions.setLastTile,
   setGeolocation: mapActions.setGeolocation,
   setGeocode: mapActions.setGeocode,
-  // setPlaces: mapActions.setPlaces,
+  setPlaces: mapActions.setPlaces,
   setElevation: mapActions.setElevation,
   setFollowLocation: mapActions.setFollowLocation,
   getFlights: flightActions.getFlights,

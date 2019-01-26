@@ -19,6 +19,7 @@ export const types = {
   SET_REGION: 'MAP/SET_REGION',
   SET_PLACES: 'MAP/SET_PLACES',
   SET_ELEVATION: 'MAP/SET_ELEVATION',
+  SET_MARKER: 'MAP/SET_MARKER',
 };
 
 const setMapTypeAsync = async (mapType) => {
@@ -78,6 +79,7 @@ export const actions = {
     type: types.SET_ELEVATION,
     promise: getElevation(center),
   }),
+  setMarker: marker => ({ type: types.SET_MARKER, marker }),
 };
 
 const initialState = Map({
@@ -110,6 +112,7 @@ const initialState = Map({
   zoom: false,
   gridDistance: Earth.GRID_DISTANCE,
   places: [],
+  marker: false,
 });
 
 export default (state = initialState, action = {}) => {
@@ -196,6 +199,9 @@ export default (state = initialState, action = {}) => {
       return handle(state, action, {
         success: prevState => prevState.set('elevation', payload.data.elevations[0].elevation),
       });
+    case types.SET_MARKER: {
+      return state.set('marker', action.marker);
+    }
     default:
       return state;
   }
