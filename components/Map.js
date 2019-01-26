@@ -7,6 +7,7 @@ import { actions as mapActions } from '../reducers/map';
 import Fog from './Fog';
 import Flights from './Flights';
 import Countries from './Countries';
+// import Places from './Places';
 import * as Earth from '../constants/Earth';
 import mapStyleLight from '../assets/mapStyleLight.json';
 import mapStyleDark from '../assets/mapStyleDark.json';
@@ -90,6 +91,7 @@ class Map extends Component {
         <Fog />
         {showCountries && <Countries />}
         {(showFlights || editMode) && <Flights />}
+        {/* <Places /> */}
       </MapView>
     );
   }

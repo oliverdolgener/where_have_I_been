@@ -175,12 +175,20 @@ export default (state = initialState, action = {}) => {
           //   latitude: x.geometry.location.lat,
           //   longitude: x.geometry.location.lng,
           // }));
+
           const places = payload.data.response.venues.map(x => ({
             id: x.id,
             name: x.name,
             latitude: x.location.lat,
             longitude: x.location.lng,
           }));
+
+          // const places = payload.data.data.places.map(x => ({
+          //   id: x.id,
+          //   name: x.name,
+          //   latitude: x.location.lat,
+          //   longitude: x.location.lng,
+          // }));
           return prevState.set('places', places);
         },
       });
