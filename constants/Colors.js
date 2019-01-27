@@ -8,3 +8,4 @@ export const rose = '#E65F87';
 export const rose50 = 'rgba(230, 95, 135, 0.5)';
 export const green = '#62C09F';
 export const blue = '#1985A1';
+export const darkBlue = '#030E17';

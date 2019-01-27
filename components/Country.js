@@ -5,8 +5,8 @@ import * as Colors from '../constants/Colors';
 
 class Country extends Component {
   shouldComponentUpdate(prevProps) {
-    const { country } = this.props;
-    return country.status != prevProps.country.status;
+    const { country, geojson } = this.props;
+    return country.status != prevProps.country.status || geojson != prevProps.geojson;
   }
 
   render() {
