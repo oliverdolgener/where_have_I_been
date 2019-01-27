@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
-import { MapView } from 'expo';
 import { connect } from 'react-redux';
 import Region2D from 'region2d';
 
 import Country from './Country';
 import * as AllCountries from '../constants/Countries';
-import * as Earth from '../constants/Earth';
-import * as Colors from '../constants/Colors';
 
 class Countries extends Component {
   shouldComponentUpdate(prevProps) {
@@ -17,6 +13,7 @@ class Countries extends Component {
 
   render() {
     const { countries, zoom, region } = this.props;
+    const zoomLevel = zoom > 20 ? 0 : 1;
 
     const regionLatitude = region.latitude * -1 + 90;
     const regionLongitude = region.longitude + 180;
@@ -26,39 +23,35 @@ class Countries extends Component {
     const regionBottom = regionLatitude + region.latitudeDelta / 2;
     const region2d = new Region2D([regionLeft, regionTop, regionRight, regionBottom]);
 
-    const ZoomedCountries = zoom > 20 ? AllCountries.zoom0 : AllCountries.zoom1;
+    const zoomedCountries = zoomLevel == 0 ? AllCountries.zoom0 : AllCountries.zoom1;
 
-    return (
-      <View>
-        <MapView.Polygon
-          fillColor={Colors.darkBlue}
-          coordinates={Earth.FOG}
-        />
-        {ZoomedCountries.map((x, i) => {
-          const country = countries.find(y => y.id == x.id);
+    return zoomedCountries.map((x, i) => {
+      const country = countries.find(y => y.id == x.id);
 
-          if (!country || country.region.longitudeDelta == 0) {
-            return false;
-          }
+      if (!country) {
+        return false;
+      }
 
-          const countryLatitude = country.region.latitude * -1 + 90;
-          const countryLongitude = country.region.longitude + 180;
-          const countryLeft = countryLongitude - country.region.longitudeDelta / 2;
-          const countryTop = countryLatitude - country.region.latitudeDelta / 2;
-          const countryRight = countryLongitude + country.region.longitudeDelta / 2;
-          const countryBottom = countryLatitude + country.region.latitudeDelta / 2;
-          const countryRegion = new Region2D([countryLeft, countryTop, countryRight, countryBottom]);
+      if (country.region.longitudeDelta == 0) {
+        return false;
+      }
 
-          if (!region2d.doesIntersect(countryRegion)) {
-            return false;
-          }
+      const countryLatitude = country.region.latitude * -1 + 90;
+      const countryLongitude = country.region.longitude + 180;
+      const countryLeft = countryLongitude - country.region.longitudeDelta / 2;
+      const countryTop = countryLatitude - country.region.latitudeDelta / 2;
+      const countryRight = countryLongitude + country.region.longitudeDelta / 2;
+      const countryBottom = countryLatitude + country.region.latitudeDelta / 2;
+      const countryRegion = new Region2D([countryLeft, countryTop, countryRight, countryBottom]);
 
-          return (
-            <Country key={i.toString()} country={country} geojson={x} />
-          );
-        })}
-      </View>
-    );
+      if (!region2d.doesIntersect(countryRegion)) {
+        return false;
+      }
+
+      return (
+        <Country key={`${i.toString()}-${zoomLevel}`} country={country} geojson={x} />
+      );
+    });
   }
 }
 

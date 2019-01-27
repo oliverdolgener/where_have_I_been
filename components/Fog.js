@@ -11,33 +11,36 @@ import * as Earth from '../constants/Earth';
 
 const Fog = (props) => {
   const {
-    quadtree, friendQuadtree, region, gridDistance, mapType, shape,
+    quadtree, friendQuadtree, region, gridDistance, mapType, shape, showCountries,
   } = props;
 
-  const latlng = { latitude: region.latitude, longitude: region.longitude };
-  const point = LatLng.toPoint(latlng);
-  const box = new Box(
-    point.x - region.longitudeDelta - Earth.BOX_OFFSET,
-    point.y - region.latitudeDelta - Earth.BOX_OFFSET,
-    (region.longitudeDelta + Earth.BOX_OFFSET) * 2,
-    (region.latitudeDelta + Earth.BOX_OFFSET) * 2,
-  );
-  const points = friendQuadtree ? friendQuadtree.query(box) : quadtree.query(box);
-  const visibleLocations = points.map(x => Point.toLatLngRounded(x));
+  let holes = [];
 
-  let holes;
-  switch (shape) {
-    case 'rectangle':
-      holes = GeoGrid.getRectangleSlices(visibleLocations, gridDistance);
-      break;
-    case 'diamond':
-      holes = GeoGrid.getDiamondSlices(visibleLocations, gridDistance);
-      break;
-    case 'grid':
-      holes = GeoGrid.getRectangles(visibleLocations, gridDistance);
-      break;
-    default:
-      break;
+  if (!showCountries) {
+    const latlng = { latitude: region.latitude, longitude: region.longitude };
+    const point = LatLng.toPoint(latlng);
+    const box = new Box(
+      point.x - region.longitudeDelta - Earth.BOX_OFFSET,
+      point.y - region.latitudeDelta - Earth.BOX_OFFSET,
+      (region.longitudeDelta + Earth.BOX_OFFSET) * 2,
+      (region.latitudeDelta + Earth.BOX_OFFSET) * 2,
+    );
+    const points = friendQuadtree ? friendQuadtree.query(box) : quadtree.query(box);
+    const visibleLocations = points.map(x => Point.toLatLngRounded(x));
+
+    switch (shape) {
+      case 'rectangle':
+        holes = GeoGrid.getRectangleSlices(visibleLocations, gridDistance);
+        break;
+      case 'diamond':
+        holes = GeoGrid.getDiamondSlices(visibleLocations, gridDistance);
+        break;
+      case 'grid':
+        holes = GeoGrid.getRectangles(visibleLocations, gridDistance);
+        break;
+      default:
+        break;
+    }
   }
 
   return (

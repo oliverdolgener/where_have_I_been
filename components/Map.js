@@ -93,7 +93,7 @@ class Map extends Component {
         onLongPress={event => onMapPress(event.nativeEvent.coordinate)}
         onPress={() => setMarker(false)}
       >
-        {!showCountries && <Fog />}
+        <Fog />
         {showCountries && <Countries />}
         {(showFlights || editMode) && <Flights />}
         {showPlaces && <Places />}
