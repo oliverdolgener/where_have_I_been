@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { actions as mapActions } from '../reducers/map';
 import PlaceDialog from './PlaceDialog';
 import iconMarker from '../assets/iconMarker.png';
+import iconMarkerBig from '../assets/iconMarkerBig.png';
 import * as Colors from '../constants/Colors';
 
 class Places extends Component {
@@ -15,7 +16,10 @@ class Places extends Component {
   }
 
   render() {
-    const { places, setMarker, marker } = this.props;
+    const {
+      places, setMarker, marker, os,
+    } = this.props;
+    const icon = os == 'android' ? iconMarkerBig : iconMarker;
 
     return (
       <View>
@@ -24,7 +28,7 @@ class Places extends Component {
           <MapView.Marker
             key={x.id.toString()}
             coordinate={x}
-            image={iconMarker}
+            image={icon}
             onPress={() => setMarker(x)}
           >
             <MapView.Callout tooltip>
@@ -38,6 +42,7 @@ class Places extends Component {
 }
 
 const mapStateToProps = state => ({
+  os: state.app.get('os'),
   places: state.map.get('places'),
   marker: state.map.get('marker'),
 });
