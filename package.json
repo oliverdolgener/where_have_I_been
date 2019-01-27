@@ -7,11 +7,11 @@
     "babel-eslint": "^10.0.1",
     "babel-preset-airbnb": "^3.2.0",
     "babel-preset-react-native": "^4.0.1",
-    "eslint": "^5.12.0",
+    "eslint": "^5.12.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-import-resolver-reactnative": "^1.0.2",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-import": "^2.15.0",
+    "eslint-plugin-jsx-a11y": "^6.2.0",
     "eslint-plugin-react": "^7.12.4",
     "eslint-plugin-react-native": "^3.6.0",
     "jest-expo": "^32.0.0",
@@ -30,7 +30,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "expo": "^32.0.1",
+    "expo": "^32.0.2-rc.0",
     "geolib": "^2.0.24",
     "immutable": "^4.0.0-rc.12",
     "js-quadtree": "^1.2.0",
