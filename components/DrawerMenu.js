@@ -39,6 +39,7 @@ import iconToggleOn from '../assets/iconToggleOn.png';
 import iconToggleOff from '../assets/iconToggleOff.png';
 import iconAirport from '../assets/iconAirport.png';
 import iconUser from '../assets/iconLevel.png';
+import iconPlaces from '../assets/iconPlaces.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -198,6 +199,12 @@ class DrawerMenu extends React.Component {
     setShowFlights(!showFlights);
   }
 
+  togglePlaces = () => {
+    const { showPlaces, setShowPlaces } = this.props;
+    this.closeDrawer();
+    setShowPlaces(!showPlaces);
+  }
+
   toggleCountries = () => {
     const { showCountries, setShowCountries } = this.props;
     this.closeDrawer();
@@ -282,7 +289,7 @@ class DrawerMenu extends React.Component {
 
   render() {
     const {
-      mapType, tilesToSave, theme, shape, editMode, showFlights, showCountries,
+      mapType, tilesToSave, theme, shape, editMode, showFlights, showCountries, showPlaces,
     } = this.props;
     const {
       showFriendlist,
@@ -375,6 +382,11 @@ class DrawerMenu extends React.Component {
                 <StyledText style={styles.badgeLabel}>{tilesToSave.length}</StyledText>
               </View>
             </TouchableScale>
+            <TouchableScale style={styles.menuItem} onPress={() => this.togglePlaces()}>
+              <Image style={styles.menuIcon} source={iconPlaces} />
+              <StyledText style={styles.menuLabel}>Show Places</StyledText>
+              <Image style={styles.menuIcon} source={showPlaces ? iconToggleOn : iconToggleOff} />
+            </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleFlights()}>
               <Image style={styles.menuIcon} source={iconAirport} />
               <StyledText style={styles.menuLabel}>Show Flights</StyledText>
@@ -421,6 +433,7 @@ const mapStateToProps = state => ({
   theme: state.map.get('theme'),
   shape: state.map.get('shape'),
   editMode: state.map.get('editMode'),
+  showPlaces: state.map.get('showPlaces'),
   showFlights: state.flight.get('showFlights'),
   showCountries: state.country.get('showCountries'),
 });
@@ -437,6 +450,7 @@ const mapDispatchToProps = {
   setShape: mapActions.setShape,
   setFollowLocation: mapActions.setFollowLocation,
   setEditMode: mapActions.setEditMode,
+  setShowPlaces: mapActions.setShowPlaces,
   getCountries: countryActions.getCountries,
   sortCountries: countryActions.sortCountries,
   setShowCountries: countryActions.setShowCountries,

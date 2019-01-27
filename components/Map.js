@@ -47,6 +47,7 @@ class Map extends Component {
       editMode,
       onMapPress,
       setMarker,
+      showPlaces,
     } = this.props;
 
     return (
@@ -93,7 +94,7 @@ class Map extends Component {
         <Fog />
         {showCountries && <Countries />}
         {(showFlights || editMode) && <Flights />}
-        <Places />
+        {showPlaces && <Places />}
       </MapView>
     );
   }
@@ -106,6 +107,7 @@ const mapStateToProps = state => ({
   theme: state.map.get('theme'),
   followLocation: state.map.get('followLocation'),
   editMode: state.map.get('editMode'),
+  showPlaces: state.map.get('showPlaces'),
   showCountries: state.country.get('showCountries'),
   showFlights: state.flight.get('showFlights'),
 });
