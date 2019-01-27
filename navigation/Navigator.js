@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import { Permissions, KeepAwake, Constants } from 'expo';
 
 import { actions as appActions } from '../reducers/app';
+import AlertDialog from '../components/AlertDialog';
+import NotificationPanel from '../components/NotificationPanel';
 import AppNavigation from './AppNavigation';
 import NavigationService from './NavigationService';
 import * as Colors from '../constants/Colors';
@@ -57,6 +59,8 @@ class Navigator extends Component {
             NavigationService.setTopLevelNavigator(navigatorRef);
           }}
         />
+        <NotificationPanel />
+        <AlertDialog />
       </View>
     );
   }

@@ -66,10 +66,13 @@ class Friendlist extends Component {
     }
   }
 
+  onRemoveFriend(friend) {
+    const { userId, removeFriend, alertDialog } = this.props;
+    alertDialog && alertDialog.show(`Do you really want to remove ${friend.username} from your friendlist?`, () => removeFriend(userId, friend.id));
+  }
+
   render() {
-    const {
-      userId, friends, onFriendPress, removeFriend,
-    } = this.props;
+    const { friends, onFriendPress } = this.props;
     const { friendName } = this.state;
     return (
       <View>
@@ -99,7 +102,7 @@ class Friendlist extends Component {
             <StyledText style={styles.label} numberOfLines={1} ellipsizeMode="middle">
               {item.username}
             </StyledText>
-            <TouchableScale onPress={() => removeFriend(userId, item.id)}>
+            <TouchableScale onPress={() => this.onRemoveFriend(item)}>
               <Image style={styles.icon} source={iconRemove} />
             </TouchableScale>
           </TouchableScale>
@@ -110,6 +113,7 @@ class Friendlist extends Component {
 }
 
 const mapStateToProps = state => ({
+  alertDialog: state.app.get('alertDialog'),
   userId: state.user.get('userId'),
   friends: state.friend.get('friends'),
 });
