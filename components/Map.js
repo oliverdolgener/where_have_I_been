@@ -9,6 +9,7 @@ import Flights from './Flights';
 import Countries from './Countries';
 import Places from './Places';
 import * as Earth from '../constants/Earth';
+import * as Colors from '../constants/Colors';
 import mapStyleLight from '../assets/mapStyleLight.json';
 import mapStyleDark from '../assets/mapStyleDark.json';
 
@@ -48,6 +49,7 @@ class Map extends Component {
       onMapPress,
       setMarker,
       showPlaces,
+      marker,
     } = this.props;
 
     return (
@@ -95,6 +97,7 @@ class Map extends Component {
         {showCountries && <Countries />}
         {(showFlights || editMode) && <Flights />}
         {showPlaces && <Places />}
+        {marker && <MapView.Circle center={marker} radius={75} strokeWidth={0} fillColor={Colors.rose50} />}
       </MapView>
     );
   }
@@ -108,6 +111,7 @@ const mapStateToProps = state => ({
   followLocation: state.map.get('followLocation'),
   editMode: state.map.get('editMode'),
   showPlaces: state.map.get('showPlaces'),
+  marker: state.map.get('marker'),
   showCountries: state.country.get('showCountries'),
   showFlights: state.flight.get('showFlights'),
 });
