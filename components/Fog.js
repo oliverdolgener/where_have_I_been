@@ -61,6 +61,7 @@ const mapStateToProps = state => ({
   gridDistance: state.map.get('gridDistance'),
   mapType: state.map.get('mapType'),
   shape: state.map.get('shape'),
+  showCountries: state.country.get('showCountries'),
 });
 
 export default connect(mapStateToProps)(Fog);

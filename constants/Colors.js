@@ -4,8 +4,16 @@ export const creme80 = 'rgba(255, 245, 237, 0.8)';
 export const brown = '#170E03';
 export const brown80 = 'rgba(23, 14, 3, 0.8)';
 export const brown50 = 'rgba(23, 14, 3, 0.5)';
-export const rose = '#E65F87';
-export const rose50 = 'rgba(230, 95, 135, 0.5)';
-export const green = '#62C09F';
-export const blue = '#1985A1';
-export const darkBlue = '#030E17';
+
+export const roseLight = '#f283a5';
+export const rose = '#ed7899';
+export const roseDark = '#e0678f';
+export const rose50 = 'rgba(237, 120, 153, 0.5)';
+
+export const lightGreen = '#97e0bb';
+export const green = '#72caaf';
+export const darkGreen = '#5dbc9d';
+
+export const lightBlue = '#9fddff';
+export const blue = '#85cbf8';
+export const darkBlue = '#7bbeeb';
