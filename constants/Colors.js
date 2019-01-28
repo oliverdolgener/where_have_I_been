@@ -17,3 +17,11 @@ export const darkGreen = '#5dbc9d';
 export const lightBlue = '#9fddff';
 export const blue = '#85cbf8';
 export const darkBlue = '#7bbeeb';
+
+export const lightPurple = '#d6dff2';
+export const purple = '#c2cde7';
+export const darkPurple = '#b5c4e0';
+
+export const lightYellow = '#ffefca';
+export const yellow = '#f9e3ae';
+export const darkYellow = '#f6d397';

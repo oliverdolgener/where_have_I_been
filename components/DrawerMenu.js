@@ -40,6 +40,7 @@ import iconToggleOff from '../assets/iconToggleOff.png';
 import iconAirport from '../assets/iconAirport.png';
 import iconUser from '../assets/iconLevel.png';
 import iconPlaces from '../assets/iconPlaces.png';
+import iconCountry from '../assets/iconCountry.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -393,7 +394,7 @@ class DrawerMenu extends React.Component {
               <Image style={styles.menuIcon} source={showFlights ? iconToggleOn : iconToggleOff} />
             </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleCountries()}>
-              <Image style={styles.menuIcon} source={iconMap} />
+              <Image style={styles.menuIcon} source={iconCountry} />
               <StyledText style={styles.menuLabel}>Show Countries</StyledText>
               <Image style={styles.menuIcon} source={showCountries ? iconToggleOn : iconToggleOff} />
             </TouchableScale>
