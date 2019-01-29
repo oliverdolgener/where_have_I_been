@@ -87,20 +87,28 @@ class AlertDialog extends Component {
   render() {
     const { visible, message } = this.state;
 
-    return visible && (
-      <View style={styles.container}>
-        <View style={styles.panel}>
-          <StyledText style={styles.message}>{message}</StyledText>
-          <View style={styles.buttons}>
-            <TouchableScale style={{ ...styles.button, backgroundColor: Colors.rose }} onPress={() => this.hide()}>
-              <StyledText style={styles.buttonLabel}>No</StyledText>
-            </TouchableScale>
-            <TouchableScale style={{ ...styles.button, backgroundColor: Colors.green }} onPress={() => this.action()}>
-              <StyledText style={styles.buttonLabel}>Yes</StyledText>
-            </TouchableScale>
+    return (
+      visible && (
+        <View style={styles.container}>
+          <View style={styles.panel}>
+            <StyledText style={styles.message}>{message}</StyledText>
+            <View style={styles.buttons}>
+              <TouchableScale
+                style={{ ...styles.button, backgroundColor: Colors.rose }}
+                onPress={() => this.hide()}
+              >
+                <StyledText style={styles.buttonLabel}>No</StyledText>
+              </TouchableScale>
+              <TouchableScale
+                style={{ ...styles.button, backgroundColor: Colors.green }}
+                onPress={() => this.action()}
+              >
+                <StyledText style={styles.buttonLabel}>Yes</StyledText>
+              </TouchableScale>
+            </View>
           </View>
         </View>
-      </View>
+      )
     );
   }
 }
@@ -109,4 +117,7 @@ const mapDispatchToProps = {
   setAlertDialog: appActions.setAlertDialog,
 };
 
-export default connect(null, mapDispatchToProps)(AlertDialog);
+export default connect(
+  null,
+  mapDispatchToProps,
+)(AlertDialog);

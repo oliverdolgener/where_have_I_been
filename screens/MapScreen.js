@@ -142,19 +142,20 @@ class MapScreen extends Component {
 
   startForegroundLocations = () => {
     this.watchPositionAsync();
-  }
+  };
 
   stopForegroundLocations = () => {
     this.locationListener && this.locationListener.remove();
-  }
+  };
 
   startBackgroundLocations = async () => {
     await Location.startLocationUpdatesAsync('location', locationOptions);
-  }
+  };
 
   stopBackgroundLocations = async () => {
-    await Location.hasStartedLocationUpdatesAsync('location') && await Location.stopLocationUpdatesAsync('location');
-  }
+    (await Location.hasStartedLocationUpdatesAsync('location'))
+      && (await Location.stopLocationUpdatesAsync('location'));
+  };
 
   restoreBackgroundLocations = async () => {
     const backgroundLocations = await AsyncStorage.getItem('backgroundLocations');
@@ -165,18 +166,18 @@ class MapScreen extends Component {
         AsyncStorage.removeItem('backgroundLocations');
       }
     }
-  }
+  };
 
   startGeocode = () => {
     this.getGeocodeAsync();
     this.geocodeListener = setInterval(async () => {
       this.getGeocodeAsync();
     }, GEOCODE_INTERVAL);
-  }
+  };
 
   stopGeocode = () => {
     this.geocodeListener && clearInterval(this.geocodeListener);
-  }
+  };
 
   getGeocodeAsync = async () => {
     const { lastTile, setGeocode } = this.props;
@@ -189,32 +190,32 @@ class MapScreen extends Component {
     this.elevationListener = setInterval(async () => {
       this.getElevation();
     }, ELEVATION_INTERVAL);
-  }
+  };
 
   stopElevation = () => {
     this.elevationListener && clearInterval(this.elevationListener);
-  }
+  };
 
   getElevation = () => {
     const { lastTile, setElevation } = this.props;
     setElevation(lastTile);
-  }
+  };
 
   startPlaces = () => {
     this.getPlaces();
     this.placesListener = setInterval(async () => {
       this.getPlaces();
     }, PLACES_INTERVAL);
-  }
+  };
 
   stopPlaces = () => {
     this.placesListener && clearInterval(this.placesListener);
-  }
+  };
 
   getPlaces = () => {
     const { lastTile, setPlaces } = this.props;
     setPlaces(lastTile);
-  }
+  };
 
   watchPositionAsync = async () => {
     this.locationListener = await Location.watchPositionAsync(locationOptions, (result) => {

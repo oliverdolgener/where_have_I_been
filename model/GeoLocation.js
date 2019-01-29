@@ -9,7 +9,9 @@ export default class GeoLocation {
   }
 
   static pointsAtLatitude(latitude, gridDistance = Earth.GRID_DISTANCE) {
-    const rounded = Math.round((360 / gridDistance) * Math.cos(ConversionUtils.toRadians(latitude)));
+    const rounded = Math.round(
+      (360 / gridDistance) * Math.cos(ConversionUtils.toRadians(latitude)),
+    );
     return rounded < 1 ? 1 : rounded;
   }
 
@@ -107,13 +109,13 @@ export default class GeoLocation {
       points.push({ latitude, longitude });
     }
 
-    for (let i = count; i >= count * 3 / 4; i--) {
+    for (let i = count; i >= (count * 3) / 4; i--) {
       const latitude = botRight.latitude + radiusVertical * Math.sin(((2 * Math.PI) / count) * i);
       const longitude = botRight.longitude + radiusHorizontal * Math.cos(((2 * Math.PI) / count) * i);
       points.push({ latitude, longitude });
     }
 
-    for (let i = count * 3 / 4; i >= count / 2; i--) {
+    for (let i = (count * 3) / 4; i >= count / 2; i--) {
       const latitude = botLeft.latitude + radiusVertical * Math.sin(((2 * Math.PI) / count) * i);
       const longitude = botLeft.longitude + radiusHorizontal * Math.cos(((2 * Math.PI) / count) * i);
       points.push({ latitude, longitude });

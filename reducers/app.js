@@ -12,7 +12,10 @@ export const actions = {
   resize: dimensions => ({ type: types.RESIZE, dimensions }),
   setAppState: appState => ({ type: types.SET_APP_STATE, appState }),
   setAlertDialog: alertDialog => ({ type: types.SET_ALERT_DIALOG, alertDialog }),
-  setNotificationPanel: notificationPanel => ({ type: types.SET_NOTIFICATION_PANEL, notificationPanel }),
+  setNotificationPanel: notificationPanel => ({
+    type: types.SET_NOTIFICATION_PANEL,
+    notificationPanel,
+  }),
 };
 
 const { width, height } = Dimensions.get('window');

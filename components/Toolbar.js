@@ -71,7 +71,8 @@ class Toolbar extends Component {
     const level = LevelUtils.getLevelFromExp(count);
     const prevLevel = LevelUtils.getLevelFromExp(prevProps.count);
     if (level > prevLevel) {
-      notificationPanel && notificationPanel.show(`Congratulations! You've reached Level ${level}!`);
+      notificationPanel
+        && notificationPanel.show(`Congratulations! You've reached Level ${level}!`);
     }
   }
 

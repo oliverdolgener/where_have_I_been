@@ -72,9 +72,10 @@ class NotificationPanel extends Component {
   show(message, duration = DURATION) {
     this.setState({ message });
     this.slideDown();
-    duration > 0 && setTimeout(() => {
-      this.slideUp();
-    }, duration);
+    duration > 0
+      && setTimeout(() => {
+        this.slideUp();
+      }, duration);
   }
 
   hide() {
@@ -98,4 +99,7 @@ const mapDispatchToProps = {
   setNotificationPanel: appActions.setNotificationPanel,
 };
 
-export default connect(null, mapDispatchToProps)(NotificationPanel);
+export default connect(
+  null,
+  mapDispatchToProps,
+)(NotificationPanel);

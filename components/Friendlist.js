@@ -68,7 +68,11 @@ class Friendlist extends Component {
 
   onRemoveFriend(friend) {
     const { userId, removeFriend, alertDialog } = this.props;
-    alertDialog && alertDialog.show(`Do you really want to remove ${friend.username} from your friendlist?`, () => removeFriend(userId, friend.id));
+    alertDialog
+      && alertDialog.show(
+        `Do you really want to remove ${friend.username} from your friendlist?`,
+        () => removeFriend(userId, friend.id),
+      );
   }
 
   render() {

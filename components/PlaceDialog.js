@@ -56,7 +56,9 @@ class PlaceDialog extends Component {
 
     return (
       <View style={[styles.container, { maxWidth: width * 0.8 }]}>
-        <StyledText style={styles.title} ellipsizeMode="middle" numberOfLines={1}>{place.name}</StyledText>
+        <StyledText style={styles.title} ellipsizeMode="middle" numberOfLines={1}>
+          {place.name}
+        </StyledText>
         <StyledText style={styles.distance}>{`${distance} m`}</StyledText>
         <TouchableScale style={styles.button}>
           <StyledText style={styles.buttonLabel}>Been there!</StyledText>

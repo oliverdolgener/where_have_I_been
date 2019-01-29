@@ -28,9 +28,7 @@ TaskManager.defineTask('location', ({ data, error }) => {
   }
 
   const result = locations[0];
-  const {
-    latitude, longitude, accuracy,
-  } = result.coords;
+  const { latitude, longitude, accuracy } = result.coords;
   const { timestamp } = result;
 
   const location = {

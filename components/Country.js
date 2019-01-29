@@ -20,12 +20,7 @@ class Country extends Component {
     }
 
     return (
-      <Geojson
-        geojson={geojson}
-        fillColor={color}
-        strokeWidth={0.5}
-        strokeColor={Colors.creme}
-      />
+      <Geojson geojson={geojson} fillColor={color} strokeWidth={0.5} strokeColor={Colors.creme} />
     );
   }
 }

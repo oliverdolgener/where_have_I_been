@@ -38,13 +38,9 @@ export function getCount() {
   return new Promise((resolve) => {
     db.transaction((tx) => {
       tx.executeSql('BEGIN;');
-      tx.executeSql(
-        'SELECT COUNT(*) as count FROM location',
-        [],
-        (_, { rows: { _array } }) => {
-          resolve(_array[0].count);
-        },
-      );
+      tx.executeSql('SELECT COUNT(*) as count FROM location', [], (_, { rows: { _array } }) => {
+        resolve(_array[0].count);
+      });
       tx.executeSql('COMMIT;');
     });
   });

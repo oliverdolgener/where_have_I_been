@@ -144,7 +144,10 @@ export const actions = {
     },
   }),
   relogFromSQLite: (userId, username, locations) => ({
-    type: types.RELOG_FROM_SQLITE, userId, username, locations,
+    type: types.RELOG_FROM_SQLITE,
+    userId,
+    username,
+    locations,
   }),
   setEmailError: error => ({ type: types.SET_EMAIL_ERROR, error }),
   setPasswordError: error => ({ type: types.SET_PASSWORD_ERROR, error }),
@@ -265,17 +268,13 @@ export default (state = initialState, action = {}) => {
       return state.set('passwordError', action.error);
     case types.SET_QUADTREE: {
       const { quadtree } = action;
-      return state
-        .set('quadtree', quadtree)
-        .set('count', quadtree.getAllPoints().length);
+      return state.set('quadtree', quadtree).set('count', quadtree.getAllPoints().length);
     }
     case types.SET_LOCATIONS: {
       const latlngs = action.locations;
       const points = latlngs.map(x => LatLng.toPoint(x));
       const quadtree = new QuadTree(new Box(0, 0, 360, 180), config, points);
-      return state
-        .set('quadtree', quadtree)
-        .set('count', quadtree.getAllPoints().length);
+      return state.set('quadtree', quadtree).set('count', quadtree.getAllPoints().length);
     }
     case types.SET_TILES_TO_SAVE:
       setTilesToSaveAsync(action.tilesToSave);

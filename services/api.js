@@ -247,7 +247,10 @@ export const getPlaces = (center) => {
   url.addQuery('radius', '1000');
   url.addQuery('rankby', 'distance');
   url.addQuery('limit', '10');
-  url.addQuery('categoryId', `${burg},${friedhof},${nationalpark},${schloss},${park},${platz},${aussichtspunkt},${bibliothek},${spirituellesZentrum},${zoo},${freizeitpark},${stadion},${oeffentlichesKunstwerk},${opernhaus},${theater},${museum},${gedenkstaette},${historischerOrt},${aquarium},${amphitheater}`);
+  url.addQuery(
+    'categoryId',
+    `${burg},${friedhof},${nationalpark},${schloss},${park},${platz},${aussichtspunkt},${bibliothek},${spirituellesZentrum},${zoo},${freizeitpark},${stadion},${oeffentlichesKunstwerk},${opernhaus},${theater},${museum},${gedenkstaette},${historischerOrt},${aquarium},${amphitheater}`,
+  );
   url.addQuery('client_id', 'KSPJOUXTIN0ZBSQRDSYSEP3DHGOZVUF3N2DNTXWJZWWP2LRJ');
   url.addQuery('client_secret', 'Z4GSG3GFLYFE0CFDZUSAV0UIZNIUL0LQ3RJ41KJOP4XGOVC2');
   url.addQuery('v', '20190119');

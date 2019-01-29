@@ -14,9 +14,7 @@ class Places extends Component {
   }
 
   render() {
-    const {
-      places, setMarker, os,
-    } = this.props;
+    const { places, setMarker, os } = this.props;
     const icon = os == 'android' ? iconMarkerBig : iconMarker;
 
     return places.map(x => (
@@ -45,4 +43,7 @@ const mapDispatchToProps = {
   setMarker: mapActions.setMarker,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Places);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Places);

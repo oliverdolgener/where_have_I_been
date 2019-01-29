@@ -97,7 +97,9 @@ class Map extends Component {
         {showCountries && <Countries />}
         {(showFlights || editMode) && <Flights />}
         {showPlaces && <Places />}
-        {marker && <MapView.Circle center={marker} radius={75} strokeWidth={0} fillColor={Colors.rose50} />}
+        {marker && (
+          <MapView.Circle center={marker} radius={75} strokeWidth={0} fillColor={Colors.rose50} />
+        )}
       </MapView>
     );
   }

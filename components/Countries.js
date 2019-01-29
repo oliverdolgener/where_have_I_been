@@ -8,7 +8,12 @@ import * as AllCountries from '../constants/Countries';
 class Countries extends Component {
   shouldComponentUpdate(prevProps) {
     const { countries, zoom, region } = this.props;
-    return countries != prevProps.countries || zoom > 20 && prevProps.zoom < 20 || zoom < 20 && prevProps.zoom > 20 || region != prevProps.region;
+    return (
+      countries != prevProps.countries
+      || (zoom > 20 && prevProps.zoom < 20)
+      || (zoom < 20 && prevProps.zoom > 20)
+      || region != prevProps.region
+    );
   }
 
   render() {
@@ -48,9 +53,7 @@ class Countries extends Component {
         return false;
       }
 
-      return (
-        <Country key={`${i.toString()}-${zoomLevel}`} country={country} geojson={x} />
-      );
+      return <Country key={`${i.toString()}-${zoomLevel}`} country={country} geojson={x} />;
     });
   }
 }
