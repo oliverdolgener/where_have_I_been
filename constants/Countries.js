@@ -1,5 +1,6 @@
 import * as Afghanistan from '../countries/Afghanistan';
 import * as Aland from '../countries/Aland';
+import * as Alaska from '../countries/Alaska';
 import * as Albania from '../countries/Albania';
 import * as Algeria from '../countries/Algeria';
 import * as Andorra from '../countries/Andorra';
@@ -64,6 +65,7 @@ import * as FederatedStatesOfMicronesia from '../countries/FederatedStatesOfMicr
 import * as Fiji from '../countries/Fiji';
 import * as Finland from '../countries/Finland';
 import * as France from '../countries/France';
+import * as FrenchGuiana from '../countries/FrenchGuiana';
 import * as FrenchPolynesia from '../countries/FrenchPolynesia';
 import * as FrenchSouthernAndAntarcticLands from '../countries/FrenchSouthernAndAntarcticLands';
 import * as Gabon from '../countries/Gabon';
@@ -80,6 +82,7 @@ import * as Guinea from '../countries/Guinea';
 import * as GuineaBissau from '../countries/GuineaBissau';
 import * as Guyana from '../countries/Guyana';
 import * as Haiti from '../countries/Haiti';
+import * as Hawaii from '../countries/Hawaii';
 import * as HeardIslandAndMcDonaldIslands from '../countries/HeardIslandAndMcDonaldIslands';
 import * as Honduras from '../countries/Honduras';
 import * as HongKong from '../countries/HongKong';
@@ -97,6 +100,7 @@ import * as IvoryCoast from '../countries/IvoryCoast';
 import * as Jamaica from '../countries/Jamaica';
 import * as Japan from '../countries/Japan';
 import * as Jordan from '../countries/Jordan';
+import * as Kaliningrad from '../countries/Kaliningrad';
 import * as Kashmir from '../countries/Kashmir';
 import * as Kazakhstan from '../countries/Kazakhstan';
 import * as Kenya from '../countries/Kenya';
@@ -185,6 +189,7 @@ import * as Spain from '../countries/Spain';
 import * as SriLanka from '../countries/SriLanka';
 import * as Sudan from '../countries/Sudan';
 import * as Suriname from '../countries/Suriname';
+import * as Svalbard from '../countries/Svalbard';
 import * as Swaziland from '../countries/Swaziland';
 import * as Sweden from '../countries/Sweden';
 import * as Switzerland from '../countries/Switzerland';
@@ -218,6 +223,7 @@ import * as Zimbabwe from '../countries/Zimbabwe';
 export const zoom0 = [
   Afghanistan.zoom0,
   Aland.zoom0,
+  Alaska.zoom0,
   Albania.zoom0,
   Algeria.zoom0,
   Andorra.zoom0,
@@ -282,6 +288,7 @@ export const zoom0 = [
   Fiji.zoom0,
   Finland.zoom0,
   France.zoom0,
+  FrenchGuiana.zoom0,
   FrenchPolynesia.zoom0,
   FrenchSouthernAndAntarcticLands.zoom0,
   Gabon.zoom0,
@@ -298,6 +305,7 @@ export const zoom0 = [
   GuineaBissau.zoom0,
   Guyana.zoom0,
   Haiti.zoom0,
+  Hawaii.zoom0,
   HeardIslandAndMcDonaldIslands.zoom0,
   Honduras.zoom0,
   HongKong.zoom0,
@@ -315,6 +323,7 @@ export const zoom0 = [
   Jamaica.zoom0,
   Japan.zoom0,
   Jordan.zoom0,
+  Kaliningrad.zoom0,
   Kashmir.zoom0,
   Kazakhstan.zoom0,
   Kenya.zoom0,
@@ -403,6 +412,7 @@ export const zoom0 = [
   SriLanka.zoom0,
   Sudan.zoom0,
   Suriname.zoom0,
+  Svalbard.zoom0,
   Swaziland.zoom0,
   Sweden.zoom0,
   Switzerland.zoom0,
@@ -437,6 +447,7 @@ export const zoom0 = [
 export const zoom1 = [
   Afghanistan.zoom1,
   Aland.zoom1,
+  Alaska.zoom1,
   Albania.zoom1,
   Algeria.zoom1,
   Andorra.zoom1,
@@ -501,6 +512,7 @@ export const zoom1 = [
   Fiji.zoom1,
   Finland.zoom1,
   France.zoom1,
+  FrenchGuiana.zoom1,
   FrenchPolynesia.zoom1,
   FrenchSouthernAndAntarcticLands.zoom1,
   Gabon.zoom1,
@@ -517,6 +529,7 @@ export const zoom1 = [
   GuineaBissau.zoom1,
   Guyana.zoom1,
   Haiti.zoom1,
+  Hawaii.zoom1,
   HeardIslandAndMcDonaldIslands.zoom1,
   Honduras.zoom1,
   HongKong.zoom1,
@@ -534,6 +547,7 @@ export const zoom1 = [
   Jamaica.zoom1,
   Japan.zoom1,
   Jordan.zoom1,
+  Kaliningrad.zoom1,
   Kashmir.zoom1,
   Kazakhstan.zoom1,
   Kenya.zoom1,
@@ -622,6 +636,7 @@ export const zoom1 = [
   SriLanka.zoom1,
   Sudan.zoom1,
   Suriname.zoom1,
+  Svalbard.zoom1,
   Swaziland.zoom1,
   Sweden.zoom1,
   Switzerland.zoom1,

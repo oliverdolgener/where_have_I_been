@@ -1,5 +1,5 @@
 export const zoom0 = {
-  id: 47,
+  id: 196,
   type: 'FeatureCollection',
   features: [
     {
@@ -244,7 +244,7 @@ export const zoom0 = {
 };
 
 export const zoom1 = {
-  id: 47,
+  id: 196,
   type: 'FeatureCollection',
   features: [
     {

@@ -390,4 +390,10 @@ export default [
   { id: 193, flag: Yemen },
   { id: 194, flag: Zambia },
   { id: 195, flag: Zimbabwe },
+  { id: 196, flag: Denmark },
+  { id: 197, flag: Russia },
+  { id: 198, flag: Norway },
+  { id: 199, flag: UnitedStates },
+  { id: 200, flag: UnitedStates },
+  { id: 201, flag: France },
 ];
