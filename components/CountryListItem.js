@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Image } from 'react-native';
+import { connect } from 'react-redux';
 
+import { actions as countryActions } from '../reducers/country';
 import StyledText from './StyledText';
 import TouchableScale from './TouchableScale';
 import iconDone from '../assets/iconDone.png';
@@ -42,8 +44,23 @@ class CountryListItem extends Component {
     return false;
   }
 
+  toggleStatus(country) {
+    const {
+      userId, setVacation, setCountries, countries,
+    } = this.props;
+    let status = 1;
+    if (country.status === 1) {
+      status = 2;
+    } else if (country.status === 2) {
+      status = 0;
+    }
+
+    setVacation(userId, country.id, status);
+    setCountries(countries.map(x => (x.id === country.id ? { ...x, status } : x)));
+  }
+
   render() {
-    const { item, onCountryPress, onStatusPress } = this.props;
+    const { item, onCountryPress } = this.props;
 
     let icon = iconToDo;
     if (item.status === 1) {
@@ -58,7 +75,7 @@ class CountryListItem extends Component {
         <StyledText style={styles.label} numberOfLines={1} ellipsizeMode="middle">
           {item.name}
         </StyledText>
-        <TouchableScale style={styles.status} onPress={() => onStatusPress(item)}>
+        <TouchableScale style={styles.status} onPress={() => this.toggleStatus(item)}>
           <Image style={styles.icon} source={icon} />
         </TouchableScale>
       </TouchableScale>
@@ -66,4 +83,17 @@ class CountryListItem extends Component {
   }
 }
 
-export default CountryListItem;
+const mapStateToProps = state => ({
+  userId: state.user.get('userId'),
+  countries: state.country.get('countries'),
+});
+
+const mapDispatchToProps = {
+  setVacation: countryActions.setVacation,
+  setCountries: countryActions.setCountries,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CountryListItem);
