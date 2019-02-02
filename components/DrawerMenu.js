@@ -270,11 +270,12 @@ class DrawerMenu extends React.Component {
     });
   }
 
-  showFriend(id) {
-    const { getFriendQuadtree, getFriendFlights } = this.props;
+  showFriend(friend) {
+    const { getFriendQuadtree, getFriendFlights, map } = this.props;
     this.closeDrawer();
-    getFriendQuadtree(id);
-    getFriendFlights(id);
+    getFriendQuadtree(friend.id);
+    getFriendFlights(friend.id);
+    map && map.moveToLocation(friend.lastTile);
   }
 
   showCountry(region) {
@@ -363,7 +364,7 @@ class DrawerMenu extends React.Component {
               </Animated.View>
             </TouchableScale>
             <Collapsible collapsed={!showFriendlist}>
-              <Friendlist onFriendPress={id => this.showFriend(id)} />
+              <Friendlist onFriendPress={friend => this.showFriend(friend)} />
             </Collapsible>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleCountryList()}>
               <Image style={styles.menuIcon} source={iconWorld} />

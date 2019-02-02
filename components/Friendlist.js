@@ -98,7 +98,7 @@ class Friendlist extends Component {
           <TouchableScale
             style={styles.item}
             key={item.id.toString()}
-            onPress={() => onFriendPress(item.id)}
+            onPress={() => onFriendPress(item)}
           >
             <View style={styles.badge}>
               <StyledText style={styles.badgeLabel}>{item.level}</StyledText>
