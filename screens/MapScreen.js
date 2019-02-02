@@ -26,6 +26,7 @@ import iconClose from '../assets/iconRemove.png';
 const GEOCODE_INTERVAL = 20000;
 const ELEVATION_INTERVAL = 30000;
 const PLACES_INTERVAL = 60000;
+const FRIEND_INTERVAL = 10000;
 
 const locationOptions = {
   accuracy: 4,
@@ -97,6 +98,7 @@ class MapScreen extends Component {
     this.stopGeocode();
     this.stopElevation();
     this.stopPlaces();
+    this.stopFriends();
   }
 
   onResume() {
@@ -105,6 +107,7 @@ class MapScreen extends Component {
     this.startGeocode();
     this.startElevation();
     this.startPlaces();
+    this.startFriends();
     this.restoreBackgroundLocations();
   }
 
@@ -114,6 +117,7 @@ class MapScreen extends Component {
     this.stopGeocode();
     this.stopElevation();
     this.stopPlaces();
+    this.stopFriends();
   }
 
   onMapPress(coordinate) {
@@ -199,6 +203,22 @@ class MapScreen extends Component {
   getElevation = () => {
     const { lastTile, setElevation } = this.props;
     setElevation(lastTile);
+  };
+
+  startFriends = () => {
+    this.getFriends();
+    this.friendListener = setInterval(async () => {
+      this.getFriends();
+    }, FRIEND_INTERVAL);
+  };
+
+  stopFriends = () => {
+    this.friendListener && clearInterval(this.friendListener);
+  };
+
+  getFriends = () => {
+    const { userId, getFriends } = this.props;
+    getFriends(userId);
   };
 
   startPlaces = () => {
@@ -379,6 +399,7 @@ const mapDispatchToProps = {
   saveTiles: userActions.saveTiles,
   saveLastTile: userActions.saveLastTile,
   removeTile: userActions.removeTile,
+  getFriends: friendActions.getFriends,
   resetFriend: friendActions.resetFriend,
   setLastTile: mapActions.setLastTile,
   setGeolocation: mapActions.setGeolocation,

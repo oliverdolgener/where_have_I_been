@@ -185,8 +185,10 @@ export default (state = initialState, action = {}) => {
           const places = payload.data.response.venues.map(x => ({
             id: x.id,
             name: x.name,
-            latitude: x.location.lat,
-            longitude: x.location.lng,
+            location: {
+              latitude: x.location.lat,
+              longitude: x.location.lng,
+            },
           }));
 
           // const places = payload.data.data.places.map(x => ({

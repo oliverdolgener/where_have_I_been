@@ -3,7 +3,7 @@ import { MapView } from 'expo';
 import { connect } from 'react-redux';
 
 import { actions as mapActions } from '../reducers/map';
-import PlaceDialog from './PlaceDialog';
+import Callout from './Callout';
 import iconMarker from '../assets/iconMarker.png';
 import iconMarkerBig from '../assets/iconMarkerBig.png';
 
@@ -20,13 +20,13 @@ class Places extends Component {
     return places.map(x => (
       <MapView.Marker
         key={x.id.toString()}
-        coordinate={x}
+        coordinate={x.location}
         image={icon}
         onPress={() => setMarker(x)}
         stopPropagation
       >
         <MapView.Callout tooltip>
-          <PlaceDialog place={x} />
+          <Callout location={x.location} title={x.name} button />
         </MapView.Callout>
       </MapView.Marker>
     ));

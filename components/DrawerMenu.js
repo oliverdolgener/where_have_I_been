@@ -1,10 +1,6 @@
 import React from 'react';
 import {
-  StyleSheet,
-  Animated,
-  ScrollView,
-  View,
-  Image,
+  StyleSheet, Animated, ScrollView, View, Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -101,8 +97,7 @@ class DrawerMenu extends React.Component {
   }
 
   componentDidMount() {
-    const { userId, getFriends, getCountries } = this.props;
-    getFriends(userId);
+    const { userId, getCountries } = this.props;
     getCountries(userId);
   }
 
@@ -198,19 +193,19 @@ class DrawerMenu extends React.Component {
     const { showFlights, setShowFlights } = this.props;
     this.closeDrawer();
     setShowFlights(!showFlights);
-  }
+  };
 
   togglePlaces = () => {
     const { showPlaces, setShowPlaces } = this.props;
     this.closeDrawer();
     setShowPlaces(!showPlaces);
-  }
+  };
 
   toggleCountries = () => {
     const { showCountries, setShowCountries } = this.props;
     this.closeDrawer();
     setShowCountries(!showCountries);
-  }
+  };
 
   toggleEditMode = () => {
     const { editMode, setEditMode } = this.props;
@@ -221,8 +216,9 @@ class DrawerMenu extends React.Component {
   showLogoutDialog = () => {
     const { alertDialog } = this.props;
     this.closeDrawer();
-    alertDialog && alertDialog.show('You have unsynced tiles! Are you sure you want to log out?', () => this.logout());
-  }
+    alertDialog
+      && alertDialog.show('You have unsynced tiles! Are you sure you want to log out?', () => this.logout());
+  };
 
   logout = async () => {
     const { logout, resetFriend } = this.props;
@@ -290,7 +286,14 @@ class DrawerMenu extends React.Component {
 
   render() {
     const {
-      mapType, tilesToSave, theme, shape, editMode, showFlights, showCountries, showPlaces,
+      mapType,
+      tilesToSave,
+      theme,
+      shape,
+      editMode,
+      showFlights,
+      showCountries,
+      showPlaces,
     } = this.props;
     const {
       showFriendlist,
@@ -332,10 +335,7 @@ class DrawerMenu extends React.Component {
     }
 
     return (
-      <SafeAreaView
-        style={styles.container}
-        forceInset={{ top: 'always', horizontal: 'never' }}
-      >
+      <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
         <ScrollView>
           <View style={styles.menuContainer}>
             <View style={styles.header}>
@@ -345,7 +345,10 @@ class DrawerMenu extends React.Component {
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleMapType()}>
               <Image style={styles.menuIcon} source={iconMap} />
               <StyledText style={styles.menuLabel}>Map Type</StyledText>
-              <Image style={styles.menuIcon} source={mapType === 'standard' ? iconStreetView : iconSatellite} />
+              <Image
+                style={styles.menuIcon}
+                source={mapType === 'standard' ? iconStreetView : iconSatellite}
+              />
             </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleShape()}>
               <Image style={styles.menuIcon} source={iconShape} />
@@ -370,9 +373,7 @@ class DrawerMenu extends React.Component {
               </Animated.View>
             </TouchableScale>
             <Collapsible collapsed={!showCountryList}>
-              <CountryList
-                onCountryPress={region => this.showCountry(region)}
-              />
+              <CountryList onCountryPress={region => this.showCountry(region)} />
             </Collapsible>
             <TouchableScale style={styles.menuItem} onPress={() => this.syncData()}>
               <Animated.View style={{ transform: [{ rotate: spin }] }}>
@@ -396,12 +397,18 @@ class DrawerMenu extends React.Component {
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleCountries()}>
               <Image style={styles.menuIcon} source={iconCountry} />
               <StyledText style={styles.menuLabel}>Show Countries</StyledText>
-              <Image style={styles.menuIcon} source={showCountries ? iconToggleOn : iconToggleOff} />
+              <Image
+                style={styles.menuIcon}
+                source={showCountries ? iconToggleOn : iconToggleOff}
+              />
             </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleTheme()}>
               <Image style={styles.menuIcon} source={iconNight} />
               <StyledText style={styles.menuLabel}>Night Mode</StyledText>
-              <Image style={styles.menuIcon} source={theme === 'dark' ? iconToggleOn : iconToggleOff} />
+              <Image
+                style={styles.menuIcon}
+                source={theme === 'dark' ? iconToggleOn : iconToggleOff}
+              />
             </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.toggleEditMode()}>
               <Image style={styles.menuIcon} source={iconEdit} />
@@ -442,7 +449,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   logout: userActions.logout,
   saveTiles: userActions.saveTiles,
-  getFriends: friendActions.getFriends,
   getFriendQuadtree: friendActions.getFriendQuadtree,
   getFriendFlights: friendActions.getFriendFlights,
   resetFriend: friendActions.resetFriend,

@@ -17,6 +17,7 @@ export const darkGreen = '#5dbc9d';
 export const lightBlue = '#9fddff';
 export const blue = '#85cbf8';
 export const darkBlue = '#7bbeeb';
+export const blue50 = 'rgba(133, 203, 248, 0.5)';
 
 export const lightPurple = '#d6dff2';
 export const purple = '#c2cde7';

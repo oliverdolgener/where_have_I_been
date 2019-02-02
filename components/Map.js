@@ -7,6 +7,7 @@ import { actions as mapActions } from '../reducers/map';
 import Fog from './Fog';
 import Flights from './Flights';
 import Countries from './Countries';
+import Friends from './Friends';
 import Places from './Places';
 import * as Earth from '../constants/Earth';
 import * as Colors from '../constants/Colors';
@@ -96,9 +97,15 @@ class Map extends Component {
         <Fog />
         {showCountries && <Countries />}
         {(showFlights || editMode) && <Flights />}
+        <Friends />
         {showPlaces && <Places />}
         {marker && (
-          <MapView.Circle center={marker} radius={75} strokeWidth={0} fillColor={Colors.rose50} />
+          <MapView.Circle
+            center={marker.location}
+            radius={75}
+            strokeWidth={0}
+            fillColor={Colors.rose50}
+          />
         )}
       </MapView>
     );
