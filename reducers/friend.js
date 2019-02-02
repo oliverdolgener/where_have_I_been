@@ -62,6 +62,11 @@ export default (state = initialState, action = {}) => {
             id: x.id.toString(),
             username: x.username,
             level: LevelUtils.getLevelFromExp(x.locations),
+            lastTile: {
+              latitude: x.latitude,
+              longitude: x.longitude,
+            },
+            lastOnline: x.last_online,
           }));
           return prevState.set('friends', friends);
         },
@@ -73,6 +78,11 @@ export default (state = initialState, action = {}) => {
             id: x.id.toString(),
             username: x.username,
             level: LevelUtils.getLevelFromExp(x.locations),
+            lastTile: {
+              latitude: x.latitude,
+              longitude: x.longitude,
+            },
+            lastOnline: x.last_online,
           }));
           return prevState.set('friends', friends);
         },
@@ -84,6 +94,11 @@ export default (state = initialState, action = {}) => {
             id: x.id.toString(),
             username: x.username,
             level: LevelUtils.getLevelFromExp(x.locations),
+            lastTile: {
+              latitude: x.latitude,
+              longitude: x.longitude,
+            },
+            lastOnline: x.last_online,
           }));
           return prevState.set('friends', friends);
         },
