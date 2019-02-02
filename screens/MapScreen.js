@@ -249,13 +249,14 @@ class MapScreen extends Component {
 
       if (accuracy < 100) {
         const {
-          lastTile, setLastTile, followLocation, map,
+          userId, lastTile, setLastTile, saveLastTile, followLocation, map,
         } = this.props;
         const roundedLocation = GeoLocation.getRoundedLocation(location);
 
         if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
           this.addLocations([roundedLocation]);
           setLastTile(roundedLocation);
+          saveLastTile(userId, roundedLocation);
           followLocation && map && map.moveToLocation(roundedLocation);
         }
       }
@@ -376,6 +377,7 @@ const mapDispatchToProps = {
   setQuadtree: userActions.setQuadtree,
   setTilesToSave: userActions.setTilesToSave,
   saveTiles: userActions.saveTiles,
+  saveLastTile: userActions.saveLastTile,
   removeTile: userActions.removeTile,
   resetFriend: friendActions.resetFriend,
   setLastTile: mapActions.setLastTile,

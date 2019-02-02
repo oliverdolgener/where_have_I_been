@@ -12,6 +12,7 @@ import {
   signup,
   setUserPushToken,
   saveTiles,
+  saveLastTile,
   removeTile,
 } from '../services/api';
 import LatLng from '../model/LatLng';
@@ -35,6 +36,7 @@ export const types = {
   SET_LOCATIONS: 'USER/SET_LOCATIONS',
   SET_TILES_TO_SAVE: 'USER/SET_TILES_TO_SAVE',
   SAVE_TILES: 'USER/SAVE_TILES',
+  SAVE_LAST_TILE: 'USER/SAVE_LAST_TILE',
   REMOVE_TILE: 'USER/REMOVE_TILE',
   SET_PUSH_TOKEN: 'USER/SET_PUSH_TOKEN',
   SET_USER_PUSH_TOKEN: 'USER/SET_USER_PUSH_TOKEN',
@@ -157,6 +159,10 @@ export const actions = {
   saveTiles: (userId, tilesToSave) => ({
     type: types.SAVE_TILES,
     promise: saveTiles(userId.toString(), tilesToSave),
+  }),
+  saveLastTile: (userId, tile) => ({
+    type: types.SAVE_LAST_TILE,
+    promise: saveLastTile(userId.toString(), tile),
   }),
   removeTile: (userId, tile) => ({
     type: types.REMOVE_TILE,

@@ -107,6 +107,21 @@ export const removeTile = (userId, tile) => {
   return fetchJson(url.href(), options);
 };
 
+export const saveLastTile = (userId, tile) => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_USER).segment(userId.toString()).segment('tile');
+  const body = JSON.stringify({
+    latitude: tile.latitude,
+    longitude: tile.longitude,
+  });
+  const options = {
+    method: 'POST',
+    headers,
+    body,
+  };
+  return fetchJson(url.href(), options);
+};
+
 export const getFriends = (userId) => {
   const url = new URI(API_URL);
   url.segment(ENDPOINT_FRIEND).segment(userId.toString());
