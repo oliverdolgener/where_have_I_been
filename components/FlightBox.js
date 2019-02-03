@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     margin: 5,
-    backgroundColor: Colors.blue,
+    backgroundColor: Colors.darkBlue,
   },
   flightButtonLabel: {
     color: Colors.creme,
@@ -88,8 +88,8 @@ class FlightBox extends Component {
           placeholder="From"
           onChangeText={text => this.setState({ from: text })}
           value={from}
-          selectionColor={Colors.blue}
-          underlineColorAndroid={Colors.blue}
+          selectionColor={Colors.darkBlue}
+          underlineColorAndroid={Colors.darkBlue}
           returnKeyType="next"
           onSubmitEditing={() => this.toInput.focus()}
           autoCorrect={false}
@@ -103,8 +103,8 @@ class FlightBox extends Component {
           placeholder="To"
           onChangeText={text => this.setState({ to: text })}
           value={to}
-          selectionColor={Colors.blue}
-          underlineColorAndroid={Colors.blue}
+          selectionColor={Colors.darkBlue}
+          underlineColorAndroid={Colors.darkBlue}
           returnKeyType="done"
           autoCorrect={false}
           autoCapitalize="characters"

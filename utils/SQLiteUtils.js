@@ -6,30 +6,24 @@ const db = SQLite.openDatabase('whib.db');
 
 export function createDB() {
   db.transaction((tx) => {
-    tx.executeSql('BEGIN;');
     tx.executeSql(
       'CREATE TABLE IF NOT EXISTS location (id INTEGER PRIMARY KEY NOT NULL, latitude BLOB NOT NULL, longitude BLOB NOT NULL)',
     );
-    tx.executeSql('COMMIT;');
   });
 }
 
 export function deleteLocations() {
   db.transaction((tx) => {
-    tx.executeSql('BEGIN;');
     tx.executeSql('DELETE FROM location', []);
-    tx.executeSql('COMMIT;');
   });
 }
 
 export function getLocations() {
   return new Promise((resolve) => {
     db.transaction((tx) => {
-      tx.executeSql('BEGIN;');
       tx.executeSql('SELECT * FROM location', [], (_, { rows: { _array } }) => {
         resolve(_array);
       });
-      tx.executeSql('COMMIT;');
     });
   });
 }
@@ -37,11 +31,9 @@ export function getLocations() {
 export function getCount() {
   return new Promise((resolve) => {
     db.transaction((tx) => {
-      tx.executeSql('BEGIN;');
       tx.executeSql('SELECT COUNT(*) as count FROM location', [], (_, { rows: { _array } }) => {
         resolve(_array[0].count);
       });
-      tx.executeSql('COMMIT;');
     });
   });
 }
@@ -66,7 +58,6 @@ export function getLocationsInRegion(region, factor = 1) {
 
   return new Promise((resolve) => {
     db.transaction((tx) => {
-      tx.executeSql('BEGIN;');
       tx.executeSql(
         'SELECT * FROM location WHERE latitude > ? AND latitude < ? And longitude > ? AND longitude < ?',
         [minLatitude, maxLatitude, minLongitude, maxLongitude],
@@ -74,7 +65,6 @@ export function getLocationsInRegion(region, factor = 1) {
           resolve(_array);
         },
       );
-      tx.executeSql('COMMIT;');
     });
   });
 }
@@ -97,14 +87,12 @@ export function insertLocations(locations) {
   return new Promise((resolve) => {
     db.transaction(
       (tx) => {
-        tx.executeSql('BEGIN;');
         locations.forEach((x) => {
           tx.executeSql('INSERT INTO location (latitude, longitude) VALUES (?, ?);', [
             x.latitude,
             x.longitude,
           ]);
         });
-        tx.executeSql('COMMIT;');
       },
       null,
       resolve(),
@@ -116,12 +104,10 @@ export function deleteLocation(location) {
   return new Promise((resolve) => {
     db.transaction(
       (tx) => {
-        tx.executeSql('BEGIN;');
         tx.executeSql('DELETE FROM location WHERE latitude = ? And longitude = ?', [
           location.latitude,
           location.longitude,
         ]);
-        tx.executeSql('COMMIT;');
       },
       null,
       resolve(),
