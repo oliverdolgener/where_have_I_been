@@ -80,19 +80,18 @@ class SplashScreen extends React.Component {
         setShape(shape);
       }
 
-      SQLiteUtils.getLocations()
-        .then((locations) => {
-          setTimeout(() => {
-            if (locations && locations.length > 0) {
-              relogFromSQLite(id, username, locations);
-            } else {
-              relogUser(id, username);
-            }
-          }, 3000);
-        })
-        .catch(() => {
+      let visitedLocations = [];
+      SQLiteUtils.getLocations().then((locations) => {
+        visitedLocations = locations;
+      });
+
+      setTimeout(() => {
+        if (visitedLocations.length > 0) {
+          relogFromSQLite(id, username, visitedLocations);
+        } else {
           relogUser(id, username);
-        });
+        }
+      }, 3000);
     } else {
       navigation.navigate('Login');
     }
