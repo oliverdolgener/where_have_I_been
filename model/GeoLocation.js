@@ -1,3 +1,5 @@
+import geolib from 'geolib';
+
 import GeoArray from './GeoArray';
 import * as ConversionUtils from '../utils/ConversionUtils';
 import * as RoundUtils from '../utils/RoundUtils';
@@ -247,5 +249,35 @@ export default class GeoLocation {
       GeoLocation.isLatitudeInRegion(location.latitude, region, factor)
       && GeoLocation.isLongitudeInRegion(location.longitude, region, factor)
     );
+  }
+
+  static getTilesInPolygon(polygon) {
+    const array = polygon.features[0].geometry.coordinates[0];
+    const coords = array.map(x => ({ latitude: x[1], longitude: x[0] }));
+    const boundingBox = GeoArray.getBoundingBox(coords);
+
+    const candidates = [];
+
+    for (
+      let lat = boundingBox.latMax + 0.1;
+      lat > boundingBox.latMin - 0.1;
+      lat -= Earth.GRID_DISTANCE
+    ) {
+      const latitude = GeoLocation.getRoundedLatitude(lat);
+      const gridDistanceAtLatitude = GeoLocation.gridDistanceAtLatitude(lat);
+      for (
+        let lng = boundingBox.longMin - 0.1;
+        lng < boundingBox.longMax + 0.1;
+        lng += gridDistanceAtLatitude
+      ) {
+        const longitude = GeoLocation.getRoundedLongitude(lng, latitude);
+        const location = { latitude, longitude };
+        if (geolib.isPointInside(location, coords)) {
+          candidates.push({ latitude, longitude });
+        }
+      }
+    }
+
+    return candidates;
   }
 }
