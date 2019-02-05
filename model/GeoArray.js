@@ -88,7 +88,7 @@ export default class GeoArray {
     return grid;
   }
 
-  static toRegion(array) {
+  static getBoundingBox(array) {
     let latMin = array[0].latitude;
     let latMax = array[0].latitude;
     let longMin = array[0].longitude;
@@ -102,10 +102,20 @@ export default class GeoArray {
     });
 
     return {
-      latitude: (latMin + latMax) / 2,
-      longitude: (longMin + longMax) / 2,
-      latitudeDelta: latMax - latMin,
-      longitudeDelta: longMax - longMin,
+      latMin,
+      latMax,
+      longMin,
+      longMax,
+    };
+  }
+
+  static toRegion(array) {
+    const boundingBox = GeoArray.getBoundingBox(array);
+    return {
+      latitude: (boundingBox.latMin + boundingBox.latMax) / 2,
+      longitude: (boundingBox.longMin + boundingBox.longMax) / 2,
+      latitudeDelta: boundingBox.latMax - boundingBox.latMin,
+      longitudeDelta: boundingBox.longMax - boundingBox.longMin,
     };
   }
 }
