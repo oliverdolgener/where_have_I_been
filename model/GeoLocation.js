@@ -258,6 +258,8 @@ export default class GeoLocation {
 
     const candidates = [];
 
+    geolib.preparePolygonForIsPointInsideOptimized(coords);
+
     for (
       let lat = boundingBox.latMax + 0.1;
       lat > boundingBox.latMin - 0.1;
@@ -272,7 +274,7 @@ export default class GeoLocation {
       ) {
         const longitude = GeoLocation.getRoundedLongitude(lng, latitude);
         const location = { latitude, longitude };
-        if (geolib.isPointInside(location, coords)) {
+        if (geolib.isPointInsideWithPreparedPolygon(location, coords)) {
           candidates.push({ latitude, longitude });
         }
       }
