@@ -24,7 +24,7 @@ export default class GeoLocation {
   static isEqual = (a, b) => a.latitude == b.latitude && a.longitude == b.longitude;
 
   static getRoundedLatitude(latitude, gridDistance = Earth.GRID_DISTANCE) {
-    return RoundUtils.roundToDecimals(Math.round(latitude / gridDistance) * gridDistance, 6);
+    return RoundUtils.roundToDecimals(Math.round(latitude / gridDistance) * gridDistance, 4);
   }
 
   static getRoundedLongitude(longitude, latitude, gridDistance = Earth.GRID_DISTANCE) {
