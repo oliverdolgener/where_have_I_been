@@ -101,12 +101,12 @@ export default class GeoGrid {
           ) {
             last = next;
           } else {
-            slices.push(GeoLocation.getRoundedRectangle(first, last, gridDistance));
+            slices.push(GeoLocation.getRectangle(first, last, gridDistance));
             first = next;
             last = next;
           }
         } else {
-          slices.push(GeoLocation.getRoundedRectangle(first, last, gridDistance));
+          slices.push(GeoLocation.getRectangle(first, last, gridDistance));
         }
       }
     }

@@ -1,10 +1,12 @@
 import React from 'react';
+import { View } from 'react-native';
 import { MapView } from 'expo';
 import { connect } from 'react-redux';
 import { Box } from 'js-quadtree';
 
 import LatLng from '../model/LatLng';
 import Point from '../model/Point';
+import Polygon from '../model/Polygon';
 import GeoGrid from '../model/GeoGrid';
 import * as Colors from '../constants/Colors';
 import * as Earth from '../constants/Earth';
@@ -14,6 +16,8 @@ const Fog = (props) => {
     quadtree, friendQuadtree, region, gridDistance, mapType, shape, showCountries,
   } = props;
 
+  // const holes = [];
+  let solids = [];
   let holes = [];
 
   if (!showCountries) {
@@ -27,30 +31,37 @@ const Fog = (props) => {
     );
     const points = friendQuadtree ? friendQuadtree.query(box) : quadtree.query(box);
     const visibleLocations = points.map(x => Point.toLatLngRounded(x));
+    const slices = GeoGrid.getRectangleSlices(visibleLocations, gridDistance);
+    const polygons = Polygon.getPolygons(slices);
+    solids = polygons.filter(x => Polygon.isSolid(x));
+    holes = polygons.filter(x => !Polygon.isSolid(x));
+    console.log(polygons);
 
-    switch (shape) {
-      case 'rectangle':
-        holes = GeoGrid.getRectangleSlices(visibleLocations, gridDistance);
-        break;
-      case 'diamond':
-        holes = GeoGrid.getDiamondSlices(visibleLocations, gridDistance);
-        break;
-      case 'grid':
-        holes = GeoGrid.getRectangles(visibleLocations, gridDistance);
-        break;
-      default:
-        break;
-    }
+    // switch (shape) {
+    //   case 'rectangle':
+    //     holes = GeoGrid.getRectangleSlices(visibleLocations, gridDistance);
+    //     break;
+    //   case 'diamond':
+    //     holes = GeoGrid.getDiamondSlices(visibleLocations, gridDistance);
+    //     break;
+    //   case 'grid':
+    //     holes = GeoGrid.getRectangles(visibleLocations, gridDistance);
+    //     break;
+    //   default:
+    //     break;
+    // }
   }
 
   return (
-    <MapView.Polygon
-      fillColor={Colors.brown80}
-      strokeWidth={shape == 'grid' ? 0.5 : 0}
-      strokeColor={mapType == 'hybrid' ? Colors.creme : Colors.brown}
-      coordinates={Earth.FOG}
-      holes={holes}
-    />
+    <View>
+      <MapView.Polygon
+        fillColor={Colors.brown80}
+        strokeWidth={shape == 'grid' ? 0.5 : 0}
+        strokeColor={mapType == 'hybrid' ? Colors.creme : Colors.brown}
+        coordinates={Earth.FOG}
+        holes={solids}
+      />
+    </View>
   );
 };
 
