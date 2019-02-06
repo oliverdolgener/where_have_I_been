@@ -161,6 +161,7 @@ class LoginScreen extends React.Component {
           returnKeyType="next"
           onSubmitEditing={() => this.passwordInput.focus()}
           autoCorrect={false}
+          blurOnSubmit={false}
         />
         <StyledText style={styles.error}>{emailError}</StyledText>
         <TextInput
