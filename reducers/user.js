@@ -260,7 +260,7 @@ export default (state = initialState, action = {}) => {
       const points = latlngs.map(x => LatLng.toPoint(x));
       const quadtree = new QuadTree(new Box(0, 0, 360, 180), config, points);
       setUserAsync(action.userId, action.username);
-      setTimeout(() => NavigationService.navigate('Map'), 1000);
+      setTimeout(() => NavigationService.navigate('Map'), 3000);
       return state
         .set('isLoggedIn', true)
         .set('userId', action.userId)
