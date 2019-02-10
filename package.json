@@ -34,6 +34,7 @@
     "geolib": "^2.0.24",
     "immutable": "^4.0.0-rc.12",
     "js-quadtree": "^1.2.0",
+    "moment": "^2.24.0",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-collapsible": "^1.4.0",

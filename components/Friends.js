@@ -17,7 +17,7 @@ const Friends = (props) => {
       <MapView.Circle center={x.lastTile} radius={200} strokeWidth={0} fillColor={Colors.blue50} />
       <MapView.Marker coordinate={x.lastTile} image={icon} stopPropagation>
         <MapView.Callout tooltip>
-          <Callout location={x.lastTile} title={x.username} />
+          <Callout location={x.lastTile} title={x.username} timestamp={x.lastOnline} />
         </MapView.Callout>
       </MapView.Marker>
     </View>
