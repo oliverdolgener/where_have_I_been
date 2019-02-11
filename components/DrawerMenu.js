@@ -11,6 +11,7 @@ import TouchableScale from './TouchableScale';
 import Geocode from './Geocode';
 import Friendlist from './Friendlist';
 import CountryList from './CountryList';
+import ProgressList from './ProgressList';
 import { actions as userActions } from '../reducers/user';
 import { actions as friendActions } from '../reducers/friend';
 import { actions as mapActions } from '../reducers/map';
@@ -89,10 +90,12 @@ class DrawerMenu extends React.Component {
     this.state = {
       showFriendlist: false,
       showCountryList: false,
+      showProgressList: false,
       isSpinning: false,
       spinValue: new Animated.Value(0),
       friendlistIconValue: new Animated.Value(1),
       countriesIconValue: new Animated.Value(1),
+      progressIconValue: new Animated.Value(1),
     };
   }
 
@@ -115,6 +118,7 @@ class DrawerMenu extends React.Component {
     this.setState({
       showFriendlist: false,
       showCountryList: false,
+      showProgressList: false,
     });
   };
 
@@ -185,6 +189,27 @@ class DrawerMenu extends React.Component {
       : this.openListAnimation(countriesIconValue);
     this.setState({
       showCountryList: !showCountryList,
+      showFriendlist: false,
+    });
+  };
+
+  toggleProgressList = () => {
+    const {
+      showProgressList,
+      showCountryList,
+      showFriendlist,
+      countriesIconValue,
+      friendlistIconValue,
+      progressIconValue,
+    } = this.state;
+    showFriendlist && this.closeListAnimation(friendlistIconValue);
+    showCountryList && this.closeListAnimation(countriesIconValue);
+    showProgressList
+      ? this.closeListAnimation(progressIconValue)
+      : this.openListAnimation(progressIconValue);
+    this.setState({
+      showProgressList: !showProgressList,
+      showCountryList: false,
       showFriendlist: false,
     });
   };
@@ -299,9 +324,11 @@ class DrawerMenu extends React.Component {
     const {
       showFriendlist,
       showCountryList,
+      showProgressList,
       spinValue,
       friendlistIconValue,
       countriesIconValue,
+      progressIconValue,
     } = this.state;
 
     const spin = spinValue.interpolate({
@@ -315,6 +342,11 @@ class DrawerMenu extends React.Component {
     });
 
     const countriesFlip = countriesIconValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '180deg'],
+    });
+
+    const progressFlip = progressIconValue.interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '180deg'],
     });
@@ -375,6 +407,16 @@ class DrawerMenu extends React.Component {
             </TouchableScale>
             <Collapsible collapsed={!showCountryList}>
               <CountryList onCountryPress={region => this.showCountry(region)} />
+            </Collapsible>
+            <TouchableScale style={styles.menuItem} onPress={() => this.toggleProgressList()}>
+              <Image style={styles.menuIcon} source={iconWorld} />
+              <StyledText style={styles.menuLabel}>Progress</StyledText>
+              <Animated.View style={{ transform: [{ rotateX: progressFlip }] }}>
+                <Image style={styles.menuIcon} source={iconCollapse} />
+              </Animated.View>
+            </TouchableScale>
+            <Collapsible collapsed={!showProgressList}>
+              <ProgressList />
             </Collapsible>
             <TouchableScale style={styles.menuItem} onPress={() => this.syncData()}>
               <Animated.View style={{ transform: [{ rotate: spin }] }}>

@@ -22,7 +22,6 @@ const CountryList = (props) => {
 };
 
 const mapStateToProps = state => ({
-  userId: state.user.get('userId'),
   countries: state.country.get('countries'),
 });
 

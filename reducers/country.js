@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import { handle } from 'redux-pack';
 
-import { getVacations, setVacation } from '../services/api';
+import { getVacations, setVacation, getProgress } from '../services/api';
 import GeoArray from '../model/GeoArray';
 import * as SortUtils from '../utils/SortUtils';
 import Flags from '../constants/Flags';
@@ -12,6 +12,7 @@ export const types = {
   SORT_COUNTRIES: 'COUNTRY/SORT_COUNTRIES',
   SET_VACATION: 'COUNTRY/SET_VACATION',
   SET_SHOW_COUNTRIES: 'COUNTRY/SET_SHOW_COUNTRIES',
+  GET_PROGRESS: 'COUNTRY/GET_PROGRESS',
 };
 
 export const actions = {
@@ -26,11 +27,16 @@ export const actions = {
     promise: setVacation(userId, countryId, status),
   }),
   setShowCountries: showCountries => ({ type: types.SET_SHOW_COUNTRIES, showCountries }),
+  getProgress: userId => ({
+    type: types.GET_PROGRESS,
+    promise: getProgress(userId),
+  }),
 };
 
 const initialState = Map({
   countries: [],
   showCountries: false,
+  progress: [],
 });
 
 export default (state = initialState, action = {}) => {
@@ -64,6 +70,19 @@ export default (state = initialState, action = {}) => {
     }
     case types.SET_SHOW_COUNTRIES: {
       return state.set('showCountries', action.showCountries);
+    }
+    case types.GET_PROGRESS: {
+      return handle(state, action, {
+        success: (prevState) => {
+          const progress = payload.data.map(x => ({
+            id: x.id.toString(),
+            name: x.name,
+            count: x.count,
+            total: x.total,
+          }));
+          return prevState.set('progress', progress);
+        },
+      });
     }
     default:
       return state;

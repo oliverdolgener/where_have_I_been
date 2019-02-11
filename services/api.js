@@ -15,6 +15,7 @@ const ENDPOINT_COUNTRY = 'country';
 const ENDPOINT_AIRPORT = 'airport';
 const ENDPOINT_FLIGHT = 'flight';
 const ENDPOINT_VACATION = 'vacation';
+const ENDPOINT_PROGRESS = 'progress';
 
 const headers = {
   Accept: 'application/json',
@@ -109,7 +110,10 @@ export const removeTile = (userId, tile) => {
 
 export const saveLastTile = (userId, tile) => {
   const url = new URI(API_URL);
-  url.segment(ENDPOINT_USER).segment(userId.toString()).segment('tile');
+  url
+    .segment(ENDPOINT_USER)
+    .segment(userId.toString())
+    .segment('tile');
   const body = JSON.stringify({
     latitude: tile.latitude,
     longitude: tile.longitude,
@@ -290,5 +294,11 @@ export const getElevation = (center) => {
   const url = new URI(ELEVATION_URL);
   // url.addQuery('locations', `${center.latitude},${center.longitude}`);
   url.addQuery('points', `${center.latitude},${center.longitude}`);
+  return fetchJson(url.href());
+};
+
+export const getProgress = (userId) => {
+  const url = new URI(API_URL);
+  url.segment(ENDPOINT_PROGRESS).segment(userId.toString());
   return fetchJson(url.href());
 };
