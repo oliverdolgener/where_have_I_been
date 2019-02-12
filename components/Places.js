@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 
 import { actions as mapActions } from '../reducers/map';
 import Callout from './Callout';
-import iconMarker from '../assets/iconMarker.png';
-import iconMarkerBig from '../assets/iconMarkerBig.png';
 
 class Places extends Component {
   shouldComponentUpdate(prevProps) {
@@ -14,14 +12,12 @@ class Places extends Component {
   }
 
   render() {
-    const { places, setMarker, os } = this.props;
-    const icon = os == 'android' ? iconMarkerBig : iconMarker;
+    const { places, setMarker } = this.props;
 
     return places.map(x => (
       <MapView.Marker
         key={x.id.toString()}
         coordinate={x.location}
-        image={icon}
         onPress={() => setMarker(x)}
         stopPropagation
       >
@@ -34,7 +30,6 @@ class Places extends Component {
 }
 
 const mapStateToProps = state => ({
-  os: state.app.get('os'),
   places: state.map.get('places'),
   marker: state.map.get('marker'),
 });
