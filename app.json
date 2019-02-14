@@ -18,6 +18,7 @@
       }
     },
     "ios": {
+      "bundleIdentifier": "com.ollum.whib",
       "infoPlist": {
         "UIBackgroundModes": ["location"]
       }
