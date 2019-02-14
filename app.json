@@ -1,7 +1,7 @@
 {
   "expo": {
     "sdkVersion": "32.0.0",
-    "icon": "./assets/whib.png",
+    "icon": "./app/assets/whib.png",
     "scheme": "whib",
     "splash": {
       "backgroundColor": "#FFF5ED"

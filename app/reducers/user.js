@@ -10,7 +10,6 @@ import {
   getLocations,
   login,
   signup,
-  setUserPushToken,
   saveTiles,
   saveLastTile,
   removeTile,
@@ -110,9 +109,9 @@ const calculateScore = (quadtree) => {
 };
 
 export const actions = {
-  login: (email, password, pushToken) => ({
+  login: (email, password) => ({
     type: types.LOGIN,
-    promise: login(email, password, pushToken),
+    promise: login(email, password),
     meta: {
       onSuccess: (result) => {
         setUserAsync(result.data.id, result.data.username);
@@ -121,9 +120,9 @@ export const actions = {
     },
   }),
   logout: () => ({ type: types.LOGOUT }),
-  signup: (email, password, pushToken) => ({
+  signup: (email, password) => ({
     type: types.SIGNUP,
-    promise: signup(email, password, pushToken),
+    promise: signup(email, password),
     meta: {
       onSuccess: (result) => {
         setUserAsync(result.data.id, result.data.username);
@@ -168,11 +167,6 @@ export const actions = {
     type: types.REMOVE_TILE,
     promise: removeTile(userId.toString(), tile),
   }),
-  setPushToken: pushToken => ({ type: types.SET_PUSH_TOKEN, pushToken }),
-  setUserPushToken: (userId, pushToken) => ({
-    type: types.SET_USER_PUSH_TOKEN,
-    promise: setUserPushToken(userId, pushToken),
-  }),
   setScore: quadtree => ({
     type: types.SET_SCORE,
     promise: calculateScoreAsync(quadtree),
@@ -191,7 +185,6 @@ const initialState = Map({
   tilesToSave: [],
   isSaving: false,
   isLoggingIn: false,
-  pushToken: false,
 });
 
 export default (state = initialState, action = {}) => {
@@ -307,9 +300,6 @@ export default (state = initialState, action = {}) => {
           return prevState;
         },
       });
-    case types.SET_PUSH_TOKEN: {
-      return state.set('pushToken', action.pushToken);
-    }
     case types.SET_SCORE:
       return handle(state, action, {
         success: prevState => prevState.set('score', action.payload),

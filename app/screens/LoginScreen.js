@@ -84,7 +84,7 @@ class LoginScreen extends React.Component {
 
   onLoginPress = () => {
     const { email, password } = this.state;
-    const { login, isLoggingIn, pushToken } = this.props;
+    const { login, isLoggingIn } = this.props;
 
     if (!this.validateEmail()) {
       return;
@@ -95,13 +95,13 @@ class LoginScreen extends React.Component {
     }
 
     if (!isLoggingIn) {
-      login(email, password, pushToken);
+      login(email, password);
     }
   };
 
   onSignUpPress = () => {
     const { email, password } = this.state;
-    const { signup, pushToken } = this.props;
+    const { signup } = this.props;
 
     if (!this.validateEmail()) {
       return;
@@ -111,7 +111,7 @@ class LoginScreen extends React.Component {
       return;
     }
 
-    signup(email, password, pushToken);
+    signup(email, password);
   };
 
   validateEmail = () => {
@@ -199,7 +199,6 @@ const mapStateToProps = state => ({
   isLoggingIn: state.user.get('isLoggingIn'),
   emailError: state.user.get('emailError'),
   passwordError: state.user.get('passwordError'),
-  pushToken: state.user.get('pushToken'),
 });
 
 const mapDispatchToProps = {

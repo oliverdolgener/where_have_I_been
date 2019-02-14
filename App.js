@@ -5,17 +5,17 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { middleware as reduxPackMiddleware } from 'redux-pack';
 import { Font, TaskManager } from 'expo';
 
-import Navigator from './navigation/Navigator';
-import AppReducer from './reducers/app';
-import UserReducer from './reducers/user';
-import FriendReducer from './reducers/friend';
-import MapReducer from './reducers/map';
-import CountryReducer from './reducers/country';
-import FlightReducer from './reducers/flight';
-import GeoLocation from './model/GeoLocation';
-import GeoArray from './model/GeoArray';
-import Regular from './assets/fonts/Lato-Regular.ttf';
-import Light from './assets/fonts/Lato-Light.ttf';
+import Navigator from './app/navigation/Navigator';
+import AppReducer from './app/reducers/app';
+import UserReducer from './app/reducers/user';
+import FriendReducer from './app/reducers/friend';
+import MapReducer from './app/reducers/map';
+import CountryReducer from './app/reducers/country';
+import FlightReducer from './app/reducers/flight';
+import GeoLocation from './app/model/GeoLocation';
+import GeoArray from './app/model/GeoArray';
+import Regular from './app/assets/fonts/Lato-Regular.ttf';
+import Light from './app/assets/fonts/Lato-Light.ttf';
 
 TaskManager.defineTask('location', ({ data, error }) => {
   if (error || !data) {

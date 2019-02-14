@@ -34,13 +34,12 @@ export const getLocations = (userId) => {
   return fetchJson(url.href());
 };
 
-export const login = (email, password, pushToken) => {
+export const login = (email, password) => {
   const url = new URI(API_URL);
   url.segment(ENDPOINT_LOGIN);
   const body = JSON.stringify({
     email,
     password,
-    pushToken,
   });
   const options = {
     method: 'POST',
@@ -50,27 +49,12 @@ export const login = (email, password, pushToken) => {
   return fetchJson(url.href(), options);
 };
 
-export const signup = (email, password, pushToken) => {
+export const signup = (email, password) => {
   const url = new URI(API_URL);
   url.segment(ENDPOINT_USER);
   const body = JSON.stringify({
     email,
     password,
-    pushToken,
-  });
-  const options = {
-    method: 'POST',
-    headers,
-    body,
-  };
-  return fetchJson(url.href(), options);
-};
-
-export const setUserPushToken = (userId, pushToken) => {
-  const url = new URI(API_URL);
-  url.segment(ENDPOINT_USER).segment(userId.toString());
-  const body = JSON.stringify({
-    pushToken,
   });
   const options = {
     method: 'POST',
