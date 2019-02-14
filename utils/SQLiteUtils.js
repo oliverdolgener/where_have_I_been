@@ -31,9 +31,13 @@ export function getLocations() {
 export function getCount() {
   return new Promise((resolve) => {
     db.transaction((tx) => {
-      tx.executeSql('SELECT COUNT(*) as count FROM location', [], (_, { rows: { _array } }) => {
-        resolve(_array[0].count);
-      });
+      tx.executeSql(
+        'SELECT COUNT(*) as count FROM location',
+        [],
+        (_, { rows: { _array } }) => {
+          resolve(_array[0].count);
+        },
+      );
     });
   });
 }
@@ -88,10 +92,10 @@ export function insertLocations(locations) {
     db.transaction(
       (tx) => {
         locations.forEach((x) => {
-          tx.executeSql('INSERT INTO location (latitude, longitude) VALUES (?, ?);', [
-            x.latitude,
-            x.longitude,
-          ]);
+          tx.executeSql(
+            'INSERT INTO location (latitude, longitude) VALUES (?, ?);',
+            [x.latitude, x.longitude],
+          );
         });
       },
       null,
@@ -104,10 +108,10 @@ export function deleteLocation(location) {
   return new Promise((resolve) => {
     db.transaction(
       (tx) => {
-        tx.executeSql('DELETE FROM location WHERE latitude = ? And longitude = ?', [
-          location.latitude,
-          location.longitude,
-        ]);
+        tx.executeSql(
+          'DELETE FROM location WHERE latitude = ? And longitude = ?',
+          [location.latitude, location.longitude],
+        );
       },
       null,
       resolve(),
