@@ -40,6 +40,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-collapsible": "^1.4.0",
     "react-native-geojson": "^0.1.1",
+    "react-native-maps": "^0.23.0",
     "react-native-progress": "^3.5.0",
     "react-navigation": "^3.2.3",
     "react-redux": "^6.0.0",

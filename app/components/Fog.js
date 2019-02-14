@@ -1,6 +1,6 @@
 import React from 'react';
-import { MapView } from 'expo';
 import { connect } from 'react-redux';
+import MapView from 'react-native-maps';
 import { Box } from 'js-quadtree';
 
 import LatLng from '../model/LatLng';

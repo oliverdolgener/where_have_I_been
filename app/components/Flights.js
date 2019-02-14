@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
-import { MapView } from 'expo';
 import { connect } from 'react-redux';
+import MapView from 'react-native-maps';
 
 import * as Colors from '../constants/Colors';
 

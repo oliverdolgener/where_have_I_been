@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
-import { MapView } from 'expo';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
 import { actions as mapActions } from '../reducers/map';
 import Fog from './Fog';
@@ -60,7 +60,7 @@ class Map extends Component {
         }}
         key={`mapView-${theme}`}
         style={styles.container}
-        provider="google"
+        provider={PROVIDER_GOOGLE}
         onMapReady={() => setMap(this)}
         initialRegion={{
           latitude: lastTile.latitude,

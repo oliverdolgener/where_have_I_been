@@ -104,6 +104,10 @@ apply from: 'expo.gradle'
 // WHEN_PREPARING_SHELL_REMOVE_TO_HERE
 
 dependencies {
+  implementation(project(':react-native-maps')){
+      exclude group: 'com.google.android.gms', module: 'play-services-base'
+      exclude group: 'com.google.android.gms', module: 'play-services-maps'
+  }
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
   implementation 'com.android.support:multidex:1.0.1'
@@ -189,9 +193,6 @@ dependencies {
     exclude group: 'com.squareup.okhttp3', module: 'okhttp-urlconnection'
   }
   
-
-
-  
   api 'com.facebook.react:react-native:32.0.0'
   api 'host.exp.exponent:expo-app-loader-provider:1.0.0'
   api 'host.exp.exponent:expo-core:2.0.0'
@@ -232,8 +233,6 @@ dependencies {
   api 'host.exp.exponent:expo-sensors:2.0.0'
   api 'host.exp.exponent:expo-sms:2.0.0'
   api 'host.exp.exponent:expo-background-fetch:1.0.0'
-
-  
 }
 
 // This has to be down here for some reason

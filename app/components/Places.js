@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { MapView } from 'expo';
 import { connect } from 'react-redux';
+import MapView from 'react-native-maps';
 
 import { actions as mapActions } from '../reducers/map';
 import Callout from './Callout';
