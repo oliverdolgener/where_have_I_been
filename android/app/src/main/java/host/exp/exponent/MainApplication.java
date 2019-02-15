@@ -1,6 +1,5 @@
 package host.exp.exponent;
 
-
 import com.facebook.react.ReactPackage;
 
 import java.util.Arrays;
@@ -35,6 +34,7 @@ import expolib_v1.okhttp3.OkHttpClient;
 // Needed for `react-native link`
 // import com.facebook.react.ReactApplication;
 import com.airbnb.android.react.maps.MapsPackage;
+import org.pgsqlite.SQLitePluginPackage;
 
 public class MainApplication extends ExpoApplication implements AppLoaderPackagesProviderInterface<ReactPackage> {
 
@@ -46,12 +46,9 @@ public class MainApplication extends ExpoApplication implements AppLoaderPackage
   // Needed for `react-native link`
   public List<ReactPackage> getPackages() {
     return Arrays.<ReactPackage>asList(
-        // Add your own packages here!
-        // TODO: add native modules!
-
-        // Needed for `react-native link`
         // new MainReactPackage(),
-        new MapsPackage()
+        new MapsPackage(),
+        new SQLitePluginPackage()
     );
   }
 
