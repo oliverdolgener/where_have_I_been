@@ -3,7 +3,8 @@ import {
   StyleSheet, AppState, Dimensions, StatusBar, View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Permissions, KeepAwake, Constants } from 'expo';
+import { Permissions, Constants } from 'expo';
+import KeepAwake from 'react-native-keep-awake';
 
 import { actions as appActions } from '../reducers/app';
 import AlertDialog from '../components/AlertDialog';
