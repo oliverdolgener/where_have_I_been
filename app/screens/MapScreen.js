@@ -75,7 +75,7 @@ class MapScreen extends Component {
   }
 
   componentWillMount() {
-    BackgroundGeolocation.onLocation(this.onLocation);
+    // BackgroundGeolocation.onLocation(this.onLocation);
     BackgroundGeolocation.ready({
       reset: true,
 
