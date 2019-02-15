@@ -3,8 +3,9 @@ import {
   StyleSheet, AppState, Dimensions, StatusBar, View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Permissions, Constants } from 'expo';
+import { Permissions } from 'expo';
 import KeepAwake from 'react-native-keep-awake';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 import { actions as appActions } from '../reducers/app';
 import AlertDialog from '../components/AlertDialog';
@@ -18,7 +19,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   statusBar: {
-    height: Constants.statusBarHeight,
     backgroundColor: Colors.creme,
   },
 });
@@ -45,11 +45,12 @@ class Navigator extends Component {
 
   render() {
     const { width, height, os } = this.props;
+    const statusBarHeight = getStatusBarHeight();
     return (
       <View style={styles.container}>
         {os === 'ios'
           && (height > width ? (
-            <View style={styles.statusBar}>
+            <View style={[styles.statusBar, { height: statusBarHeight }]}>
               <StatusBar backgroundColor="transparent" barStyle="dark-content" />
             </View>
           ) : (
