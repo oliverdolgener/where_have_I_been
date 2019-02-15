@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { Location } from 'expo';
 import geolib from 'geolib';
 import { Box } from 'js-quadtree';
+import BackgroundGeolocation from 'react-native-background-geolocation';
 
 import { actions as userActions } from '../reducers/user';
 import { actions as friendActions } from '../reducers/friend';
@@ -73,6 +74,49 @@ class MapScreen extends Component {
     this.speed = new Speed(5);
   }
 
+  componentWillMount() {
+    BackgroundGeolocation.onLocation(this.onLocation);
+    BackgroundGeolocation.ready({
+      reset: true,
+
+      // Geolocation Common Options
+      desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+      distanceFilter: 0,
+      disableElasticity: true,
+
+      // Geolocation iOS Options
+
+      // Geolocation Android Options
+      locationUpdateInterval: 1000,
+      fastestLocationUpdateInterval: 1000,
+      allowIdenticalLocations: true,
+
+      // Activity Recognition Common Options
+      activityRecognitionInterval: 1000,
+      stopTimeout: 60,
+      minimumActivityRecognitionConfidence: 0,
+      disableStopDetection: true,
+
+      // Application Common Options
+      stopOnTerminate: true,
+      startOnBoot: false,
+      heartbeatInterval: 60,
+
+      // Application Android Options
+      foregroundService: true,
+
+      // Logging & Debug Options
+      debug: true,
+      logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
+    }, (state) => {
+      if (!state.enabled) {
+        BackgroundGeolocation.start(() => {
+          console.log('- Start success');
+        });
+      }
+    });
+  }
+
   componentDidMount() {
     const { userId, getFlights } = this.props;
     getFlights(userId);
@@ -94,16 +138,18 @@ class MapScreen extends Component {
 
   componentWillUnmount() {
     this.stopForegroundLocations();
-    this.stopBackgroundLocations();
+    // this.stopBackgroundLocations();
     this.stopGeocode();
     this.stopElevation();
     this.stopPlaces();
     this.stopFriends();
+
+    BackgroundGeolocation.removeListeners();
   }
 
   onResume() {
     this.startForegroundLocations();
-    this.stopBackgroundLocations();
+    // this.stopBackgroundLocations();
     this.startGeocode();
     this.startElevation();
     this.startPlaces();
@@ -112,12 +158,56 @@ class MapScreen extends Component {
   }
 
   onPause() {
-    this.startBackgroundLocations();
-    this.stopForegroundLocations();
+    // this.startBackgroundLocations();
+    // this.stopForegroundLocations();
     this.stopGeocode();
     this.stopElevation();
     this.stopPlaces();
     this.stopFriends();
+  }
+
+  onLocation(event) {
+    const { setGeolocation } = this.props;
+    const {
+      latitude, longitude, altitude, accuracy,
+    } = event.coords;
+    const { timestamp } = event.extras;
+
+    const location = {
+      latitude,
+      longitude,
+      timestamp,
+    };
+
+    const currentPosition = { lat: latitude, lng: longitude, time: timestamp };
+    const calculatedSpeed = geolib.getSpeed(this.lastPosition, currentPosition);
+    if (calculatedSpeed >= 0 && calculatedSpeed <= 1000) {
+      this.speed.addToBuffer(calculatedSpeed);
+    }
+    this.lastPosition = currentPosition;
+
+    setGeolocation({
+      latitude,
+      longitude,
+      speed: this.speed.getAverage(),
+      altitude: Math.round(altitude),
+      accuracy,
+      timestamp,
+    });
+
+    if (accuracy < 100) {
+      const {
+        userId, lastTile, setLastTile, saveLastTile, followLocation, map,
+      } = this.props;
+      const roundedLocation = GeoLocation.getRoundedLocation(location);
+
+      if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
+        this.addLocations([roundedLocation]);
+        setLastTile(roundedLocation);
+        saveLastTile(userId, roundedLocation);
+        followLocation && map && map.moveToLocation(roundedLocation);
+      }
+    }
   }
 
   onMapPress(coordinate) {
@@ -145,11 +235,13 @@ class MapScreen extends Component {
   }
 
   startForegroundLocations = () => {
-    this.watchPositionAsync();
+    // this.watchPositionAsync();
+    BackgroundGeolocation.watchPosition(location => this.onLocation(location));
   };
 
   stopForegroundLocations = () => {
-    this.locationListener && this.locationListener.remove();
+    // this.locationListener && this.locationListener.remove();
+    BackgroundGeolocation.stopWatchPosition();
   };
 
   startBackgroundLocations = async () => {
@@ -235,52 +327,6 @@ class MapScreen extends Component {
   getPlaces = () => {
     const { lastTile, setPlaces } = this.props;
     setPlaces(lastTile);
-  };
-
-  watchPositionAsync = async () => {
-    this.locationListener = await Location.watchPositionAsync(locationOptions, (result) => {
-      const { setGeolocation } = this.props;
-      const {
-        latitude, longitude, altitude, accuracy,
-      } = result.coords;
-      const { timestamp } = result;
-
-      const location = {
-        latitude,
-        longitude,
-        timestamp,
-      };
-
-      const currentPosition = { lat: latitude, lng: longitude, time: timestamp };
-      const calculatedSpeed = geolib.getSpeed(this.lastPosition, currentPosition);
-      if (calculatedSpeed >= 0 && calculatedSpeed <= 1000) {
-        this.speed.addToBuffer(calculatedSpeed);
-      }
-      this.lastPosition = currentPosition;
-
-      setGeolocation({
-        latitude,
-        longitude,
-        speed: this.speed.getAverage(),
-        altitude: Math.round(altitude),
-        accuracy,
-        timestamp,
-      });
-
-      if (accuracy < 100) {
-        const {
-          userId, lastTile, setLastTile, saveLastTile, followLocation, map,
-        } = this.props;
-        const roundedLocation = GeoLocation.getRoundedLocation(location);
-
-        if (!GeoLocation.isEqual(lastTile, roundedLocation)) {
-          this.addLocations([roundedLocation]);
-          setLastTile(roundedLocation);
-          saveLastTile(userId, roundedLocation);
-          followLocation && map && map.moveToLocation(roundedLocation);
-        }
-      }
-    });
   };
 
   addLocations(locations) {

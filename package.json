@@ -38,6 +38,7 @@
     "moment": "^2.24.0",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
+    "react-native-background-geolocation": "^2.14.2",
     "react-native-collapsible": "^1.4.0",
     "react-native-geojson": "^0.1.1",
     "react-native-keep-awake": "^4.0.0",

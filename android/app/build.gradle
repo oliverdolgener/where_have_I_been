@@ -17,12 +17,13 @@ repositories {
 }
 
 android {
-  compileSdkVersion 27
+  compileSdkVersion rootProject.compileSdkVersion
+  buildToolsVersion rootProject.buildToolsVersion
 
   defaultConfig {
     applicationId 'com.ollum.whib'
     minSdkVersion 21
-    targetSdkVersion 26
+    targetSdkVersion rootProject.targetSdkVersion
     versionCode 1
     versionName '0.1.0'
     ndk {
@@ -104,6 +105,8 @@ apply from: 'expo.gradle'
 // WHEN_PREPARING_SHELL_REMOVE_TO_HERE
 
 dependencies {
+  implementation project(':react-native-background-fetch')
+  implementation project(':react-native-background-geolocation')
   implementation project(':react-native-keep-awake')
   implementation(project(':react-native-maps')){
       exclude group: 'com.google.android.gms', module: 'play-services-base'

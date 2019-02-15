@@ -33,6 +33,8 @@ import expolib_v1.okhttp3.OkHttpClient;
 
 // Needed for `react-native link`
 // import com.facebook.react.ReactApplication;
+import com.transistorsoft.rnbackgroundfetch.RNBackgroundFetchPackage;
+import com.transistorsoft.rnbackgroundgeolocation.RNBackgroundGeolocation;
 import com.corbt.keepawake.KCKeepAwakePackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import org.pgsqlite.SQLitePluginPackage;
@@ -48,6 +50,8 @@ public class MainApplication extends ExpoApplication implements AppLoaderPackage
   public List<ReactPackage> getPackages() {
     return Arrays.<ReactPackage>asList(
         // new MainReactPackage(),
+        new RNBackgroundFetchPackage(),
+        new RNBackgroundGeolocation(),
         new KCKeepAwakePackage(),
         new MapsPackage(),
         new SQLitePluginPackage()

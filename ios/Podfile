@@ -116,6 +116,10 @@ target 'whib' do
 
   pod 'react-native-keep-awake', :path => '../node_modules/react-native-keep-awake'
 
+  pod 'RNBackgroundGeolocation', :path => '../node_modules/react-native-background-geolocation'
+
+  pod 'RNBackgroundFetch', :path => '../node_modules/react-native-background-fetch'
+
   post_install do |installer|
     installer.pods_project.main_group.tab_width = '2';
     installer.pods_project.main_group.indent_width = '2';
