@@ -41,6 +41,7 @@ class SplashScreen extends React.Component {
       setTheme,
       setShape,
       navigation,
+      setBackgroundTracking,
     } = this.props;
 
     const id = await AsyncStorage.getItem('id');
@@ -50,6 +51,7 @@ class SplashScreen extends React.Component {
     const mapType = await AsyncStorage.getItem('mapType');
     const theme = await AsyncStorage.getItem('theme');
     const shape = await AsyncStorage.getItem('shape');
+    const backgroundTracking = await AsyncStorage.getItem('backgroundTracking');
 
     if (id) {
       if (tilesToSave) {
@@ -66,6 +68,9 @@ class SplashScreen extends React.Component {
       }
       if (shape) {
         setShape(shape);
+      }
+      if (backgroundTracking) {
+        setBackgroundTracking(backgroundTracking);
       }
 
       SQLiteUtils.getLocations()
@@ -104,6 +109,7 @@ const mapDispatchToProps = {
   setMapType: mapActions.setMapType,
   setTheme: mapActions.setTheme,
   setShape: mapActions.setShape,
+  setBackgroundTracking: mapActions.setBackgroundTracking,
 };
 
 export default connect(null, mapDispatchToProps)(SplashScreen);

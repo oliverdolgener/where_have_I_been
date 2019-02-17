@@ -21,6 +21,7 @@ export const types = {
   SET_ELEVATION: 'MAP/SET_ELEVATION',
   SET_MARKER: 'MAP/SET_MARKER',
   SET_SHOW_PLACES: 'MAP/SET_SHOW_PLACES',
+  SET_BACKGROUND_TRACKING: 'MAP/SET_BACKGROUND_TRACKING',
 };
 
 const setMapTypeAsync = async (mapType) => {
@@ -37,6 +38,10 @@ const setShapeAsync = async (shape) => {
 
 const setLastTileAsync = async (tile) => {
   await AsyncStorage.setItem('lastTile', JSON.stringify(tile));
+};
+
+const setBackgroundTrackingAsync = async (backgroundTracking) => {
+  await AsyncStorage.setItem('backgroundTracking', backgroundTracking);
 };
 
 function getGridDistanceByZoom(zoom) {
@@ -82,6 +87,7 @@ export const actions = {
   }),
   setMarker: marker => ({ type: types.SET_MARKER, marker }),
   setShowPlaces: showPlaces => ({ type: types.SET_SHOW_PLACES, showPlaces }),
+  setBackgroundTracking: backgroundTracking => ({ type: types.SET_BACKGROUND_TRACKING, backgroundTracking }),
 };
 
 const initialState = Map({
@@ -101,6 +107,7 @@ const initialState = Map({
   mapType: 'hybrid',
   theme: 'light',
   shape: 'rectangle',
+  backgroundTracking: true,
   lastTile: {
     latitude: Earth.INITIAL_LOCATION.latitude,
     longitude: Earth.INITIAL_LOCATION.longitude,
@@ -153,6 +160,9 @@ export default (state = initialState, action = {}) => {
     case types.SET_SHAPE:
       setShapeAsync(action.shape);
       return state.set('shape', action.shape);
+    case types.SET_BACKGROUND_TRACKING:
+      setBackgroundTrackingAsync(action.backgroundTracking);
+      return state.set('backgroundTracking', action.backgroundTracking);
     case types.SET_LAST_TILE: {
       setLastTileAsync(action.lastTile);
       return state.set('lastTile', action.lastTile);

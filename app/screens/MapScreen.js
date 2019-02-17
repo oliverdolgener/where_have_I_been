@@ -158,8 +158,9 @@ class MapScreen extends Component {
   }
 
   onPause() {
+    const { backgroundTracking } = this.props;
     // this.startBackgroundLocations();
-    // this.stopForegroundLocations();
+    backgroundTracking === 'off' && this.stopForegroundLocations();
     this.stopGeocode();
     this.stopElevation();
     this.stopPlaces();
@@ -435,6 +436,7 @@ const mapStateToProps = state => ({
   isSaving: state.user.get('isSaving'),
   map: state.map.get('map'),
   lastTile: state.map.get('lastTile'),
+  backgroundTracking: state.map.get('backgroundTracking'),
   followLocation: state.map.get('followLocation'),
   editMode: state.map.get('editMode'),
 });

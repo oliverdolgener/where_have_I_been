@@ -38,6 +38,7 @@ import iconAirport from '../assets/iconAirport.png';
 import iconUser from '../assets/iconLevel.png';
 import iconPlaces from '../assets/iconPlaces.png';
 import iconCountry from '../assets/iconCountry.png';
+import iconLocation from '../assets/iconLocation.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -126,6 +127,12 @@ class DrawerMenu extends React.Component {
     const { theme, setTheme } = this.props;
     this.closeDrawer();
     setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  toggleBackgroundTracking = () => {
+    const { backgroundTracking, setBackgroundTracking } = this.props;
+    this.closeDrawer();
+    setBackgroundTracking(backgroundTracking === 'on' ? 'off' : 'on');
   };
 
   toggleShape = () => {
@@ -320,6 +327,7 @@ class DrawerMenu extends React.Component {
       showFlights,
       showCountries,
       showPlaces,
+      backgroundTracking,
     } = this.props;
     const {
       showFriendlist,
@@ -427,6 +435,11 @@ class DrawerMenu extends React.Component {
                 <StyledText style={styles.badgeLabel}>{tilesToSave.length}</StyledText>
               </View>
             </TouchableScale>
+            <TouchableScale style={styles.menuItem} onPress={() => this.toggleBackgroundTracking()}>
+              <Image style={styles.menuIcon} source={iconLocation} />
+              <StyledText style={styles.menuLabel}>Background Tracking</StyledText>
+              <Image style={styles.menuIcon} source={backgroundTracking === 'on' ? iconToggleOn : iconToggleOff} />
+            </TouchableScale>
             <TouchableScale style={styles.menuItem} onPress={() => this.togglePlaces()}>
               <Image style={styles.menuIcon} source={iconPlaces} />
               <StyledText style={styles.menuLabel}>Show Places</StyledText>
@@ -483,6 +496,7 @@ const mapStateToProps = state => ({
   mapType: state.map.get('mapType'),
   theme: state.map.get('theme'),
   shape: state.map.get('shape'),
+  backgroundTracking: state.map.get('backgroundTracking'),
   editMode: state.map.get('editMode'),
   showPlaces: state.map.get('showPlaces'),
   showFlights: state.flight.get('showFlights'),
@@ -498,6 +512,7 @@ const mapDispatchToProps = {
   setMapType: mapActions.setMapType,
   setTheme: mapActions.setTheme,
   setShape: mapActions.setShape,
+  setBackgroundTracking: mapActions.setBackgroundTracking,
   setFollowLocation: mapActions.setFollowLocation,
   setEditMode: mapActions.setEditMode,
   setShowPlaces: mapActions.setShowPlaces,
